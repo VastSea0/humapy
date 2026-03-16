@@ -11,6 +11,11 @@ pub enum Ifade {
         sag: Box<Ifade>,
     },
     MantıksalDegil(Box<Ifade>),
+    Liste(Vec<Ifade>),
+    ListeErisim {
+        liste: Box<Ifade>,
+        indeks: Box<Ifade>,
+    },
     Cagri {
         fonksiyon: String,
         argumanlar: Vec<Ifade>,

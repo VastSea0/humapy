@@ -48,6 +48,8 @@ impl Lexer {
             ')' => Token::KapaliParantez,
             '{' => Token::AcikSuskun,
             '}' => Token::KapaliSuskun,
+            '[' => Token::AcikKose,
+            ']' => Token::KapaliKose,
             ',' => Token::Virgul,
             ';' => Token::NoktaliVirgul,
             '+' => Token::Arti,
@@ -71,8 +73,30 @@ impl Lexer {
                     Token::Esittir
                 }
             }
-            '>' => Token::Buyuktur,
-            '<' => Token::Kucuktur,
+            '>' => {
+                if self.peek() == Some('=') {
+                    self.advance();
+                    Token::BuyukEsit
+                } else {
+                    Token::Buyuktur
+                }
+            }
+            '<' => {
+                if self.peek() == Some('=') {
+                    self.advance();
+                    Token::KucukEsit
+                } else {
+                    Token::Kucuktur
+                }
+            }
+            '!' => {
+                if self.peek() == Some('=') {
+                    self.advance();
+                    Token::EsitDegil
+                } else {
+                    Token::Hata("Beklenmeyen karakter: !".to_string())
+                }
+            }
             '"' => self.read_string(),
             '0'..='9' => self.read_number(ch),
             'a'..='z' | 'A'..='Z' | '_' | 'ç' | 'ğ' | 'ı' | 'ö' | 'ş' | 'ü' | 'Ç' | 'Ğ' | 'İ' | 'Ö' | 'Ş' | 'Ü' => {
