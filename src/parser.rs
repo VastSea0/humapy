@@ -37,9 +37,8 @@ impl Parser {
         while self.current_token != Token::Son {
             if let Some(komut) = self.parse_komut() {
                 komutlar.push(komut);
-            }
-            if self.current_token != Token::Son && 
-               !matches!(self.current_token, Token::Degisken | Token::Yazdir | Token::Eger) {
+            } else if self.current_token != Token::Son {
+                // Eğer bir komut parse edilemediyse ama sona gelinmediyse ilerle
                 self.next_token();
             }
         }
@@ -51,6 +50,14 @@ impl Parser {
             Token::Degisken => self.parse_degisken_tanimla(),
             Token::Yazdir => self.parse_yazdir(),
             Token::Eger => self.parse_eger(),
+            Token::Dongu => self.parse_dongu(),
+            Token::Tanimlayici(_) => {
+                if self.peek_token == Token::Esittir {
+                    self.parse_atama()
+                } else {
+                    Some(Komut::IfadeKomutu(self.parse_ifade()))
+                }
+            }
             Token::NoktaliVirgul => {
                 self.next_token();
                 None
@@ -112,6 +119,35 @@ impl Parser {
         }
         
         Some(Komut::EgerKomutu { kosul, govde, degilse_govde })
+    }
+
+    fn parse_dongu(&mut self) -> Option<Komut> {
+        self.next_token(); // skip 'döngü'
+        let kosul = self.parse_ifade();
+        
+        self.consume(Token::AcikSuskun);
+        let govde = self.parse_blok();
+        
+        Some(Komut::DonguKomutu { kosul, govde })
+    }
+
+    fn parse_atama(&mut self) -> Option<Komut> {
+        let ad = if let Token::Tanimlayici(ref s) = self.current_token {
+            s.clone()
+        } else {
+            return None;
+        };
+
+        self.next_token(); // skip ad
+        self.consume(Token::Esittir);
+
+        let deger = self.parse_ifade();
+
+        if self.current_token == Token::NoktaliVirgul {
+            self.next_token();
+        }
+
+        Some(Komut::DegiskenTanimla { ad, deger })
     }
 
     fn parse_blok(&mut self) -> Vec<Komut> {

@@ -27,6 +27,10 @@ pub enum Komut {
         govde: Vec<Komut>,
         degilse_govde: Option<Vec<Komut>>,
     },
+    DonguKomutu {
+        kosul: Ifade,
+        govde: Vec<Komut>,
+    },
     YazdirKomutu(Ifade),
     IfadeKomutu(Ifade),
 }

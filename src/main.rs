@@ -14,18 +14,12 @@ fn main() {
     println!("---------------------");
     
     let kod = r#"
-        değişken isim = "Hüma";
-        değişken sürüm = 0.1;
-
-        yazdır("Hoş geldiniz! Bu projenin adı: " + isim);
-        yazdır("Mevcut sürüm: " + sürüm);
-        
-        değişken x = 15;
-        eğer x > 10 {
-            yazdır("x değeri 10'dan büyük.");
-        } değilse {
-            yazdır("x değeri 10'dan küçük veya eşit.");
+        değişken sayaç = 1;
+        döngü sayaç < 6 {
+            yazdır("Sayaç şu an: " + sayaç);
+            sayaç = sayaç + 1;
         }
+        yazdır("Döngü bitti!");
     "#;
 
     let tarayici = Lexer::new(kod);

@@ -58,6 +58,20 @@ impl Yorumlayici {
                     }
                 }
             }
+            Komut::DonguKomutu { kosul, govde } => {
+                loop {
+                    let devam_et = {
+                        let sonuc = self.ifade_hesapla(kosul.clone());
+                        self.dogruluk_kontrolu(sonuc)
+                    };
+                    
+                    if !devam_et { break; }
+
+                    for k in &govde {
+                        self.komut_calistir(k.clone());
+                    }
+                }
+            }
             Komut::IfadeKomutu(ifade) => {
                 self.ifade_hesapla(ifade);
             }
