@@ -266,6 +266,15 @@ impl Parser {
                 self.next_token();
                 Ifade::MantıksalDegil(Box::new(self.parse_birincil()))
             }
+            Token::Eksi => {
+                self.next_token();
+                // Unary minus: 0 - expression
+                Ifade::IkiliIslem {
+                    sol: Box::new(Ifade::Sayi(0.0)),
+                    operator: Token::Eksi,
+                    sag: Box::new(self.parse_birincil()),
+                }
+            }
             _ => self.parse_temel(),
         }
     }
