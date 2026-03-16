@@ -7,6 +7,7 @@ Hüma, Rust ile geliştirilen, Türkçe doğal dil yapısına uygun ve hızlı b
 - **Performans:** Rust altyapısı ile yüksek hız.
 - **Güvenlik:** Bellek güvenliği odaklı mimari.
 - **Yerellik:** Tamamen Türkçe anahtar kelimeler ve hata mesajları.
+- **Özellikler:** Değişkenler, Fonksiyonlar, Döngüler, Koşullar, Mantıksal Operatörler (`ve`, `veya`, `değil`).
 
 ## Örnek Kullanım
 
@@ -19,10 +20,26 @@ eğer sayı > 3 {
 }
 ```
 
-## Geliştirme
+## Kurulum ve Kullanım
 
-Projeyi derlemek ve çalıştırmak için:
+Projeyi derlemek için:
+
+```bash
+cargo build --release
+```
+
+### REPL Modu (Etkileşimli)
+
+Doğrudan kod yazıp denemek için:
 
 ```bash
 cargo run
+```
+
+### Dosya Çalıştırma
+
+Bir `.hb` dosyasını çalıştırmak için:
+
+```bash
+cargo run -- örnek.hb
 ```
