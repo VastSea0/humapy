@@ -3,6 +3,8 @@ use crate::token::Token;
 pub struct Lexer {
     input: Vec<char>,
     pos: usize,
+    line: usize,
+    col: usize,
 }
 
 impl Lexer {
@@ -10,6 +12,8 @@ impl Lexer {
         Self {
             input: input.chars().collect(),
             pos: 0,
+            line: 1,
+            col: 1,
         }
     }
 
@@ -19,10 +23,20 @@ impl Lexer {
 
     fn advance(&mut self) -> Option<char> {
         let ch = self.peek();
-        if ch.is_some() {
+        if let Some(c) = ch {
             self.pos += 1;
+            if c == '\n' {
+                self.line += 1;
+                self.col = 1;
+            } else {
+                self.col += 1;
+            }
         }
         ch
+    }
+
+    pub fn get_pos(&self) -> (usize, usize) {
+        (self.line, self.col)
     }
 
     fn skip_whitespace(&mut self) {
@@ -154,6 +168,7 @@ impl Lexer {
             "ve" => Token::Ve,
             "veya" => Token::Veya,
             "değil" => Token::Degil,
+            "yükle" => Token::Yukle,
             _ => Token::Tanimlayici(s),
         }
     }

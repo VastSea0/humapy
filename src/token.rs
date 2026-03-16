@@ -12,6 +12,7 @@ pub enum Token {
     Ve,
     Veya,
     Degil,
+    Yukle,
 
     // Tanımlayıcılar ve Literaller
     Tanimlayici(String),
