@@ -1,6 +1,6 @@
 use crate::token::Token;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Ifade {
     Sayi(f64),
     Metin(String),
@@ -16,7 +16,7 @@ pub enum Ifade {
     },
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Komut {
     DegiskenTanimla {
         ad: String,
@@ -31,6 +31,12 @@ pub enum Komut {
         kosul: Ifade,
         govde: Vec<Komut>,
     },
+    FonksiyonTanimla {
+        ad: String,
+        parametreler: Vec<String>,
+        govde: Vec<Komut>,
+    },
+    DondurKomutu(Ifade),
     YazdirKomutu(Ifade),
     IfadeKomutu(Ifade),
 }
