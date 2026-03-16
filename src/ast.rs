@@ -10,6 +10,7 @@ pub enum Ifade {
         operator: Token,
         sag: Box<Ifade>,
     },
+    MantıksalDegil(Box<Ifade>),
     Cagri {
         fonksiyon: String,
         argumanlar: Vec<Ifade>,

@@ -47,7 +47,6 @@ impl Yorumlayici {
     }
 
     fn get_degisken(&self, ad: &str) -> Deger {
-        // En son eklenen (en içteki) scope'tan başla
         for scope in self.yerel_scopes.iter().rev() {
             if let Some(val) = scope.get(ad) {
                 return val.clone();
@@ -120,31 +119,39 @@ impl Yorumlayici {
             Ifade::Metin(s) => Deger::Metin(s),
             Ifade::Degisken(ad) => self.get_degisken(&ad),
             Ifade::IkiliIslem { sol, operator, sag } => {
-                let sol_deger = self.ifade_hesapla(*sol);
-                let sag_deger = self.ifade_hesapla(*sag);
+                let sol_v = self.ifade_hesapla(*sol);
+                let sag_v = self.ifade_hesapla(*sag);
 
-                match (sol_deger, sag_deger) {
-                    (Deger::Sayi(a), Deger::Sayi(b)) => match operator {
-                        Token::Arti => Deger::Sayi(a + b),
-                        Token::Eksi => Deger::Sayi(a - b),
-                        Token::Carpi => Deger::Sayi(a * b),
-                        Token::Bolnu => Deger::Sayi(a / b),
-                        Token::Buyuktur => Deger::Sayi(if a > b { 1.0 } else { 0.0 }),
-                        Token::Kucuktur => Deger::Sayi(if a < b { 1.0 } else { 0.0 }),
-                        Token::EsitEsittir => Deger::Sayi(if a == b { 1.0 } else { 0.0 }),
+                match operator {
+                    Token::Ve => Deger::Sayi(if self.dogruluk_kontrolu(sol_v) && self.dogruluk_kontrolu(sag_v) { 1.0 } else { 0.0 }),
+                    Token::Veya => Deger::Sayi(if self.dogruluk_kontrolu(sol_v) || self.dogruluk_kontrolu(sag_v) { 1.0 } else { 0.0 }),
+                    _ => match (sol_v, sag_v) {
+                        (Deger::Sayi(a), Deger::Sayi(b)) => match operator {
+                            Token::Arti => Deger::Sayi(a + b),
+                            Token::Eksi => Deger::Sayi(a - b),
+                            Token::Carpi => Deger::Sayi(a * b),
+                            Token::Bolnu => Deger::Sayi(a / b),
+                            Token::Buyuktur => Deger::Sayi(if a > b { 1.0 } else { 0.0 }),
+                            Token::Kucuktur => Deger::Sayi(if a < b { 1.0 } else { 0.0 }),
+                            Token::EsitEsittir => Deger::Sayi(if a == b { 1.0 } else { 0.0 }),
+                            _ => Deger::Bos,
+                        },
+                        (Deger::Metin(a), b) => match operator {
+                            Token::Arti => Deger::Metin(format!("{}{}", a, b)),
+                            Token::EsitEsittir => Deger::Sayi(if a == b.to_string() { 1.0 } else { 0.0 }),
+                            _ => Deger::Bos,
+                        },
+                        (a, Deger::Metin(b)) => match operator {
+                            Token::Arti => Deger::Metin(format!("{}{}", a, b)),
+                            _ => Deger::Bos,
+                        },
                         _ => Deger::Bos,
-                    },
-                    (Deger::Metin(a), _b) => match operator {
-                        Token::Arti => Deger::Metin(format!("{}{}", a, _b)),
-                        Token::EsitEsittir => Deger::Sayi(if a == _b.to_string() { 1.0 } else { 0.0 }),
-                        _ => Deger::Bos,
-                    },
-                    (_a, Deger::Metin(b)) => match operator {
-                        Token::Arti => Deger::Metin(format!("{}{}", _a, b)),
-                        _ => Deger::Bos,
-                    },
-                    _ => Deger::Bos,
+                    }
                 }
+            }
+            Ifade::MantıksalDegil(ifade) => {
+                let sonuc = self.ifade_hesapla(*ifade);
+                Deger::Sayi(if self.dogruluk_kontrolu(sonuc) { 0.0 } else { 1.0 })
             }
             Ifade::Cagri { fonksiyon, argumanlar } => {
                 let f_deger = self.get_degisken(&fonksiyon);

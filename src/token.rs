@@ -9,6 +9,9 @@ pub enum Token {
     Degisken,
     Fonksiyon,
     Dondur,
+    Ve,
+    Veya,
+    Degil,
 
     // Tanımlayıcılar ve Literaller
     Tanimlayici(String),

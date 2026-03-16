@@ -53,7 +53,16 @@ impl Lexer {
             '+' => Token::Arti,
             '-' => Token::Eksi,
             '*' => Token::Carpi,
-            '/' => Token::Bolnu,
+            '/' => {
+                if self.peek() == Some('/') {
+                    while let Some(c) = self.advance() {
+                        if c == '\n' { break; }
+                    }
+                    self.next_token()
+                } else {
+                    Token::Bolnu
+                }
+            }
             '=' => {
                 if self.peek() == Some('=') {
                     self.advance();
@@ -118,6 +127,9 @@ impl Lexer {
             "değişken" => Token::Degisken,
             "fonksiyon" => Token::Fonksiyon,
             "döndür" => Token::Dondur,
+            "ve" => Token::Ve,
+            "veya" => Token::Veya,
+            "değil" => Token::Degil,
             _ => Token::Tanimlayici(s),
         }
     }
