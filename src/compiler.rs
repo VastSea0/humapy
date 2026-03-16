@@ -96,6 +96,10 @@ impl Derleyici {
                 self.ifade_derle(deger);
                 self.instructions.push(OpCode::DefineVar(ad));
             }
+            Komut::Atama { ad, deger } => {
+                self.ifade_derle(deger);
+                self.instructions.push(OpCode::StoreVar(ad));
+            }
             Komut::IfadeKomutu(ifade) => {
                 if let Ifade::IkiliIslem { sol, operator: Token::Esittir, sag } = ifade {
                     self.ifade_derle(*sag);

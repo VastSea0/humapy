@@ -112,6 +112,7 @@ impl Lexer {
                     Token::Hata("Beklenmeyen karakter: !".to_string())
                 }
             }
+            '%' => Token::Mod,
             '"' => self.read_string(),
             '0'..='9' => self.read_number(ch),
             'a'..='z' | 'A'..='Z' | '_' | 'ç' | 'ğ' | 'ı' | 'ö' | 'ş' | 'ü' | 'Ç' | 'Ğ' | 'İ' | 'Ö' | 'Ş' | 'Ü' => {

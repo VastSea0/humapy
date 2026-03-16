@@ -37,6 +37,10 @@ pub enum Komut {
         ad: String,
         deger: Ifade,
     },
+    Atama {
+        ad: String,
+        deger: Ifade,
+    },
     EgerKomutu {
         kosul: Ifade,
         govde: Vec<Komut>,
