@@ -286,8 +286,15 @@ impl Yorumlayici {
                 } else { Deger::Bos }
             }
             Ifade::IkiliIslem { sol, operator, sag } => {
-                let l = self.ifade_hesapla(*sol);
-                let r = self.ifade_hesapla(*sag);
+                let mut l = self.ifade_hesapla(*sol);
+                let mut r = self.ifade_hesapla(*sag);
+                
+                // Tip zorlama (Coercion) - Eğer aritmetik işlemse ve değerlerden biri metinse sayıya çevirmeyi dene
+                if matches!(operator, Token::Arti | Token::Eksi | Token::Carpi | Token::Bolnu | Token::Mod | Token::Kucuktur | Token::Buyuktur | Token::KucukEsit | Token::BuyukEsit) {
+                    if let Deger::Metin(ref s) = l { if let Ok(n) = s.parse::<f64>() { l = Deger::Sayi(n); } }
+                    if let Deger::Metin(ref s) = r { if let Ok(n) = s.parse::<f64>() { r = Deger::Sayi(n); } }
+                }
+
                 match operator {
                     Token::Ve => Deger::Sayi(if self.dogruluk_kontrolu(l.clone()) && self.dogruluk_kontrolu(r.clone()) { 1.0 } else { 0.0 }),
                     Token::Veya => Deger::Sayi(if self.dogruluk_kontrolu(l.clone()) || self.dogruluk_kontrolu(r.clone()) { 1.0 } else { 0.0 }),

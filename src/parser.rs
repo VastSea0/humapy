@@ -115,8 +115,14 @@ impl Parser {
         let mut degilse_govde = None;
         if self.current_token == Token::Degilse {
             self.next_token();
-            self.consume(Token::AcikSuskun);
-            degilse_govde = Some(self.parse_blok());
+            if self.current_token == Token::Eger {
+                if let Some(inner_if) = self.parse_eger() {
+                    degilse_govde = Some(vec![inner_if]);
+                }
+            } else {
+                self.consume(Token::AcikSuskun);
+                degilse_govde = Some(self.parse_blok());
+            }
         }
         Some(Komut::EgerKomutu { kosul, govde, degilse_govde })
     }
