@@ -1,29 +1,30 @@
 mod token;
 mod lexer;
+mod ast;
+mod parser;
 
 use lexer::Lexer;
-use token::Token;
+use parser::Parser;
 
 fn main() {
-    println!("Hüma Tarayıcı (Lexer) Testi");
+    println!("Hüma Ayrıştırıcı (Parser) Testi");
     println!("---------------------------");
 
     let kod = r#"
-        değişken sayı = 10;
-        eğer sayı > 5 {
-            yazdır("Sayı büyüktür 5");
+        değişken x = 10;
+        eğer x > 5 {
+            yazdır("Büyük");
         } değilse {
-            yazdır("Sayı küçüktür veya eşittir 5");
+            yazdır("Küçük");
         }
     "#;
 
-    let mut tarayici = Lexer::new(kod);
+    let tarayici = Lexer::new(kod);
+    let mut ayristirici = Parser::new(tarayici);
 
-    loop {
-        let token = tarayici.next_token();
-        println!("{:?}", token);
-        if token == Token::Son || matches!(token, Token::Hata(_)) {
-            break;
-        }
+    let program = ayristirici.parse_program();
+
+    for komut in program {
+        println!("{:#?}", komut);
     }
 }
