@@ -66,6 +66,7 @@ impl Lexer {
             ']' => Token::KapaliKose,
             ',' => Token::Virgul,
             ';' => Token::NoktaliVirgul,
+            '.' => Token::Nokta,
             '+' => Token::Arti,
             '-' => Token::Eksi,
             '*' => Token::Carpi,
@@ -169,6 +170,7 @@ impl Lexer {
             "veya" => Token::Veya,
             "değil" => Token::Degil,
             "yükle" => Token::Yukle,
+            "sınıf" => Token::Sinif,
             _ => Token::Tanimlayici(s),
         }
     }
