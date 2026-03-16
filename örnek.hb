@@ -1,20 +1,23 @@
-yükle "matematik.hb";
+yazdır("--- Matematik Testi ---");
+yazdır("Mutlak -5: " + mutlak(-5));
+yazdır("Yuvarla 3.7: " + yuvarla(3.7));
+yazdır("Rastgele Sayı: " + rastgele());
 
-yazdır("PI değeri: " + PI);
-yazdır("12'nin karesi: " + karesi(12));
+yazdır("--- Metin Testi ---");
+değişken isim = "  Hüma Programlama  ";
+yazdır("Orijinal: '" + isim + "'");
+yazdır("Kırpılmış: '" + kırp(isim) + "'");
+yazdır("Küçük Harf: " + küçük_harf(kırp(isim)));
+yazdır("Büyük Harf: " + büyük_harf(kırp(isim)));
 
-değişken isim = "Hüma Testi"; // REPL veya Dosya modunda 'oku' için manuel test
-yazdır("İsim: " + isim);
-yazdır("İsim uzunluğu: " + uzunluk(isim));
+yazdır("--- Liste Testi ---");
+değişken sayılar = [1, 2, 3];
+değişken yeni_liste = listeye_ekle(sayılar, 4);
+yazdır("Eski Liste: " + sayılar);
+yazdır("Yeni Liste: " + yeni_liste);
 
-değişken yaş = 20;
-yazdır("Yaş: " + yaş);
-eğer yaş >= 18 {
-    yazdır("Hüma dünyasında özgürsün!");
-} değilse {
-    yazdır("Biraz daha büyümen lazım :)");
-}
-
-değişken liste = [1, 2, 3];
-yazdır("Liste Tipi: " + tipini_ver(liste));
-yazdır("Sayı Tipi: " + tipini_ver(42));
+yazdır("--- Sistem Testi ---");
+yazdır("Şu anki zaman (sn): " + zaman());
+yazdır("1 saniye uyutuluyor...");
+uyut(1000);
+yazdır("Bitti!");

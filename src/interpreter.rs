@@ -2,6 +2,9 @@ use crate::ast::{Ifade, Komut};
 use crate::token::Token;
 use std::collections::HashMap;
 use std::io::{self, Write};
+use std::time::{SystemTime, UNIX_EPOCH};
+use std::thread;
+use std::time::Duration;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Deger {
@@ -42,7 +45,8 @@ impl Yorumlayici {
     pub fn new() -> Self {
         let mut globals = HashMap::new();
         
-        // Dahili Fonksiyonlar
+        // --- TEMEL FONKSİYONLAR ---
+        
         globals.insert("uzunluk".to_string(), Deger::DahiliFonksiyon(|args| {
             if let Some(arg) = args.first() {
                 match arg {
@@ -68,11 +72,21 @@ impl Yorumlayici {
             }
         }));
 
+        // --- TİP DÖNÜŞÜMLERİ ---
+
         globals.insert("sayıya_çevir".to_string(), Deger::DahiliFonksiyon(|args| {
-            if let Some(Deger::Metin(s)) = args.first() {
-                Deger::Sayi(s.parse().unwrap_or(0.0))
+            match args.first() {
+                Some(Deger::Metin(s)) => Deger::Sayi(s.parse().unwrap_or(0.0)),
+                Some(Deger::Sayi(n)) => Deger::Sayi(*n),
+                _ => Deger::Sayi(0.0),
+            }
+        }));
+
+        globals.insert("metne_çevir".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(arg) = args.first() {
+                Deger::Metin(arg.to_string())
             } else {
-                Deger::Sayi(0.0)
+                Deger::Metin("".to_string())
             }
         }));
 
@@ -89,6 +103,83 @@ impl Yorumlayici {
             } else {
                 Deger::Metin("boş".to_string())
             }
+        }));
+
+        // --- MATEMATİK ---
+
+        globals.insert("mutlak".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Sayi(n)) = args.first() {
+                Deger::Sayi(n.abs())
+            } else {
+                Deger::Sayi(0.0)
+            }
+        }));
+
+        globals.insert("yuvarla".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Sayi(n)) = args.first() {
+                Deger::Sayi(n.round())
+            } else {
+                Deger::Sayi(0.0)
+            }
+        }));
+
+        globals.insert("rastgele".to_string(), Deger::DahiliFonksiyon(|_| {
+            // Basit bir rastgele sayı (0-1 arası)
+            let nanos = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
+            Deger::Sayi((nanos % 1000) as f64 / 1000.0)
+        }));
+
+        // --- METİN İŞLEMLERİ ---
+
+        globals.insert("küçük_harf".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Metin(s)) = args.first() {
+                Deger::Metin(s.to_lowercase())
+            } else {
+                Deger::Bos
+            }
+        }));
+
+        globals.insert("büyük_harf".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Metin(s)) = args.first() {
+                Deger::Metin(s.to_uppercase())
+            } else {
+                Deger::Bos
+            }
+        }));
+
+        globals.insert("kırp".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Metin(s)) = args.first() {
+                Deger::Metin(s.trim().to_string())
+            } else {
+                Deger::Bos
+            }
+        }));
+
+        // --- LİSTE İŞLEMLERİ ---
+
+        globals.insert("listeye_ekle".to_string(), Deger::DahiliFonksiyon(|args| {
+            if args.len() >= 2 {
+                if let Deger::Liste(l) = &args[0] {
+                    let mut yeni_liste = l.clone();
+                    yeni_liste.push(args[1].clone());
+                    return Deger::Liste(yeni_liste);
+                }
+            }
+            Deger::Bos
+        }));
+
+        // --- SİSTEM ---
+
+        globals.insert("zaman".to_string(), Deger::DahiliFonksiyon(|_| {
+            let start = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
+            Deger::Sayi(start as f64)
+        }));
+
+        globals.insert("uyut".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Sayi(ms)) = args.first() {
+                thread::sleep(Duration::from_millis(*ms as u64));
+            }
+            Deger::Bos
         }));
 
         Self {
