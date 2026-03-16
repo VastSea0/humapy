@@ -49,6 +49,44 @@ impl Yorumlayici {
             }
             Deger::Bos
         }));
+        globals.insert("karekök".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Sayi(n)) = args.first() { Deger::Sayi(n.sqrt()) } else { Deger::Bos }
+        }));
+        globals.insert("rastgele".to_string(), Deger::DahiliFonksiyon(|_| {
+            // Basit bir rastgele sayı üretici (0-1 arası)
+            let n = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos() as f64;
+            Deger::Sayi((n % 1000000.0) / 1000000.0)
+        }));
+        globals.insert("dosya_oku".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Metin(yol)) = args.first() {
+                if let Ok(s) = std::fs::read_to_string(yol) { return Deger::Metin(s); }
+            }
+            Deger::Bos
+        }));
+        globals.insert("dosya_yaz".to_string(), Deger::DahiliFonksiyon(|args| {
+            if args.len() >= 2 {
+                if let (Deger::Metin(yol), Deger::Metin(icerik)) = (&args[0], &args[1]) {
+                    if std::fs::write(yol, icerik).is_ok() { return Deger::Sayi(1.0); }
+                }
+            }
+            Deger::Sayi(0.0)
+        }));
+        globals.insert("tipi".to_string(), Deger::DahiliFonksiyon(|args| {
+            match args.first() {
+                Some(Deger::Sayi(_)) => Deger::Metin("Sayı".to_string()),
+                Some(Deger::Metin(_)) => Deger::Metin("Metin".to_string()),
+                Some(Deger::Liste(_)) => Deger::Metin("Liste".to_string()),
+                Some(Deger::Fonksiyon { .. }) => Deger::Metin("Fonksiyon".to_string()),
+                Some(Deger::Sinif { .. }) => Deger::Metin("Sınıf".to_string()),
+                Some(Deger::Nesne { .. }) => Deger::Metin("Nesne".to_string()),
+                _ => Deger::Metin("Boş".to_string()),
+            }
+        }));
+
+        // Argümanları al
+        let cli_args: Vec<Deger> = std::env::args().map(|s| Deger::Metin(s)).collect();
+        globals.insert("argümanlar".to_string(), Deger::Liste(cli_args));
+
         Self { 
             global_degiskenler: globals, 
             yerel_scopes: Vec::new(), 
@@ -97,6 +135,10 @@ impl Yorumlayici {
             Komut::DegiskenTanimla { ad, deger } => {
                 let res = self.ifade_hesapla(deger);
                 self.degisken_tanimla(ad, res);
+            }
+            Komut::Atama { ad, deger } => {
+                let res = self.ifade_hesapla(deger);
+                self.degisken_ata(ad, res);
             }
             Komut::EgerKomutu { kosul, govde, degilse_govde } => {
                 let r = self.ifade_hesapla(kosul);
@@ -247,31 +289,30 @@ impl Yorumlayici {
                 let l = self.ifade_hesapla(*sol);
                 let r = self.ifade_hesapla(*sag);
                 match operator {
-                    Token::Ve => Deger::Sayi(if self.dogruluk_kontrolu(l) && self.dogruluk_kontrolu(r) { 1.0 } else { 0.0 }),
-                    Token::Veya => Deger::Sayi(if self.dogruluk_kontrolu(l) || self.dogruluk_kontrolu(r) { 1.0 } else { 0.0 }),
+                    Token::Ve => Deger::Sayi(if self.dogruluk_kontrolu(l.clone()) && self.dogruluk_kontrolu(r.clone()) { 1.0 } else { 0.0 }),
+                    Token::Veya => Deger::Sayi(if self.dogruluk_kontrolu(l.clone()) || self.dogruluk_kontrolu(r.clone()) { 1.0 } else { 0.0 }),
+                    Token::EsitEsittir => Deger::Sayi(if l == r { 1.0 } else { 0.0 }),
+                    Token::EsitDegil => Deger::Sayi(if l != r { 1.0 } else { 0.0 }),
                     _ => match (l, r) {
                         (Deger::Sayi(a), Deger::Sayi(b)) => match operator {
                             Token::Arti => Deger::Sayi(a + b),
                             Token::Eksi => Deger::Sayi(a - b),
                             Token::Carpi => Deger::Sayi(a * b),
                             Token::Bolnu => Deger::Sayi(a / b),
+                            Token::Mod => Deger::Sayi(a % b),
                             Token::Kucuktur => Deger::Sayi(if a < b { 1.0 } else { 0.0 }),
                             Token::Buyuktur => Deger::Sayi(if a > b { 1.0 } else { 0.0 }),
                             Token::KucukEsit => Deger::Sayi(if a <= b { 1.0 } else { 0.0 }),
                             Token::BuyukEsit => Deger::Sayi(if a >= b { 1.0 } else { 0.0 }),
-                            Token::EsitEsittir => Deger::Sayi(if a == b { 1.0 } else { 0.0 }),
-                            Token::EsitDegil => Deger::Sayi(if a != b { 1.0 } else { 0.0 }),
                             _ => Deger::Bos
                         },
                         (Deger::Metin(a), b) => match operator {
                             Token::Arti => Deger::Metin(format!("{}{}", a, b)),
+                            Token::Kucuktur => Deger::Sayi(if a < b.to_string() { 1.0 } else { 0.0 }),
+                            Token::Buyuktur => Deger::Sayi(if a > b.to_string() { 1.0 } else { 0.0 }),
                             _ => Deger::Bos
                         },
-                        (a, b) => match operator {
-                            Token::EsitEsittir => Deger::Sayi(if a == b { 1.0 } else { 0.0 }),
-                            Token::EsitDegil => Deger::Sayi(if a != b { 1.0 } else { 0.0 }),
-                            _ => Deger::Bos
-                        }
+                        _ => Deger::Bos
                     }
                 }
             }

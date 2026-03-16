@@ -58,7 +58,7 @@ impl Parser {
                     let deger = self.parse_ifade();
                     if self.current_token == Token::NoktaliVirgul { self.next_token(); }
                     match expr {
-                        Ifade::Degisken(ad) => Some(Komut::DegiskenTanimla { ad, deger }),
+                        Ifade::Degisken(ad) => Some(Komut::Atama { ad, deger }),
                         _ => Some(Komut::IfadeKomutu(Ifade::IkiliIslem { sol: Box::new(expr), operator: Token::Esittir, sag: Box::new(deger) })),
                     }
                 } else {
@@ -226,7 +226,7 @@ impl Parser {
 
     fn parse_carpma(&mut self) -> Ifade {
         let mut sol = self.parse_birincil();
-        while matches!(self.current_token, Token::Carpi | Token::Bolnu) {
+        while matches!(self.current_token, Token::Carpi | Token::Bolnu | Token::Mod) {
             let op = self.current_token.clone(); self.next_token();
             let sag = self.parse_birincil();
             sol = Ifade::IkiliIslem { sol: Box::new(sol), operator: op, sag: Box::new(sag) };

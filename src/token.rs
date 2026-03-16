@@ -32,6 +32,7 @@ pub enum Token {
     KucukEsit,      // <=
     EsitEsittir,    // ==
     EsitDegil,      // !=
+    Mod,            // %
     AcikParantez,   // (
     KapaliParantez, // )
     AcikSuskun,     // {
