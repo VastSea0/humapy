@@ -2,6 +2,8 @@
 
 Hüma, modern yazılım geliştirme prensiplerini Türkçe doğal dil yapısıyla birleştiren, yüksek performanslı ve güvenli bir programlama dilidir. Rust diliyle geliştirilmiş olup, hem yorumlanabilir (tree-walking) hem de bytecode üzerinden derlenebilir (VM) bir mimariye sahiptir.
 
+[**Click here for the English version of README.**](README.en.md)
+
 ## 🚀 Öne Çıkan Özellikler
 
 - **Doğal Türkçe Sözdizimi:** Kod yazarken kendi dilinizde düşünebilirsiniz.
