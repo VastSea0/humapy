@@ -20,6 +20,7 @@ impl Parser {
     fn next_token(&mut self) {
         self.current_pos = self.lexer.get_pos();
         self.current_token = self.peek_token.clone();
+        // println!("PARSER DEBUG: token={:?}", self.current_token);
         self.peek_token = self.lexer.next_token();
     }
 
@@ -36,7 +37,6 @@ impl Parser {
         let mut komutlar = Vec::new();
         while self.current_token != Token::Son {
             if let Some(komut) = self.parse_komut() { komutlar.push(komut); }
-            else if self.current_token != Token::Son { self.next_token(); }
         }
         komutlar
     }

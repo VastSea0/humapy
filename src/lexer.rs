@@ -127,7 +127,31 @@ impl Lexer {
             if ch == '"' {
                 return Token::Metin(s);
             }
-            s.push(ch);
+            if ch == '\\' {
+                if let Some(next) = self.advance() {
+                    match next {
+                        'n' => s.push('\n'),
+                        'r' => s.push('\r'),
+                        't' => s.push('\t'),
+                        '\\' => s.push('\\'),
+                        '"' => s.push('"'),
+                        'x' => {
+                            // Hex escape \x1b
+                            let h1 = self.advance().unwrap_or('0');
+                            let h2 = self.advance().unwrap_or('0');
+                            let hex = format!("{}{}", h1, h2);
+                            if let Ok(code) = u8::from_str_radix(&hex, 16) {
+                                s.push(code as char);
+                            }
+                        }
+                        _ => { s.push('\\'); s.push(next); }
+                    }
+                } else {
+                    s.push('\\');
+                }
+            } else {
+                s.push(ch);
+            }
         }
         Token::Hata("Kapatılmamış metin dizisi".to_string())
     }
