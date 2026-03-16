@@ -43,6 +43,7 @@ pub enum Komut {
         govde: Vec<Komut>,
     },
     DondurKomutu(Ifade),
+    YukleKomutu(String),
     YazdirKomutu(Ifade),
     IfadeKomutu(Ifade),
 }

@@ -1,6 +1,7 @@
 use crate::ast::{Ifade, Komut};
 use crate::token::Token;
 use std::collections::HashMap;
+use std::io::{self, Write};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Deger {
@@ -51,6 +52,42 @@ impl Yorumlayici {
                 }
             } else {
                 Deger::Sayi(0.0)
+            }
+        }));
+
+        globals.insert("oku".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(msg) = args.first() {
+                print!("{}", msg);
+                let _ = io::stdout().flush();
+            }
+            let mut input = String::new();
+            if io::stdin().read_line(&mut input).is_ok() {
+                Deger::Metin(input.trim().to_string())
+            } else {
+                Deger::Bos
+            }
+        }));
+
+        globals.insert("sayıya_çevir".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Metin(s)) = args.first() {
+                Deger::Sayi(s.parse().unwrap_or(0.0))
+            } else {
+                Deger::Sayi(0.0)
+            }
+        }));
+
+        globals.insert("tipini_ver".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(arg) = args.first() {
+                match arg {
+                    Deger::Sayi(_) => Deger::Metin("sayı".to_string()),
+                    Deger::Metin(_) => Deger::Metin("metin".to_string()),
+                    Deger::Liste(_) => Deger::Metin("liste".to_string()),
+                    Deger::Fonksiyon { .. } => Deger::Metin("fonksiyon".to_string()),
+                    Deger::DahiliFonksiyon(_) => Deger::Metin("dahili_fonksiyon".to_string()),
+                    Deger::Bos => Deger::Metin("boş".to_string()),
+                }
+            } else {
+                Deger::Metin("boş".to_string())
             }
         }));
 
@@ -128,6 +165,23 @@ impl Yorumlayici {
             Komut::DondurKomutu(ifade) => {
                 let val = self.ifade_hesapla(ifade);
                 self.donus_degeri = Some(val);
+            }
+            Komut::YukleKomutu(yol) => {
+                use std::fs;
+                use crate::lexer::Lexer;
+                use crate::parser::Parser;
+
+                match fs::read_to_string(&yol) {
+                    Ok(icerik) => {
+                        let tarayici = Lexer::new(&icerik);
+                        let mut ayristirici = Parser::new(tarayici);
+                        let program = ayristirici.parse_program();
+                        self.yorumla(program);
+                    }
+                    Err(e) => {
+                        eprintln!("[Hüma Hatası] Modül yüklenemedi '{}': {}", yol, e);
+                    }
+                }
             }
             Komut::IfadeKomutu(ifade) => {
                 self.ifade_hesapla(ifade);

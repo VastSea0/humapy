@@ -6,29 +6,39 @@ pub struct Parser {
     lexer: Lexer,
     current_token: Token,
     peek_token: Token,
+    current_pos: (usize, usize),
 }
 
 impl Parser {
     pub fn new(mut lexer: Lexer) -> Self {
+        let current_pos = lexer.get_pos();
         let current_token = lexer.next_token();
         let peek_token = lexer.next_token();
         Self {
             lexer,
             current_token,
             peek_token,
+            current_pos,
         }
     }
 
     fn next_token(&mut self) {
+        self.current_pos = self.lexer.get_pos();
         self.current_token = self.peek_token.clone();
         self.peek_token = self.lexer.next_token();
     }
 
-    fn consume(&mut self, expected: Token) {
+    fn error(&self, msg: &str) {
+        eprintln!("[Hüma Hatası] Satır {}, Sütun {}: {}", self.current_pos.0, self.current_pos.1, msg);
+    }
+
+    fn consume(&mut self, expected: Token) -> bool {
         if self.current_token == expected {
             self.next_token();
+            true
         } else {
-            // Sessiz hata (iyileştirilebilir)
+            self.error(&format!("{:?} bekleniyordu ama {:?} geldi", expected, self.current_token));
+            false
         }
     }
 
@@ -52,6 +62,7 @@ impl Parser {
             Token::Dongu => self.parse_dongu(),
             Token::Fonksiyon => self.parse_fonksiyon(),
             Token::Dondur => self.parse_dondur(),
+            Token::Yukle => self.parse_yukle(),
             Token::Tanimlayici(_) => {
                 if self.peek_token == Token::Esittir {
                     self.parse_atama()
@@ -74,9 +85,12 @@ impl Parser {
 
     fn parse_degisken_tanimla(&mut self) -> Option<Komut> {
         self.next_token(); // skip 'değişken'
-        let ad = if let Token::Tanimlayici(ref s) = self.current_token { s.clone() } else { return None; };
+        let ad = if let Token::Tanimlayici(ref s) = self.current_token { s.clone() } else { 
+            self.error("Değişken ismi bekleniyordu");
+            return None; 
+        };
         self.next_token();
-        self.consume(Token::Esittir);
+        if !self.consume(Token::Esittir) { return None; }
         let deger = self.parse_ifade();
         if self.current_token == Token::NoktaliVirgul { self.next_token(); }
         Some(Komut::DegiskenTanimla { ad, deger })
@@ -84,9 +98,9 @@ impl Parser {
 
     fn parse_yazdir(&mut self) -> Option<Komut> {
         self.next_token(); // skip 'yazdır'
-        self.consume(Token::AcikParantez);
+        if !self.consume(Token::AcikParantez) { return None; }
         let ifade = self.parse_ifade();
-        self.consume(Token::KapaliParantez);
+        if !self.consume(Token::KapaliParantez) { return None; }
         if self.current_token == Token::NoktaliVirgul { self.next_token(); }
         Some(Komut::YazdirKomutu(ifade))
     }
@@ -94,12 +108,12 @@ impl Parser {
     fn parse_eger(&mut self) -> Option<Komut> {
         self.next_token(); // skip 'eğer'
         let kosul = self.parse_ifade();
-        self.consume(Token::AcikSuskun);
+        if !self.consume(Token::AcikSuskun) { return None; }
         let govde = self.parse_blok();
         let mut degilse_govde = None;
         if self.current_token == Token::Degilse {
             self.next_token(); // skip 'değilse'
-            self.consume(Token::AcikSuskun);
+            if !self.consume(Token::AcikSuskun) { return None; }
             degilse_govde = Some(self.parse_blok());
         }
         Some(Komut::EgerKomutu { kosul, govde, degilse_govde })
@@ -108,16 +122,19 @@ impl Parser {
     fn parse_dongu(&mut self) -> Option<Komut> {
         self.next_token(); // skip 'döngü'
         let kosul = self.parse_ifade();
-        self.consume(Token::AcikSuskun);
+        if !self.consume(Token::AcikSuskun) { return None; }
         let govde = self.parse_blok();
         Some(Komut::DonguKomutu { kosul, govde })
     }
 
     fn parse_fonksiyon(&mut self) -> Option<Komut> {
         self.next_token(); // skip 'fonksiyon'
-        let ad = if let Token::Tanimlayici(ref s) = self.current_token { s.clone() } else { return None; };
+        let ad = if let Token::Tanimlayici(ref s) = self.current_token { s.clone() } else { 
+            self.error("Fonksiyon ismi bekleniyordu");
+            return None; 
+        };
         self.next_token();
-        self.consume(Token::AcikParantez);
+        if !self.consume(Token::AcikParantez) { return None; }
         let mut parametreler = Vec::new();
         if self.current_token != Token::KapaliParantez {
             loop {
@@ -126,10 +143,23 @@ impl Parser {
                 if self.current_token == Token::Virgul { self.next_token(); } else { break; }
             }
         }
-        self.consume(Token::KapaliParantez);
-        self.consume(Token::AcikSuskun);
+        if !self.consume(Token::KapaliParantez) { return None; }
+        if !self.consume(Token::AcikSuskun) { return None; }
         let govde = self.parse_blok();
         Some(Komut::FonksiyonTanimla { ad, parametreler, govde })
+    }
+
+    fn parse_yukle(&mut self) -> Option<Komut> {
+        self.next_token(); // skip 'yükle'
+        if let Token::Metin(ref s) = self.current_token {
+            let yol = s.clone();
+            self.next_token();
+            if self.current_token == Token::NoktaliVirgul { self.next_token(); }
+            Some(Komut::YukleKomutu(yol))
+        } else {
+            self.error("Dosya yolu (metin) bekleniyordu");
+            None
+        }
     }
 
     fn parse_dondur(&mut self) -> Option<Komut> {
@@ -142,7 +172,7 @@ impl Parser {
     fn parse_atama(&mut self) -> Option<Komut> {
         let ad = if let Token::Tanimlayici(ref s) = self.current_token { s.clone() } else { return None; };
         self.next_token();
-        self.consume(Token::Esittir);
+        if !self.consume(Token::Esittir) { return None; }
         let deger = self.parse_ifade();
         if self.current_token == Token::NoktaliVirgul { self.next_token(); }
         Some(Komut::DegiskenTanimla { ad, deger })
@@ -260,7 +290,12 @@ impl Parser {
                 expr
             }
             Token::AcikKose => self.parse_liste(),
-            _ => { let v = Ifade::Metin(format!("Hata: {:?}", self.current_token)); self.next_token(); v }
+            _ => { 
+                self.error(&format!("Beklenmeyen bir ifadeyle karşılaşıldı: {:?}", self.current_token));
+                let v = Ifade::Metin("Hata".to_string()); 
+                self.next_token(); 
+                v 
+            }
         };
 
         // İndeks Erişimi (Örn: liste[0])
