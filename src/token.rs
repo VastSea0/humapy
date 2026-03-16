@@ -13,6 +13,7 @@ pub enum Token {
     Veya,
     Degil,
     Yukle,
+    Sinif,
 
     // Tanımlayıcılar ve Literaller
     Tanimlayici(String),
@@ -39,6 +40,7 @@ pub enum Token {
     KapaliKose,     // ]
     Virgul,         // ,
     NoktaliVirgul,  // ;
+    Nokta,          // .
 
     // Kontrol
     Hata(String),
