@@ -188,7 +188,7 @@ impl Parser {
 
     fn parse_esitlik(&mut self) -> Ifade {
         let mut sol = self.parse_karsilastirma();
-        while self.current_token == Token::EsitEsittir {
+        while matches!(self.current_token, Token::EsitEsittir | Token::EsitDegil) {
             let operator = self.current_token.clone();
             self.next_token();
             let sag = self.parse_karsilastirma();
@@ -199,7 +199,7 @@ impl Parser {
 
     fn parse_karsilastirma(&mut self) -> Ifade {
         let mut sol = self.parse_toplama();
-        while matches!(self.current_token, Token::Buyuktur | Token::Kucuktur) {
+        while matches!(self.current_token, Token::Buyuktur | Token::Kucuktur | Token::BuyukEsit | Token::KucukEsit) {
             let operator = self.current_token.clone();
             self.next_token();
             let sag = self.parse_toplama();
@@ -259,9 +259,40 @@ impl Parser {
                 self.consume(Token::KapaliParantez);
                 expr
             }
+            Token::AcikKose => self.parse_liste(),
             _ => { let v = Ifade::Metin(format!("Hata: {:?}", self.current_token)); self.next_token(); v }
         };
-        node
+
+        // İndeks Erişimi (Örn: liste[0])
+        let mut result = node;
+        while self.current_token == Token::AcikKose {
+            self.next_token(); // skip '['
+            let indeks = self.parse_ifade();
+            self.consume(Token::KapaliKose);
+            result = Ifade::ListeErisim {
+                liste: Box::new(result),
+                indeks: Box::new(indeks),
+            };
+        }
+
+        result
+    }
+
+    fn parse_liste(&mut self) -> Ifade {
+        self.next_token(); // skip '['
+        let mut elemanlar = Vec::new();
+        if self.current_token != Token::KapaliKose {
+            loop {
+                elemanlar.push(self.parse_ifade());
+                if self.current_token == Token::Virgul {
+                    self.next_token();
+                } else {
+                    break;
+                }
+            }
+        }
+        self.consume(Token::KapaliKose);
+        Ifade::Liste(elemanlar)
     }
 
     fn parse_cagri(&mut self) -> Ifade {

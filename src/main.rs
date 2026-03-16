@@ -7,7 +7,7 @@ mod interpreter;
 use lexer::Lexer;
 use parser::Parser;
 use interpreter::Yorumlayici;
-use std::io::{self, Write, Read};
+use std::io::{self, Write};
 use std::fs;
 use std::env;
 

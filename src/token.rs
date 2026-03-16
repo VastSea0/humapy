@@ -26,11 +26,16 @@ pub enum Token {
     Bolnu,          // /
     Buyuktur,       // >
     Kucuktur,       // <
+    BuyukEsit,      // >=
+    KucukEsit,      // <=
     EsitEsittir,    // ==
+    EsitDegil,      // !=
     AcikParantez,   // (
     KapaliParantez, // )
     AcikSuskun,     // {
     KapaliSuskun,   // }
+    AcikKose,       // [
+    KapaliKose,     // ]
     Virgul,         // ,
     NoktaliVirgul,  // ;
 
