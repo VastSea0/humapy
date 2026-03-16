@@ -51,9 +51,13 @@ impl Parser {
             Token::Yazdir => self.parse_yazdir(),
             Token::Eger => self.parse_eger(),
             Token::Dongu => self.parse_dongu(),
+            Token::Fonksiyon => self.parse_fonksiyon(),
+            Token::Dondur => self.parse_dondur(),
             Token::Tanimlayici(_) => {
                 if self.peek_token == Token::Esittir {
                     self.parse_atama()
+                } else if self.peek_token == Token::AcikParantez {
+                    Some(Komut::IfadeKomutu(self.parse_cagri()))
                 } else {
                     Some(Komut::IfadeKomutu(self.parse_ifade()))
                 }
@@ -150,6 +154,71 @@ impl Parser {
         Some(Komut::DegiskenTanimla { ad, deger })
     }
 
+    fn parse_fonksiyon(&mut self) -> Option<Komut> {
+        self.next_token(); // skip 'fonksiyon'
+        
+        let ad = if let Token::Tanimlayici(ref s) = self.current_token {
+            s.clone()
+        } else {
+            return None;
+        };
+        self.next_token();
+
+        self.consume(Token::AcikParantez);
+        let mut parametreler = Vec::new();
+        if self.current_token != Token::KapaliParantez {
+            loop {
+                if let Token::Tanimlayici(ref s) = self.current_token {
+                    parametreler.push(s.clone());
+                }
+                self.next_token();
+                if self.current_token == Token::Virgul {
+                    self.next_token();
+                } else {
+                    break;
+                }
+            }
+        }
+        self.consume(Token::KapaliParantez);
+        self.consume(Token::AcikSuskun);
+        let govde = self.parse_blok();
+
+        Some(Komut::FonksiyonTanimla { ad, parametreler, govde })
+    }
+
+    fn parse_dondur(&mut self) -> Option<Komut> {
+        self.next_token(); // skip 'döndür'
+        let ifade = self.parse_ifade();
+        if self.current_token == Token::NoktaliVirgul {
+            self.next_token();
+        }
+        Some(Komut::DondurKomutu(ifade))
+    }
+
+    fn parse_cagri(&mut self) -> Ifade {
+        let ad = if let Token::Tanimlayici(ref s) = self.current_token {
+            s.clone()
+        } else {
+            "".to_string()
+        };
+        self.next_token();
+        self.consume(Token::AcikParantez);
+        
+        let mut argumanlar = Vec::new();
+        if self.current_token != Token::KapaliParantez {
+            loop {
+                argumanlar.push(self.parse_ifade());
+                if self.current_token == Token::Virgul {
+                    self.next_token();
+                } else {
+                    break;
+                }
+            }
+        }
+        self.consume(Token::KapaliParantez);
+        Ifade::Cagri { fonksiyon: ad, argumanlar }
+    }
+
     fn parse_blok(&mut self) -> Vec<Komut> {
         let mut komutlar = Vec::new();
         while self.current_token != Token::KapaliSuskun && self.current_token != Token::Son {
@@ -180,12 +249,31 @@ impl Parser {
 
     fn parse_birincil(&mut self) -> Ifade {
         let node = match self.current_token {
-            Token::Sayi(n) => Ifade::Sayi(n),
-            Token::Metin(ref s) => Ifade::Metin(s.clone()),
-            Token::Tanimlayici(ref s) => Ifade::Degisken(s.clone()),
-            _ => Ifade::Metin(format!("Hata: {:?}", self.current_token)),
+            Token::Sayi(n) => {
+                let val = Ifade::Sayi(n);
+                self.next_token();
+                val
+            }
+            Token::Metin(ref s) => {
+                let val = Ifade::Metin(s.clone());
+                self.next_token();
+                val
+            }
+            Token::Tanimlayici(ref s) => {
+                if self.peek_token == Token::AcikParantez {
+                    self.parse_cagri()
+                } else {
+                    let val = Ifade::Degisken(s.clone());
+                    self.next_token();
+                    val
+                }
+            }
+            _ => {
+                let val = Ifade::Metin(format!("Hata: {:?}", self.current_token));
+                self.next_token();
+                val
+            }
         };
-        self.next_token();
         node
     }
 }

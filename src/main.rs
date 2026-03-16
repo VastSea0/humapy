@@ -14,12 +14,18 @@ fn main() {
     println!("---------------------");
     
     let kod = r#"
-        değişken sayaç = 1;
-        döngü sayaç < 6 {
-            yazdır("Sayaç şu an: " + sayaç);
-            sayaç = sayaç + 1;
+        fonksiyon topla(a, b) {
+            döndür a + b;
         }
-        yazdır("Döngü bitti!");
+
+        değişken sonuç = topla(10, 20);
+        yazdır("10 + 20 = " + sonuç);
+
+        fonksiyon hoşgeldin(isim) {
+            yazdır("Merhaba " + isim + "!");
+        }
+
+        hoşgeldin("Hüma Kullanıcısı");
     "#;
 
     let tarayici = Lexer::new(kod);
