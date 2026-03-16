@@ -1,0 +1,155 @@
+use crate::token::Token;
+use crate::lexer::Lexer;
+use crate::ast::{Ifade, Komut};
+
+pub struct Parser {
+    lexer: Lexer,
+    current_token: Token,
+    peek_token: Token,
+}
+
+impl Parser {
+    pub fn new(mut lexer: Lexer) -> Self {
+        let current_token = lexer.next_token();
+        let peek_token = lexer.next_token();
+        Self {
+            lexer,
+            current_token,
+            peek_token,
+        }
+    }
+
+    fn next_token(&mut self) {
+        self.current_token = self.peek_token.clone();
+        self.peek_token = self.lexer.next_token();
+    }
+
+    fn consume(&mut self, expected: Token) {
+        if self.current_token == expected {
+            self.next_token();
+        } else {
+            // Basit hata yönetimi
+        }
+    }
+
+    pub fn parse_program(&mut self) -> Vec<Komut> {
+        let mut komutlar = Vec::new();
+        while self.current_token != Token::Son {
+            if let Some(komut) = self.parse_komut() {
+                komutlar.push(komut);
+            }
+            if self.current_token != Token::Son && 
+               !matches!(self.current_token, Token::Degisken | Token::Yazdir | Token::Eger) {
+                self.next_token();
+            }
+        }
+        komutlar
+    }
+
+    fn parse_komut(&mut self) -> Option<Komut> {
+        match self.current_token {
+            Token::Degisken => self.parse_degisken_tanimla(),
+            Token::Yazdir => self.parse_yazdir(),
+            Token::Eger => self.parse_eger(),
+            Token::NoktaliVirgul => {
+                self.next_token();
+                None
+            }
+            _ => {
+                let expr = self.parse_ifade();
+                Some(Komut::IfadeKomutu(expr))
+            }
+        }
+    }
+
+    fn parse_degisken_tanimla(&mut self) -> Option<Komut> {
+        self.next_token(); // skip 'değişken'
+        
+        let ad = if let Token::Tanimlayici(ref s) = self.current_token {
+            s.clone()
+        } else {
+            return None;
+        };
+
+        self.next_token(); // skip ad
+        self.consume(Token::Esittir);
+
+        let deger = self.parse_ifade();
+
+        if self.current_token == Token::NoktaliVirgul {
+            self.next_token();
+        }
+
+        Some(Komut::DegiskenTanimla { ad, deger })
+    }
+
+    fn parse_yazdir(&mut self) -> Option<Komut> {
+        self.next_token(); // skip 'yazdır'
+        self.consume(Token::AcikParantez);
+        let ifade = self.parse_ifade();
+        self.consume(Token::KapaliParantez);
+        
+        if self.current_token == Token::NoktaliVirgul {
+            self.next_token();
+        }
+        
+        Some(Komut::YazdirKomutu(ifade))
+    }
+
+    fn parse_eger(&mut self) -> Option<Komut> {
+        self.next_token(); // skip 'eğer'
+        let kosul = self.parse_ifade();
+        
+        self.consume(Token::AcikSuskun);
+        let govde = self.parse_blok();
+        // parse_blok KapaliSuskun'u tüketir
+        
+        let mut degilse_govde = None;
+        if self.current_token == Token::Degilse {
+            self.next_token(); // skip 'değilse'
+            self.consume(Token::AcikSuskun);
+            degilse_govde = Some(self.parse_blok());
+        }
+        
+        Some(Komut::EgerKomutu { kosul, govde, degilse_govde })
+    }
+
+    fn parse_blok(&mut self) -> Vec<Komut> {
+        let mut komutlar = Vec::new();
+        while self.current_token != Token::KapaliSuskun && self.current_token != Token::Son {
+            if let Some(komut) = self.parse_komut() {
+                komutlar.push(komut);
+            }
+            // Komut sonrası ilerlemeyi parse_komut veya parser_program hallediyor
+        }
+        self.consume(Token::KapaliSuskun);
+        komutlar
+    }
+
+    fn parse_ifade(&mut self) -> Ifade {
+        let mut sol = self.parse_birincil();
+        
+        while matches!(self.current_token, Token::Buyuktur | Token::Kucuktur | Token::EsitEsittir | Token::Arti | Token::Eksi) {
+            let operator = self.current_token.clone();
+            self.next_token();
+            let sag = self.parse_birincil();
+            sol = Ifade::IkiliIslem {
+                sol: Box::new(sol),
+                operator,
+                sag: Box::new(sag),
+            };
+        }
+        sol
+    }
+
+    fn parse_birincil(&mut self) -> Ifade {
+        let node = match self.current_token {
+            Token::Sayi(n) => Ifade::Sayi(n),
+            Token::Metin(ref s) => Ifade::Metin(s.clone()),
+            Token::Tanimlayici(ref s) => Ifade::Degisken(s.clone()),
+            _ => Ifade::Metin(format!("Hata: {:?}", self.current_token)),
+        };
+        self.next_token();
+        node
+    }
+}
