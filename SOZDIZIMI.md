@@ -86,8 +86,8 @@ sınıf Araba {
     }
 }
 
-değişken myAraba = Araba();
-myAraba.sür(100);
+değişken Arabam = Araba();
+Arabam.sür(100);
 ```
 
 ## 6. Dahili Fonksiyonlar
