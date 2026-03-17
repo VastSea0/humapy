@@ -1,6 +1,5 @@
 /target
 *.hbc
-*.rs
 !lib/*.hb
 !examples/*.hb
 !tests/*.hb
