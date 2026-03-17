@@ -1,1 +1,13 @@
 /target
+*.hbc
+*.rs
+!lib/*.hb
+!examples/*.hb
+!tests/*.hb
+program
+uygulama
+merhaba_dunya
+*.png
+*.jpg
+*.log
+*.txt
