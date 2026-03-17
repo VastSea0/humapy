@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hüma IDE</title>
+  <meta name="description" content="Hüma Programlama Dili için modern, tarayıcı tabanlı entegre geliştirme ortamı." />
+
+  <!-- CodeMirror -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/one-dark.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/mode/simple.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/comment/comment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-0: #0d0e11;
+      --bg-1: #13151a;
+      --bg-2: #1a1d24;
+      --bg-3: #22262f;
+      --bg-4: #2a2f3a;
+      --border: #2e3340;
+      --accent: #7c6df3;
+      --accent-glow: rgba(124,109,243,0.25);
+      --accent2: #4ecdc4;
+      --success: #3ddc97;
+      --error: #ff6b6b;
+      --warning: #ffd93d;
+      --text-1: #e8eaf0;
+      --text-2: #9ba3b8;
+      --text-3: #5a6278;
+      --font-ui: 'Inter', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+      --radius: 8px;
+      --sidebar-w: 220px;
+      --topbar-h: 48px;
+      --bottombar-h: 200px;
+      --transition: 0.18s ease;
+    }
+
+    html, body { height: 100%; overflow: hidden; background: var(--bg-0); color: var(--text-1); font-family: var(--font-ui); }
+
+    /* ─── TOP BAR ─── */
+    #topbar {
+      position: fixed; top: 0; left: 0; right: 0; height: var(--topbar-h);
+      background: var(--bg-1); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px; padding: 0 16px;
+      z-index: 100; backdrop-filter: blur(8px);
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 17px; font-weight: 700; letter-spacing: -0.3px;
+      margin-right: 8px;
+    }
+    .logo-icon { font-size: 22px; }
+    .logo span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+    .topbar-sep { width: 1px; height: 24px; background: var(--border); }
+
+    /* Run button */
+    #btn-run {
+      display: flex; align-items: center; gap: 7px;
+      padding: 7px 18px; border-radius: 6px; border: none; cursor: pointer;
+      background: linear-gradient(135deg, var(--accent) 0%, #a78bfa 100%);
+      color: #fff; font-family: var(--font-ui); font-size: 13.5px; font-weight: 600;
+      box-shadow: 0 0 18px var(--accent-glow);
+      transition: all var(--transition);
+    }
+    #btn-run:hover { transform: translateY(-1px); box-shadow: 0 4px 24px var(--accent-glow); }
+    #btn-run:active { transform: translateY(0); }
+    #btn-run.running { opacity: 0.7; cursor: not-allowed; }
+    #btn-run svg { transition: transform 0.3s; }
+    #btn-run.running svg { animation: spin 0.7s linear infinite; }
+
+    /* Clear / Save */
+    .topbar-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); cursor: pointer;
+      background: var(--bg-3); color: var(--text-2); font-family: var(--font-ui); font-size: 13px; font-weight: 500;
+      transition: all var(--transition);
+    }
+    .topbar-btn:hover { background: var(--bg-4); color: var(--text-1); border-color: var(--accent); }
+
+    #status-pill {
+      margin-left: auto; padding: 4px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 500; background: var(--bg-3); color: var(--text-3);
+      transition: all 0.3s;
+    }
+    #status-pill.ok { background: rgba(61,220,151,0.12); color: var(--success); }
+    #status-pill.err { background: rgba(255,107,107,0.12); color: var(--error); }
+    #status-pill.running { background: rgba(124,109,243,0.12); color: var(--accent); }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── MAIN LAYOUT ─── */
+    #layout {
+      display: flex; position: fixed;
+      top: var(--topbar-h); left: 0; right: 0;
+      bottom: var(--bottombar-h);
+    }
+
+    /* ─── SIDEBAR ─── */
+    #sidebar {
+      width: var(--sidebar-w); flex-shrink: 0;
+      background: var(--bg-1); border-right: 1px solid var(--border);
+      overflow-y: auto; display: flex; flex-direction: column;
+    }
+    .sidebar-section { padding: 10px 0; }
+    .sidebar-title {
+      font-size: 10.5px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+      color: var(--text-3); padding: 6px 14px 4px;
+    }
+    .sidebar-file {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 14px; cursor: pointer; font-size: 12.5px; color: var(--text-2);
+      transition: background var(--transition), color var(--transition);
+      border-radius: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .sidebar-file:hover { background: var(--bg-3); color: var(--text-1); }
+    .sidebar-file.active { background: var(--accent-glow); color: var(--accent); border-right: 2px solid var(--accent); }
+    .file-icon { font-size: 13px; }
+    .sidebar-sep { height: 1px; background: var(--border); margin: 4px 10px; }
+
+    /* ─── EDITOR ─── */
+    #editor-wrap {
+      flex: 1; display: flex; flex-direction: column; overflow: hidden;
+    }
+    #editor-tabs {
+      display: flex; align-items: center; gap: 0;
+      background: var(--bg-2); border-bottom: 1px solid var(--border);
+      padding: 0 8px; height: 36px;
+    }
+    .editor-tab {
+      display: flex; align-items: center; gap: 6px;
+      padding: 0 14px; height: 36px; font-size: 12.5px; color: var(--text-2);
+      cursor: pointer; border-bottom: 2px solid transparent; transition: all var(--transition);
+    }
+    .editor-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .editor-tab .tab-modified { width: 7px; height: 7px; border-radius: 50%; background: var(--warning); display: none; }
+    .editor-tab.modified .tab-modified { display: block; }
+    #tab-filename-display { font-family: var(--font-code); font-size: 12px; }
+
+    #cm-wrap { flex: 1; overflow: auto; }
+
+    /* CodeMirror overrides */
+    .CodeMirror {
+      height: 100% !important;
+      font-family: var(--font-code) !important;
+      font-size: 14px !important;
+      background: var(--bg-2) !important;
+      color: var(--text-1) !important;
+      line-height: 1.65 !important;
+    }
+    .CodeMirror-scroll { padding-bottom: 80px; }
+    .CodeMirror-gutters { background: var(--bg-2) !important; border-right: 1px solid var(--border) !important; }
+    .CodeMirror-linenumber { color: var(--text-3) !important; }
+    .CodeMirror-activeline-background { background: rgba(255,255,255,0.03) !important; }
+    .CodeMirror-cursor { border-left: 2px solid var(--accent) !important; }
+    .CodeMirror-selected { background: rgba(124,109,243,0.18) !important; }
+    .CodeMirror-matchingbracket { color: var(--accent2) !important; outline: 1px solid var(--accent2); }
+
+    /* Hüma syntax coloring via simple overlay */
+    .cm-keyword    { color: #c792ea !important; font-weight: 600; }
+    .cm-builtin    { color: #82aaff !important; }
+    .cm-string     { color: #c3e88d !important; }
+    .cm-number     { color: #f78c6c !important; }
+    .cm-comment    { color: #546e7a !important; font-style: italic; }
+    .cm-def        { color: var(--accent2) !important; }
+    .cm-variable   { color: var(--text-1) !important; }
+    .cm-operator   { color: #89ddff !important; }
+    .cm-punctuation { color: #89ddff !important; }
+
+    /* ─── BOTTOM PANEL ─── */
+    #bottom-panel {
+      position: fixed; left: 0; right: 0; bottom: 0; height: var(--bottombar-h);
+      background: var(--bg-1); border-top: 1px solid var(--border);
+      display: flex; flex-direction: column;
+    }
+    #panel-tabs {
+      display: flex; align-items: center; gap: 0; padding: 0 8px;
+      border-bottom: 1px solid var(--border); height: 34px;
+    }
+    .panel-tab {
+      padding: 0 14px; height: 34px; display: flex; align-items: center;
+      font-size: 12px; font-weight: 500; color: var(--text-3); cursor: pointer;
+      border-bottom: 2px solid transparent; transition: all var(--transition);
+    }
+    .panel-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    #clear-output-btn {
+      margin-left: auto; font-size: 11px; color: var(--text-3); cursor: pointer;
+      padding: 3px 10px; border-radius: 4px; transition: all var(--transition);
+      border: 1px solid transparent;
+    }
+    #clear-output-btn:hover { color: var(--error); border-color: var(--error); }
+
+    #output-wrap {
+      flex: 1; overflow-y: auto; padding: 10px 16px;
+      font-family: var(--font-code); font-size: 13px; line-height: 1.7;
+    }
+    .out-system { color: var(--text-3); font-size: 12px; }
+    .out-stdout { color: #e0e6ff; }
+    .out-stderr { color: var(--error); }
+    .out-success { color: var(--success); }
+    .out-timing { color: var(--text-3); font-size: 11.5px; }
+    .out-separator { border: none; border-top: 1px solid var(--border); margin: 6px 0; }
+
+    /* Resize handle */
+    #resize-handle {
+      height: 4px; cursor: ns-resize; background: transparent;
+      transition: background var(--transition);
+      position: fixed; left: 0; right: 0; bottom: var(--bottombar-h);
+    }
+    #resize-handle:hover { background: var(--accent); }
+
+    /* Save modal */
+    #save-modal {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.55); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    #save-modal.open { display: flex; }
+    .modal-box {
+      background: var(--bg-2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 28px; width: 380px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+    }
+    .modal-box h3 { font-size: 15px; margin-bottom: 16px; color: var(--text-1); }
+    .modal-input {
+      width: 100%; padding: 9px 12px; background: var(--bg-3); border: 1px solid var(--border);
+      border-radius: 6px; color: var(--text-1); font-family: var(--font-code); font-size: 13px;
+      outline: none; transition: border var(--transition);
+    }
+    .modal-input:focus { border-color: var(--accent); }
+    .modal-actions { display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end; }
+    .modal-btn {
+      padding: 7px 18px; border-radius: 6px; border: 1px solid var(--border); cursor: pointer;
+      font-family: var(--font-ui); font-size: 13px; font-weight: 500;
+      background: var(--bg-3); color: var(--text-2); transition: all var(--transition);
+    }
+    .modal-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 0 12px var(--accent-glow); }
+    .modal-btn:hover { background: var(--bg-4); color: var(--text-1); }
+    .modal-btn.primary:hover { filter: brightness(1.1); }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--bg-4); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
+
+    /* Tooltip */
+    [data-tip] { position: relative; }
+    [data-tip]::after {
+      content: attr(data-tip); position: absolute; bottom: calc(100% + 6px); left: 50%;
+      transform: translateX(-50%); background: var(--bg-4); color: var(--text-2);
+      font-size: 11px; white-space: nowrap; padding: 4px 8px; border-radius: 4px;
+      pointer-events: none; opacity: 0; transition: opacity 0.15s;
+    }
+    [data-tip]:hover::after { opacity: 1; }
+
+    /* Fade-in animation for output lines */
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .out-line { animation: slideIn 0.15s ease; }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div class="logo">
+    <span class="logo-icon">🐦</span>
+    <span>Hüma IDE</span>
+  </div>
+  <div class="topbar-sep"></div>
+
+  <button id="btn-run" onclick="runCode()" data-tip="Çalıştır (Ctrl+Enter)">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+    Çalıştır
+  </button>
+
+  <button class="topbar-btn" onclick="openSaveModal()" data-tip="Kaydet">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+    Kaydet
+  </button>
+
+  <button class="topbar-btn" onclick="newFile()" data-tip="Yeni dosya">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+    Yeni
+  </button>
+
+  <div id="status-pill">Hazır</div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div id="layout">
+
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">Örnekler</div>
+      <div id="examples-list">
+        <div class="sidebar-file" style="color:var(--text-3);font-size:11px;padding:4px 14px;">Yükleniyor...</div>
+      </div>
+    </div>
+    <div class="sidebar-sep"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Kütüphaneler</div>
+      <div id="libs-list">
+        <div class="sidebar-file" style="color:var(--text-3);font-size:11px;padding:4px 14px;">Yükleniyor...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDITOR -->
+  <div id="editor-wrap">
+    <div id="editor-tabs">
+      <div class="editor-tab active" id="main-tab">
+        <span id="tab-filename-display">yeni_program.hb</span>
+        <span class="tab-modified"></span>
+      </div>
+    </div>
+    <div id="cm-wrap">
+      <textarea id="editor"></textarea>
+    </div>
+  </div>
+
+</div>
+
+<!-- RESIZE HANDLE -->
+<div id="resize-handle"></div>
+
+<!-- BOTTOM PANEL -->
+<div id="bottom-panel">
+  <div id="panel-tabs">
+    <div class="panel-tab active">⬛ Terminal</div>
+    <div id="clear-output-btn" onclick="clearOutput()" title="Temizle">✕ Temizle</div>
+  </div>
+  <div id="output-wrap">
+    <div class="out-line out-system">// Hüma IDE — Ctrl+Enter ile çalıştır</div>
+  </div>
+</div>
+
+<!-- SAVE MODAL -->
+<div id="save-modal">
+  <div class="modal-box">
+    <h3>💾 Dosya Kaydet</h3>
+    <input class="modal-input" id="save-filename" type="text" placeholder="dosya_adı.hb" />
+    <div class="modal-actions">
+      <button class="modal-btn" onclick="closeSaveModal()">İptal</button>
+      <button class="modal-btn primary" onclick="saveFile()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Global variables ──────────────────────────────────────────────────────
+let editor;
+let currentFilename = 'yeni_program.hb';
+let isModified = false;
+
+// ── Hüma syntax mode for CodeMirror ──────────────────────────────────────
+CodeMirror.defineSimpleMode('huma', {
+  start: [
+    { regex: /\/\/.*/, token: 'comment' },
+    { regex: /"(?:[^\\]|\\.)*?(?:"|$)/, token: 'string' },
+    { regex: /\b(?:yazdır|yazdir|eğer|eger|değilse|degilse|döngü|dongu|döndür|dondur|fonksiyon|değişken|degisken|yükle|yukle|sınıf|sinif|değil|degil|ve|veya|yada)\b/, token: 'keyword' },
+    { regex: /\b(?:uzunluk|oku|uyut|zaman|listeye_ekle|karekök|rastgele|dosya_oku|dosya_yaz|tipi|argümanlar)\b/, token: 'builtin' },
+    { regex: /\b\d+(?:\.\d+)?\b/, token: 'number' },
+    { regex: /[=!<>]=?|[+\-*\/%.]/,  token: 'operator' },
+    { regex: /[{}\[\]().,;]/, token: 'punctuation' },
+    { regex: /[a-zA-ZğüşıöçĞÜŞİÖÇ_][a-zA-Z0-9ğüşıöçĞÜŞİÖÇ_]*/, token: 'variable' },
+  ],
+  meta: { lineComment: '//' }
+});
+
+// ── CodeMirror init ───────────────────────────────────────────────────────
+editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+  mode: 'huma',
+  theme: 'one-dark',
+  lineNumbers: true,
+  autoCloseBrackets: true,
+  matchBrackets: true,
+  styleActiveLine: true,
+  tabSize: 2,
+  indentWithTabs: false,
+  extraKeys: {
+    'Ctrl-Enter': runCode,
+    'Ctrl-S': openSaveModal,
+  }
+});
+
+const DEFAULT_CODE = `// Merhaba Hüma!
+yazdır("Merhaba, Dünya!");
+
+// Değişken tanımla
+değişken sayı = 42;
+yazdır("Sayı: " + sayı);
+
+// Fonksiyon örneği
+fonksiyon topla(a, b) {
+  döndür a + b;
+}
+
+yazdır("5 + 3 = " + topla(5, 3));
+`;
+
+editor.setValue(DEFAULT_CODE);
+editor.clearHistory();
+
+editor.on('change', () => {
+  if (!isModified) {
+    isModified = true;
+    document.getElementById('main-tab').classList.add('modified');
+  }
+});
+
+// ── Run code ─────────────────────────────────────────────────────────────
+async function runCode() {
+  const code = editor.getValue();
+  const btn = document.getElementById('btn-run');
+  const pill = document.getElementById('status-pill');
+
+  btn.classList.add('running');
+  btn.disabled = true;
+  pill.className = 'running';
+  pill.textContent = 'Çalışıyor…';
+
+  appendOutput('separator');
+  appendOutput('system', `▶ Çalıştırılıyor… (${new Date().toLocaleTimeString('tr-TR')})`);
+
+  try {
+    const res = await fetch('/api/run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code })
+    });
+    const data = await res.json();
+
+    if (data.output) {
+      data.output.split('\n').forEach(line => {
+        if (line !== '') appendOutput('stdout', line);
+      });
+    }
+    if (data.error) {
+      data.error.split('\n').forEach(line => {
+        if (line !== '') appendOutput('stderr', line);
+      });
+    }
+
+    const hasError = data.error && data.error.trim();
+    appendOutput('timing', `⏱ ${data.elapsed}ms — ${hasError ? '❌ Hata' : '✅ Başarıyla tamamlandı'}`);
+
+    if (hasError) {
+      pill.className = 'err'; pill.textContent = 'Hata';
+    } else {
+      pill.className = 'ok'; pill.textContent = 'Başarılı';
+    }
+  } catch (e) {
+    appendOutput('stderr', 'Sunucu hatası: ' + e.message);
+    pill.className = 'err'; pill.textContent = 'Bağlantı hatası';
+  }
+
+  btn.classList.remove('running');
+  btn.disabled = false;
+  setTimeout(() => { pill.className = ''; pill.textContent = 'Hazır'; }, 4000);
+}
+
+// ── Output helpers ────────────────────────────────────────────────────────
+function appendOutput(type, text) {
+  const wrap = document.getElementById('output-wrap');
+  if (type === 'separator') {
+    const hr = document.createElement('hr');
+    hr.className = 'out-separator';
+    wrap.appendChild(hr);
+  } else {
+    const div = document.createElement('div');
+    div.className = `out-line out-${type}`;
+    div.textContent = text;
+    wrap.appendChild(div);
+  }
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function clearOutput() {
+  document.getElementById('output-wrap').innerHTML =
+    '<div class="out-line out-system">// Terminal temizlendi</div>';
+}
+
+// ── Sidebar ───────────────────────────────────────────────────────────────
+async function loadSidebar() {
+  // Examples
+  try {
+    const ex = await fetch('/api/examples').then(r => r.json());
+    const el = document.getElementById('examples-list');
+    el.innerHTML = '';
+    if (ex.length === 0) {
+      el.innerHTML = '<div class="sidebar-file" style="color:var(--text-3);font-size:11px">Bulunamadı</div>';
+    }
+    ex.forEach(f => {
+      const div = document.createElement('div');
+      div.className = 'sidebar-file';
+      div.innerHTML = `<span class="file-icon">📄</span>${f.name}`;
+      div.title = f.name;
+      div.onclick = () => loadFile(f.name, f.content, div, 'ex');
+      el.appendChild(div);
+    });
+  } catch(e) {}
+
+  // Libs
+  try {
+    const libs = await fetch('/api/libs').then(r => r.json());
+    const ll = document.getElementById('libs-list');
+    ll.innerHTML = '';
+    if (libs.length === 0) {
+      ll.innerHTML = '<div class="sidebar-file" style="color:var(--text-3);font-size:11px">Bulunamadı</div>';
+    }
+    libs.forEach(f => {
+      const div = document.createElement('div');
+      div.className = 'sidebar-file';
+      div.innerHTML = `<span class="file-icon">📦</span>${f.name}`;
+      div.title = f.name;
+      div.onclick = () => loadFile(f.name, f.content, div, 'lib');
+      ll.appendChild(div);
+    });
+  } catch(e) {}
+}
+
+let activeFileEl = null;
+
+function loadFile(name, content, el, type) {
+  if (activeFileEl) activeFileEl.classList.remove('active');
+  activeFileEl = el;
+  el.classList.add('active');
+
+  editor.setValue(content);
+  editor.clearHistory();
+  currentFilename = name;
+  document.getElementById('tab-filename-display').textContent = name;
+  document.getElementById('main-tab').classList.remove('modified');
+  isModified = false;
+
+  appendOutput('system', `📂 Açıldı: ${name}`);
+  editor.focus();
+}
+
+// ── New file ──────────────────────────────────────────────────────────────
+function newFile() {
+  if (activeFileEl) activeFileEl.classList.remove('active');
+  activeFileEl = null;
+  editor.setValue('// Yeni Hüma programı\n\n');
+  editor.clearHistory();
+  currentFilename = 'yeni_program.hb';
+  document.getElementById('tab-filename-display').textContent = currentFilename;
+  document.getElementById('main-tab').classList.remove('modified');
+  isModified = false;
+  editor.focus();
+}
+
+// ── Save modal ────────────────────────────────────────────────────────────
+function openSaveModal() {
+  document.getElementById('save-filename').value = currentFilename;
+  document.getElementById('save-modal').classList.add('open');
+  setTimeout(() => document.getElementById('save-filename').focus(), 50);
+}
+function closeSaveModal() {
+  document.getElementById('save-modal').classList.remove('open');
+}
+async function saveFile() {
+  const filename = document.getElementById('save-filename').value.trim();
+  if (!filename) return;
+  closeSaveModal();
+
+  const res = await fetch('/api/save', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ filename, content: editor.getValue() })
+  }).then(r => r.json());
+
+  if (res.ok) {
+    currentFilename = filename.endsWith('.hb') ? filename : filename + '.hb';
+    document.getElementById('tab-filename-display').textContent = currentFilename;
+    document.getElementById('main-tab').classList.remove('modified');
+    isModified = false;
+    appendOutput('success', `✅ Kaydedildi: ${res.path}`);
+    loadSidebar(); // refresh
+  } else {
+    appendOutput('stderr', '❌ Kaydetme hatası: ' + (res.error || 'Bilinmeyen'));
+  }
+}
+
+// Close modal on backdrop click
+document.getElementById('save-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('save-modal')) closeSaveModal();
+});
+
+// ── Resize bottom panel ───────────────────────────────────────────────────
+const handle = document.getElementById('resize-handle');
+let isResizing = false;
+let startY, startH;
+
+handle.addEventListener('mousedown', e => {
+  isResizing = true;
+  startY = e.clientY;ş
+  startH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--bottombar-h'));
+  document.body.style.userSelect = 'none';
+});
+
+document.addEventListener('mousemove', e => {
+  if (!isResizing) return;
+  const delta = startY - e.clientY;
+  const newH = Math.max(80, Math.min(window.innerHeight - 200, startH + delta));
+  document.documentElement.style.setProperty('--bottombar-h', newH + 'px');
+});
+
+document.addEventListener('mouseup', () => {
+  isResizing = false;
+  document.body.style.userSelect = '';
+});
+
+// ── Keyboard shortcuts ────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); openSaveModal(); }
+  if (e.key === 'Escape') closeSaveModal();
+});
+
+// ── Init ──────────────────────────────────────────────────────────────────
+loadSidebar();
+editor.focus();
+</script>
+</body>
+</html>
