@@ -12,6 +12,8 @@ Hüma is a high-performance, safe, and intuitive programming language that combi
 - **Hybrid Execution:** Choose between direct interpretation for development and bytecode execution for performance.
 - **Standalone Compilation:** Compile your code into native binary executables with zero external dependencies.
 - **Rich Standard Library:** Built-in support for mathematics, terminal coloring, time management, file I/O, and advanced list manipulation.
+- **Flexible Syntax:** Choose between accented (yazdır, eğer) or plain ASCII (yazdir, eger) keywords for convenience.
+- **Modern IDE Support:** Full-featured IDEs available in both Native (GTK) and Web/Tauri flavors.
 - **Safety First:** Leverages Rust's memory safety guarantees.
 
 ---
@@ -79,6 +81,32 @@ Generate a native executable from your Hüma script:
 cargo run -- --inşa-et script.hb my_app
 rustc my_app.rs
 ./my_app
+```
+
+---
+
+## 🎨 Hüma IDE
+
+Two professional desktop editor options are available for Hüma development:
+
+### 1. Native IDE
+
+A high-performance, GTK-based native Linux editor with a minimal footprint.
+
+```bash
+cargo run --bin ide_native
+```
+
+### 2. Modern Web IDE (Tauri)
+
+A feature-rich desktop experience powered by Tauri (syntax highlighting, file management, etc.).
+
+```bash
+# As a web server
+cd ide && npm start
+
+# Or as a Tauri desktop app
+npx tauri dev
 ```
 
 ---

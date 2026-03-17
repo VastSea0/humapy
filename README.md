@@ -10,6 +10,8 @@ Hüma, modern yazılım geliştirme prensiplerini Türkçe doğal dil yapısıyl
 - **Hibrit Çalışma Modu:** İsterseniz doğrudan yorumlayın, isterseniz bytecode'a derleyip sanal makinede (VM) koşturun.
 - **Bağımsız İkili Dosyalar (Standalone):** Kodlarınızı derleyip herhangi bir bağımlılık olmadan çalışabilen native binary'lere dönüştürebilirsiniz.
 - **Zengin Sistem Kütüphaneleri:** Matematik, terminal renklendirme, zaman yönetimi ve liste araçları kutudan çıktığı gibi hazırdır.
+- **Esnek Dil Yapısı:** İster aksanlı (yazdır, eğer), ister aksansız (yazdir, eger) sözdizimini kullanabilirsiniz.
+- **Modern IDE Desteği:** Kod yazmanız için hem Native (GTK) hem de Web tabanlı modern editörler sunulur.
 
 ---
 
@@ -64,6 +66,32 @@ Hüma kodunuzu standalone bir Rust dosyasına dönüştürüp native binary olar
 cargo run -- --inşa-et program.hb uygulama
 rustc uygulama.rs
 ./uygulama
+```
+
+---
+
+## 🎨 Hüma IDE
+
+Hüma ile kod geliştirmek için iki farklı masaüstü editör seçeneği mevcuttur:
+
+### 1. Yerel (Native) IDE
+
+Linux üzerinde en yüksek performansla çalışan, GTK tabanlı hafif bir editördür.
+
+```bash
+cargo run --bin ide_native
+```
+
+### 2. Modern Web IDE (Tauri)
+
+Zengin özellikli (syntax highlighting, örnek listesi vb.) bir deneyim için Tauri tabanlı masaüstü uygulamasını kullanabilirsiniz.
+
+```bash
+# Web sunucusu olarak
+cd ide && npm start
+
+# Veya Tauri masaüstü uygulaması olarak
+npx tauri dev
 ```
 
 ---
