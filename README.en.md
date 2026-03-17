@@ -16,6 +16,18 @@ Hüma is a high-performance, safe, and intuitive programming language that combi
 
 ---
 
+## 🏗️ Technical Architecture
+
+Hüma has evolved from a simple tree-walking interpreter into a sophisticated multi-stage pipeline:
+
+1. **Lexical Analysis (Lexer):** Tokenizes Turkish keywords and UTF-8 characters.
+2. **Syntactic Analysis (Parser):** Generates an Abstract Syntax Tree (AST).
+3. **Bytecode Compilation:** The `Derleyici` (Compiler) transforms the AST into a custom, stack-based instruction set (`OpCode`).
+4. **Virtual Machine (VM):** A high-performance execution engine that processes bytecode instructions with a managed stack and global memory.
+5. **Native Code Generation:** The `--inşa-et` (build) flag generates standalone Rust source code that embeds the bytecode and a minimal VM runtime, which is then compiled into a single native binary by `rustc`.
+
+---
+
 ## 🛠️ Installation & Build
 
 You need [Rust](https://www.rust-lang.org/) installed on your system.
