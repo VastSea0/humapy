@@ -183,19 +183,20 @@ impl Lexer {
         }
 
         match s.as_str() {
-            "yazdır" => Token::Yazdir,
-            "eğer" => Token::Eger,
+            // Türkçe anahtar kelimeler (aksanlı ve aksansız formlar)
+            "yazdır" | "yazdir" => Token::Yazdir,
+            "eğer" | "eger" => Token::Eger,
             "yada" => Token::Yada,
-            "değilse" => Token::Degilse,
-            "döngü" => Token::Dongu,
-            "değişken" => Token::Degisken,
+            "değilse" | "degilse" => Token::Degilse,
+            "döngü" | "dongu" => Token::Dongu,
+            "değişken" | "degisken" => Token::Degisken,
             "fonksiyon" => Token::Fonksiyon,
-            "döndür" => Token::Dondur,
+            "döndür" | "dondur" => Token::Dondur,
             "ve" => Token::Ve,
             "veya" => Token::Veya,
-            "değil" => Token::Degil,
-            "yükle" => Token::Yukle,
-            "sınıf" => Token::Sinif,
+            "değil" | "degil" => Token::Degil,
+            "yükle" | "yukle" => Token::Yukle,
+            "sınıf" | "sinif" => Token::Sinif,
             _ => Token::Tanimlayici(s),
         }
     }

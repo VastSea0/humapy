@@ -1,0 +1,1 @@
+yazdir("selam");

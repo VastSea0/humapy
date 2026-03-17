@@ -75,11 +75,13 @@ fn ikili_dosya_olustur(girdi: &str, cikti: &str) {
             OpCode::NotEqual => "OpCode::NotEqual".to_string(),
             OpCode::Jump(n) => format!("OpCode::Jump({})", n),
             OpCode::JumpIfFalse(n) => format!("OpCode::JumpIfFalse({})", n),
+            OpCode::Call(n) => format!("OpCode::Call({})", n),
             OpCode::Return => "OpCode::Return".to_string(),
             OpCode::Print => "OpCode::Print".to_string(),
+            OpCode::MakeList(n) => format!("OpCode::MakeList({})", n),
+            OpCode::ListAccess => "OpCode::ListAccess".to_string(),
             OpCode::Pop => "OpCode::Pop".to_string(),
             OpCode::Bos => "OpCode::Bos".to_string(),
-            _ => "OpCode::Bos".to_string(),
         };
         inst_items.push(s);
     }
@@ -97,6 +99,7 @@ fn ikili_dosya_olustur(girdi: &str, cikti: &str) {
 
     let rust_kodu = format!(r#"
 // Standalone Hüma Programı
+#![allow(dead_code)]
 #[derive(Debug, Clone)]
 enum OpCode {{
     PushConstant(usize), LoadVar(String), StoreVar(String), DefineVar(String),
@@ -114,7 +117,10 @@ impl std::fmt::Display for Deger {{
         match self {{
             Deger::Sayi(n) => write!(f, "{{}}", n),
             Deger::Metin(s) => write!(f, "{{}}", s),
-            Deger::Liste(l) => write!(f, "{{:?}}", l),
+            Deger::Liste(l) => {{
+                let p: Vec<String> = l.iter().map(|d| d.to_string()).collect();
+                write!(f, "[{{}}]", p.join(", "))
+            }},
             Deger::Bos => write!(f, "Boş"),
         }}
     }}

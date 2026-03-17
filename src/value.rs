@@ -3,6 +3,7 @@ use std::collections::{HashMap};
 use std::rc::Rc;
 use std::cell::RefCell;
 
+#[allow(unpredictable_function_pointer_comparisons)]
 #[derive(Debug, Clone, PartialEq)]
 pub enum Deger {
     Sayi(f64),
