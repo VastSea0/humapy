@@ -441,26 +441,44 @@ async function runCode() {
   appendOutput('system', `▶ Çalıştırılıyor… (${new Date().toLocaleTimeString('tr-TR')})`);
 
   try {
-    const res = await fetch('/api/run', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code })
-    });
-    const data = await res.json();
+    let output, error = '', elapsed;
+    const startTime = Date.now();
 
-    if (data.output) {
-      data.output.split('\n').forEach(line => {
+    // Tauri Check
+    if (window.__TAURI__) {
+      try {
+        output = await window.__TAURI__.invoke('run_huma', { code });
+        elapsed = Date.now() - startTime;
+      } catch (e) {
+        error = e.toString();
+        elapsed = Date.now() - startTime;
+      }
+    } else {
+      // Web Version
+      const res = await fetch('/api/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+      const data = await res.json();
+      output = data.output;
+      error = data.error;
+      elapsed = data.elapsed;
+    }
+
+    if (output) {
+      output.split('\n').forEach(line => {
         if (line !== '') appendOutput('stdout', line);
       });
     }
-    if (data.error) {
-      data.error.split('\n').forEach(line => {
+    if (error) {
+      error.split('\n').forEach(line => {
         if (line !== '') appendOutput('stderr', line);
       });
     }
 
-    const hasError = data.error && data.error.trim();
-    appendOutput('timing', `⏱ ${data.elapsed}ms — ${hasError ? '❌ Hata' : '✅ Başarıyla tamamlandı'}`);
+    const hasError = error && error.trim();
+    appendOutput('timing', `⏱ ${elapsed}ms — ${hasError ? '❌ Hata' : '✅ Başarıyla tamamlandı'}`);
 
     if (hasError) {
       pill.className = 'err'; pill.textContent = 'Hata';
@@ -468,8 +486,8 @@ async function runCode() {
       pill.className = 'ok'; pill.textContent = 'Başarılı';
     }
   } catch (e) {
-    appendOutput('stderr', 'Sunucu hatası: ' + e.message);
-    pill.className = 'err'; pill.textContent = 'Bağlantı hatası';
+    appendOutput('stderr', 'Hata: ' + e.message);
+    pill.className = 'err'; pill.textContent = 'Hata';
   }
 
   btn.classList.remove('running');
