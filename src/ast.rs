@@ -21,6 +21,7 @@ pub enum Ifade {
         nesne: Box<Ifade>,
         ozellik: String,
     },
+    #[allow(dead_code)]
     NesneOlustur {
         sinif_adi: String,
         argumanlar: Vec<Ifade>,
