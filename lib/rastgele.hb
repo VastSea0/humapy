@@ -1,28 +1,28 @@
 // Rastgele İşlemler
 
-fonksiyon r_tamsayı(min, max) {
-    değişken r = rastgele(); // 0 ile 1 arası
-    değişken sonuc = min + (r * (max - min + 1));
-    döndür sonuc - (sonuc % 1); // Tam sayı yap
+r_tamsayı fonksiyon olsun min, max alsın {
+    r = rastgele() olsun
+    sonuc = min + (r * (max - min + 1)) olsun
+    sonuc - (sonuc % 1)'i döndür
 }
 
-fonksiyon r_seç(liste) {
-    değişken boy = uzunluk(liste);
-    eğer boy == 0 { döndür Boş; }
-    değişken idx = r_tamsayı(0, boy - 1);
-    döndür liste[idx];
+r_seç fonksiyon olsun liste alsın {
+    boy = uzunluk(liste) olsun
+    boy = 0 ise { 0'ı döndür }
+    idx = r_tamsayı(0, boy - 1) olsun
+    liste[idx]'i döndür
 }
 
-fonksiyon r_karıştır(liste) {
-    değişken yeni = liste;
-    değişken boy = uzunluk(liste);
-    değişken i = 0;
-    döngü i < boy {
-        değişken j = r_tamsayı(0, boy - 1);
-        değişken gecici = yeni[i];
-        yeni[i] = yeni[j];
-        yeni[j] = gecici;
-        i = i + 1;
+r_karıştır fonksiyon olsun liste alsın {
+    yeni = liste olsun
+    boy = uzunluk(liste) olsun
+    i = 0 olsun
+    i < boy olduğu sürece {
+        j = r_tamsayı(0, boy - 1) olsun
+        gecici = yeni[i] olsun
+        yeni[i] = yeni[j] olsun
+        yeni[j] = gecici olsun
+        i = i + 1 olsun
     }
-    döndur yeni; // Not: listeler şu an referansla değişiyor mu? Evet.
+    yeni'yi döndür
 }

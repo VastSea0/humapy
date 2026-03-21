@@ -1,38 +1,38 @@
 yükle "renkler.hb";
 
-fonksiyon dosya_var_mı(yol) {
-    değişken icerik = dosya_oku(yol);
-    eğer tipi(icerik) == "Metin" { döndür 1; }
-    döndür 0;
+dosya_var_mı fonksiyon olsun yol alsın {
+    icerik = dosya_oku(yol) olsun
+    tipi(icerik) = "Metin" ise { 1'i döndür }
+    0'ı döndür
 }
 
-fonksiyon güvenli_oku(yol) {
-    değişken icerik = dosya_oku(yol);
-    eğer tipi(icerik) == "Boş" {
-        hata_yaz("Dosya okunamadı: " + yol);
-        döndür "";
+güvenli_oku fonksiyon olsun yol alsın {
+    icerik = dosya_oku(yol) olsun
+    tipi(icerik) = "Boş" ise {
+        hata_yaz("Dosya okunamadı: " + yol)
+        ""'yi döndür
     }
-    döndür icerik;
+    icerik'i döndür
 }
 
-fonksiyon satırlara_ayır(metin) {
-    değişken satırlar = [];
-    değişken gecici = "";
-    değişken i = 0;
-    değişken boy = uzunluk(metin);
+satırlara_ayır fonksiyon olsun metin alsın {
+    satırlar = [] olsun
+    gecici = "" olsun
+    i = 0 olsun
+    boy = uzunluk(metin) olsun
     
-    döngü i < boy {
-        değişken c = metin[i];
-        eğer (c == "\n") {
-            satırlar = listeye_ekle(satırlar, gecici);
-            gecici = "";
-        } değilse {
-            gecici = gecici + c;
+    i < boy olduğu sürece {
+        c = metin[i] olsun
+        (c = "\n") ise {
+            satırlar = listeye_ekle(satırlar, gecici) olsun
+            gecici = "" olsun
+        } yoksa {
+            gecici = gecici + c olsun
         }
-        i = i + 1;
+        i = i + 1 olsun
     }
-    eğer uzunluk(gecici) > 0 {
-        satırlar = listeye_ekle(satırlar, gecici);
+    uzunluk(gecici) > 0 ise {
+        satırlar = listeye_ekle(satırlar, gecici) olsun
     }
-    döndür satırlar;
+    satırlar'ı döndür
 }

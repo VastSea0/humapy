@@ -5,43 +5,41 @@ yükle "dizgi.hb";
 yükle "dosya.hb";
 yükle "istatistik.hb";
 
-renkli_yaz("===== Hüma Gelişmiş Kütüphane Testi =====", TURKUAZ + KALIN);
+renkli_yaz("===== Hüma Gelişmiş Kütüphane Testi =====", TURKUAZ + KALIN)
 
 // 1. Matematik ve İstatistik Testi
-değişken veriler = [10, 20, 30, 40, 50];
-yazdır("Veriler: " + veriler);
-yazdır("Ortalama: " + ortalama(veriler));
-yazdır("Standart Sapma: " + standart_sapma(veriler));
-yazdır("144'ün karekökü: " + karekök(144));
+veriler = [10, 20, 30, 40, 50] olsun
+"Veriler: " + veriler'i yazdır
+"Ortalama: " + ortalama(veriler)'i yazdır
+"Standart Sapma: " + standart_sapma(veriler)'i yazdır
+"144'ün karekökü: " + karekök(144)'ü yazdır
 
 // 2. Dizgi Testi
-değişken metin = "   Merhaba Hüma Dünyası!   ";
-yazdır("Orijinal: '" + metin + "'");
-yazdır("Kırpılmış: '" + kırp(metin) + "'");
-eğer içeriyor_mu(metin, "Hüma") {
-    başarı_yaz("Metin 'Hüma' içeriyor.");
+metin = "   Merhaba Hüma Dünyası!   " olsun
+"Orijinal: '" + metin + "'"'yı yazdır
+"Kırpılmış: '" + kırp(metin) + "'"'yı yazdır
+içeriyor_mu(metin, "Hüma") ise {
+    başarı_yaz("Metin 'Hüma' içeriyor.")
 }
 
 // 3. Rastgele Testi
-yazdır("Rastgele Sayı (1-100): " + r_tamsayı(1, 100));
-değişken sansli_meyve = r_seç(["Elma", "Armut", "Kiraz", "Karpuz"]);
-yazdır("Şanslı Meyveniz: " + sansli_meyve);
+"Rastgele Sayı (1-100): " + r_tamsayı(1, 100)'ü yazdır
+sansli_meyve = r_seç(["Elma", "Armut", "Kiraz", "Karpuz"]) olsun
+"Şanslı Meyveniz: " + sansli_meyve'yi yazdır
 
 // 4. Dosya Sistem Testi
-değişken test_dosyasi = "test_gunlugu.txt";
-değişken test_icerigi = "Hüma ile dosya yazma testi.\nİkinci satır.\nSon.";
-eğer dosya_yaz(test_dosyasi, test_icerigi) {
-    başarı_yaz(test_dosyasi + " başarıyla oluşturuldu.");
+test_dosyasi = "test_gunlugu.txt" olsun
+test_icerigi = "Hüma ile dosya yazma testi.\nİkinci satır.\nSon." olsun
+dosya_yaz(test_dosyasi, test_icerigi) ise {
+    başarı_yaz(test_dosyasi + " başarıyla oluşturuldu.")
 }
 
-değişken okunan = güvenli_oku(test_dosyasi);
-yazdır("Dosya İçeriği:");
-yazdır(okunan);
+okunan = güvenli_oku(test_dosyasi) olsun
+"Dosya İçeriği:"'ni yazdır
+okunan'ı yazdır
 
-değişken satırlar = satırlara_ayır(okunan);
-yazdır("Satır Sayısı: " + uzunluk(satırlar));
+satırlar = satırlara_ayır(okunan) olsun
+"Satır Sayısı: " + uzunluk(satırlar)'ı yazdır
 
 // 5. Tip Kontrolü
-yazdır("PI tipi: " + tipi(PI));
-yazdır("Meyveler tipi: " + tipi(meyveler));
-yazdır("Boş tipi: " + tipi(Boş));
+"PI tipi: " + tipi(PI)'yi yazdır

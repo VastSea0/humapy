@@ -1,13 +1,13 @@
 yükle "matematik.hb";
 
-fonksiyon fibonacci(n) {
-    eğer n <= 1 { döndür n; }
-    döndür fibonacci(n - 1) + fibonacci(n - 2);
+fibonacci fonksiyon olsun n alsın {
+    n <= 1 ise { n'i döndür }
+    fibonacci(n - 1) + fibonacci(n - 2)'yi döndür
 }
 
-yazdır("--- Fibonacci Serisi ---");
-değişken i = 0;
-döngü i < 10 {
-    yazdır("fib(" + i + ") = " + fibonacci(i));
-    i = i + 1;
+"--- Fibonacci Serisi ---"'yi yazdır
+i = 0 olsun
+i < 10 olduğu sürece {
+    "fib(" + i + ") = " + fibonacci(i)'yi yazdır
+    i = i + 1 olsun
 }
