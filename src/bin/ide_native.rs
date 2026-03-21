@@ -41,7 +41,7 @@ fn main() {
         editor_view.set_bottom_margin(8);
         editor_view.set_left_margin(8);
         editor_view.set_right_margin(8);
-        editor_view.buffer().expect("No buffer").set_text("// Merhaba Hüma Native!\nyazdır(\"Merhaba GTK!\");\n");
+        editor_view.buffer().expect("No buffer").set_text("// Merhaba Hüma Native!\n\"Merhaba GTK!\"'yı yazdır;\n");
         editor_scroll.add(&editor_view);
         paned.pack1(&editor_scroll, true, false);
 
