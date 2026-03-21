@@ -9,12 +9,17 @@ async fn run_huma(code: String) -> Result<String, String> {
     
     fs::write(&tmp_file, code).map_err(|e| e.to_string())?;
 
-    // Try to find the root folder
-    let current_exe = env::current_exe().unwrap();
-    let mut root_dir = current_exe.parent().unwrap().to_path_buf();
-    while !root_dir.join("Cargo.toml").exists() {
-        if !root_dir.pop() {
-            root_dir = env::current_dir().unwrap_or_else(|_| env::temp_dir());
+    // Try to find the actual workspace root containing the Huma compiler
+    let mut root_dir = env::current_exe().unwrap();
+    while root_dir.pop() {
+        // Look for the main Cargo.toml that defines the workspace or huma, rather than the tauri "app"
+        if root_dir.join("src").exists() && root_dir.join("lib").exists() && root_dir.join("Cargo.toml").exists() {
+            if root_dir.join("src-tauri").exists() {
+                break;
+            }
+        }
+        if root_dir.parent().is_none() {
+            root_dir = env::current_dir().unwrap();
             break;
         }
     }
