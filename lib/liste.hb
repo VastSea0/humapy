@@ -1,72 +1,72 @@
 // Gelişmiş Liste İşlemleri
 
-fonksiyon yazdır_liste(liste) {
-    yazdır(liste);
+yazdır_liste fonksiyon olsun liste alsın {
+    liste'yi yazdır
 }
 
-fonksiyon iceriyor_mu(liste, eleman) {
-    değişken boy = uzunluk(liste);
-    değişken i = 0;
-    döngü i < boy {
-        eğer liste[i] == eleman { döndür 1; }
-        i = i + 1;
+iceriyor_mu fonksiyon olsun liste, eleman alsın {
+    boy = uzunluk(liste) olsun
+    i = 0 olsun
+    i < boy olduğu sürece {
+        liste[i] = eleman ise { 1'i döndür }
+        i = i + 1 olsun
     }
-    döndür 0;
+    0'ı döndür
 }
 
-fonksiyon ters_cevir(liste) {
-    değişken yeni = [];
-    değişken i = uzunluk(liste) - 1;
-    döngü i >= 0 {
-        yeni = listeye_ekle(yeni, liste[i]);
-        i = i - 1;
+ters_cevir fonksiyon olsun liste alsın {
+    yeni = [] olsun
+    i = uzunluk(liste) - 1 olsun
+    i >= 0 olduğu sürece {
+        yeni = listeye_ekle(yeni, liste[i]) olsun
+        i = i - 1 olsun
     }
-    döndür yeni;
+    yeni'yi döndür
 }
 
 // Fonksiyonel Araçlar
-fonksiyon eşle(liste, f) {
-    değişken sonuç = [];
-    değişken i = 0;
-    değişken boy = uzunluk(liste);
-    döngü i < boy {
-        sonuç = listeye_ekle(sonuç, f(liste[i]));
-        i = i + 1;
+eşle fonksiyon olsun liste, f alsın {
+    sonuç = [] olsun
+    i = 0 olsun
+    boy = uzunluk(liste) olsun
+    i < boy olduğu sürece {
+        sonuç = listeye_ekle(sonuç, f(liste[i])) olsun
+        i = i + 1 olsun
     }
-    döndür sonuç;
+    sonuç'u döndür
 }
 
-fonksiyon filtrele(liste, f) {
-    değişken sonuç = [];
-    değişken i = 0;
-    değişken boy = uzunluk(liste);
-    döngü i < boy {
-        değişken eleman = liste[i];
-        eğer f(eleman) {
-            sonuç = listeye_ekle(sonuç, eleman);
+filtrele fonksiyon olsun liste, f alsın {
+    sonuç = [] olsun
+    i = 0 olsun
+    boy = uzunluk(liste) olsun
+    i < boy olduğu sürece {
+        eleman = liste[i] olsun
+        f(eleman) ise {
+            sonuç = listeye_ekle(sonuç, eleman) olsun
         }
-        i = i + 1;
+        i = i + 1 olsun
     }
-    döndür sonuç;
+    sonuç'u döndür
 }
 
-fonksiyon indirge(liste, f, başlangıç) {
-    değişken akümülatör = başlangıç;
-    değişken i = 0;
-    değişken boy = uzunluk(liste);
-    döngü i < boy {
-        akümülatör = f(akümülatör, liste[i]);
-        i = i + 1;
+indirge fonksiyon olsun liste, f, başlangıç alsın {
+    akümülatör = başlangıç olsun
+    i = 0 olsun
+    boy = uzunluk(liste) olsun
+    i < boy olduğu sürece {
+        akümülatör = f(akümülatör, liste[i]) olsun
+        i = i + 1 olsun
     }
-    döndür akümülatör;
+    akümülatör'ü döndür
 }
 
-fonksiyon dilimle(liste, baş, son) {
-    değişken sonuç = [];
-    değişken i = baş;
-    döngü i < son {
-        sonuç = listeye_ekle(sonuç, liste[i]);
-        i = i + 1;
+dilimle fonksiyon olsun liste, baş, son alsın {
+    sonuç = [] olsun
+    i = baş olsun
+    i < son olduğu sürece {
+        sonuç = listeye_ekle(sonuç, liste[i]) olsun
+        i = i + 1 olsun
     }
-    döndür sonuç;
+    sonuç'u döndür
 }

@@ -1,30 +1,30 @@
 // Birim Test Çerçevesi
 
-değişken __toplam_test = 0;
-değişken __başarılı_test = 0;
+__toplam_test = 0 olsun
+__başarılı_test = 0 olsun
 
-fonksiyon test_et(ad, f) {
-    __toplam_test = __toplam_test + 1;
-    yazdır("[TEST] " + ad + " ...");
-    değişken sonuc = f();
-    eğer sonuc {
-        yazdır("  -> BAŞARILI");
-        __başarılı_test = __başarılı_test + 1;
-    } değilse {
-        yazdır("  -> !!! HATA !!!");
+test_et fonksiyon olsun ad, f alsın {
+    __toplam_test = __toplam_test + 1 olsun
+    "[TEST] " + ad + " ..."'yı yazdır
+    sonuc = f() olsun
+    sonuc ise {
+        "  -> BAŞARILI"'yı yazdır
+        __başarılı_test = __başarılı_test + 1 olsun
+    } yoksa {
+        "  -> !!! HATA !!!"'yı yazdır
     }
 }
 
-fonksiyon test_raporu() {
-    yazdır("-----------------------------");
-    yazdır("Toplam Test: " + __toplam_test);
-    yazdır("Başarılı: " + __başarılı_test);
-    yazdır("Başarısız: " + (__toplam_test - __başarılı_test));
-    yazdır("-----------------------------");
+test_raporu fonksiyon olsun {
+    "-----------------------------"'yı yazdır
+    "Toplam Test: " + __toplam_test'i yazdır
+    "Başarılı: " + __başarılı_test'i yazdır
+    "Başarısız: " + (__toplam_test - __başarılı_test)'i yazdır
+    "-----------------------------"'yı yazdır
 }
 
-fonksiyon iddia_et(a, b, mesaj) {
-    eğer a == b { döndür 1; }
-    yazdır("  Hata: " + mesaj + " (Beklenen: " + a + ", Gelen: " + b + ")");
-    döndür 0;
+iddia_et fonksiyon olsun a, b, mesaj alsın {
+    a = b ise { 1'i döndür }
+    "  Hata: " + mesaj + " (Beklenen: " + a + ", Gelen: " + b + ")"'yi yazdır
+    0'ı döndür
 }

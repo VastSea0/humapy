@@ -1,27 +1,27 @@
-değişken PI = 3.141592653589793;
-değişken E = 2.718281828459045;
+PI = 3.141592653589793 olsun
+E = 2.718281828459045 olsun
 
-fonksiyon karesi(n) { döndür n * n; }
-fonksiyon küpü(n) { döndür n * n * n; }
-fonksiyon mutlak(n) { eğer n < 0 { döndür n * -1; } döndür n; }
+karesi fonksiyon olsun n alsın { n * n'i döndür }
+küpü fonksiyon olsun n alsın { n * n * n'i döndür }
+mutlak fonksiyon olsun n alsın { n < 0 ise { n * -1'i döndür } n'i döndür }
 
-fonksiyon kuvvet(a, b) {
-    değişken sonuc = 1;
-    değişken i = 0;
-    döngü i < b {
-        sonuc = sonuc * a;
-        i = i + 1;
+kuvvet fonksiyon olsun a, b alsın {
+    sonuc = 1 olsun
+    i = 0 olsun
+    i < b olduğu sürece {
+        sonuc = sonuc * a olsun
+        i = i + 1 olsun
     }
-    döndür sonuc;
+    sonuc'u döndür
 }
 
-fonksiyon yuvarla(n) {
-    değişken tam = n - (n % 1);
-    eğer (n % 1) >= 0.5 { döndür tam + 1; }
-    döndür tam;
+yuvarla fonksiyon olsun n alsın {
+    tam = n - (n % 1) olsun
+    (n % 1) >= 0.5 ise { tam + 1'i döndür }
+    tam'ı döndür
 }
 
-fonksiyon faktöriyel(n) {
-    eğer n <= 1 { döndür 1; }
-    döndür n * faktöriyel(n - 1);
+faktöriyel fonksiyon olsun n alsın {
+    n <= 1 ise { 1'i döndür }
+    n * faktöriyel(n - 1)'i döndür
 }

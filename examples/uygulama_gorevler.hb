@@ -3,72 +3,71 @@ yükle "dosya.hb";
 yükle "dizgi.hb";
 yükle "liste.hb";
 
-değişken DOSYA = "gorevler.txt";
+DOSYA = "gorevler.txt" olsun
 
-fonksiyon gorevleri_oku() {
-    değişken icerik = dosya_oku(DOSYA);
-    eğer tipi(icerik) == "Boş" { döndür []; }
-    döndür satırlara_ayır(icerik);
+gorevleri_oku fonksiyon olsun {
+    icerik = dosya_oku(DOSYA) olsun
+    tipi(icerik) = "Boş" ise { []'yi döndür }
+    satırlara_ayır(icerik)'i döndür
 }
 
-fonksiyon gorevleri_kaydet(liste) {
-    değişken metin = "";
-    değişken i = 0;
-    döngü i < uzunluk(liste) {
-        metin = metin + liste[i] + "\n";
-        i = i + 1;
+gorevleri_kaydet fonksiyon olsun liste alsın {
+    metin = "" olsun
+    i = 0 olsun
+    i < uzunluk(liste) olduğu sürece {
+        metin = metin + liste[i] + "\n" olsun
+        i = i + 1 olsun
     }
-    dosya_yaz(DOSYA, metin);
+    dosya_yaz(DOSYA, metin)
 }
 
-renkli_yaz("--- HÜMA GÖREV YÖNETİCİSİ ---", TURKUAZ + KALIN);
+renkli_yaz("--- HÜMA GÖREV YÖNETİCİSİ ---", TURKUAZ + KALIN)
 
-değişken gorevler = gorevleri_oku();
+gorevler = gorevleri_oku() olsun
 
-döngü 1 {
-    yazdır("");
-    yazdır("1. Görevleri Listele");
-    yazdır("2. Yeni Görev Ekle");
-    yazdır("3. Görev Sil");
-    yazdır("4. Çıkış");
+1 olduğu sürece {
+    ""'yi yazdır
+    "1. Görevleri Listele"'yi yazdır
+    "2. Yeni Görev Ekle"'yi yazdır
+    "3. Görev Sil"'yi yazdır
+    "4. Çıkış"'yı yazdır
     
-    değişken secim = oku("> Seçiminiz: ");
+    secim = oku("> Seçiminiz: ") olsun
     
-    eğer secim == "1" {
-        eğer uzunluk(gorevler) == 0 {
-            uyarı_yaz("Henüz görev yok.");
-        } değilse {
-            yazdır("--- GÖREV LİSTESİ ---");
-            değişken i = 0;
-            döngü i < uzunluk(gorevler) {
-                yazdır((i + 1) + ". " + gorevler[i]);
-                i = i + 1;
+    secim = "1" ise {
+        uzunluk(gorevler) = 0 ise {
+            uyarı_yaz("Henüz görev yok.")
+        } yoksa {
+            "--- GÖREV LİSTESİ ---"'yi yazdır
+            i = 0 olsun
+            i < uzunluk(gorevler) olduğu sürece {
+                (i + 1) + ". " + gorevler[i]'yi yazdır
+                i = i + 1 olsun
             }
         }
-    } değilse eğer secim == "2" {
-        değişken yeni = oku("Görev metni: ");
-        gorevler = listeye_ekle(gorevler, yeni);
-        gorevleri_kaydet(gorevler);
-        başarı_yaz("Görev eklendi.");
-    } değilse eğer secim == "3" {
-        değişken no = oku("Silinecek görev no: ");
-        // Basit bir silme mantığı (yeniden liste oluşturma)
-        değişken yeni_liste = [];
-        değişken i = 0;
-        değişken hedef = no - 1; // String'den sayıya otomatik dönüşmeli
-        döngü i < uzunluk(gorevler) {
-            eğer i != hedef {
-                yeni_liste = listeye_ekle(yeni_liste, gorevler[i]);
+    } yoksa secim = "2" ise {
+        yeni = oku("Görev metni: ") olsun
+        gorevler = listeye_ekle(gorevler, yeni) olsun
+        gorevleri_kaydet(gorevler)
+        başarı_yaz("Görev eklendi.")
+    } yoksa secim = "3" ise {
+        no = oku("Silinecek görev no: ") olsun
+        yeni_liste = [] olsun
+        i = 0 olsun
+        hedef = no - 1 olsun
+        i < uzunluk(gorevler) olduğu sürece {
+            i != hedef ise {
+                yeni_liste = listeye_ekle(yeni_liste, gorevler[i]) olsun
             }
-            i = i + 1;
+            i = i + 1 olsun
         }
-        gorevler = yeni_liste;
-        gorevleri_kaydet(gorevler);
-        başarı_yaz("Görev silindi.");
-    } değilse eğer secim == "4" {
-        yazdır("Güle güle!");
-        döndür Boş;
-    } değilse {
-        hata_yaz("Geçersiz seçim!");
+        gorevler = yeni_liste olsun
+        gorevleri_kaydet(gorevler)
+        başarı_yaz("Görev silindi.")
+    } yoksa secim = "4" ise {
+        "Güle güle!"'yi yazdır
+        0'ı döndür
+    } yoksa {
+        hata_yaz("Geçersiz seçim!")
     }
 }

@@ -1,76 +1,76 @@
 // Dizgi (String) Yardımcı Fonksiyonları
 
-fonksiyon büyük_mü(karakter) {
-    döndür (karakter >= "A") ve (karakter <= "Z");
+büyük_mü fonksiyon olsun karakter alsın {
+    (karakter >= "A") ve (karakter <= "Z")'yi döndür
 }
 
-fonksiyon küçük_mü(karakter) {
-    döndür (karakter >= "a") ve (karakter <= "z");
+küçük_mü fonksiyon olsun karakter alsın {
+    (karakter >= "a") ve (karakter <= "z")'yi döndür
 }
 
-fonksiyon boşluk_mu(karakter) {
-    döndür (karakter == " ") veya (karakter == "\n") veya (karakter == "\t");
+boşluk_mu fonksiyon olsun karakter alsın {
+    (karakter = " ") veya (karakter = "\n") veya (karakter = "\t")'yi döndür
 }
 
-fonksiyon içeriyor_mu(dizgi, aranan) {
-    değişken i = 0;
-    değişken boy = uzunluk(dizgi);
-    değişken aranan_boy = uzunluk(aranan);
+içeriyor_mu fonksiyon olsun dizgi, aranan alsın {
+    i = 0 olsun
+    boy = uzunluk(dizgi) olsun
+    aranan_boy = uzunluk(aranan) olsun
     
-    döngü i <= (boy - aranan_boy) {
-        değişken j = 0;
-        değişken eşleşti = 1;
-        döngü j < aranan_boy {
-            eğer dizgi[i + j] != aranan[j] {
-                eşleşti = 0;
-                j = aranan_boy; // break
+    i <= (boy - aranan_boy) olduğu sürece {
+        j = 0 olsun
+        eşleşti = 1 olsun
+        j < aranan_boy olduğu sürece {
+            dizgi[i + j] != aranan[j] ise {
+                eşleşti = 0 olsun
+                j = aranan_boy olsun
             }
-            j = j + 1;
+            j = j + 1 olsun
         }
-        eğer eşleşti { döndür 1; }
-        i = i + 1;
+        eşleşti ise { 1'i döndür }
+        i = i + 1 olsun
     }
-    döndür 0;
+    0'ı döndür
 }
 
-fonksiyon başıyla_mı_başlıyor(dizgi, ön_ek) {
-    değişken boy = uzunluk(ön_ek);
-    değişken i = 0;
-    döngü i < boy {
-        eğer dizgi[i] != ön_ek[i] { döndür 0; }
-        i = i + 1;
+başıyla_mı_başlıyor fonksiyon olsun dizgi, ön_ek alsın {
+    boy = uzunluk(ön_ek) olsun
+    i = 0 olsun
+    i < boy olduğu sürece {
+        dizgi[i] != ön_ek[i] ise { 0'ı döndür }
+        i = i + 1 olsun
     }
-    döndür 1;
+    1'i döndür
 }
 
-fonksiyon sonuyla_mı_bitiyor(dizgi, son_ek) {
-    değişken boy = uzunluk(dizgi);
-    değişken son_boy = uzunluk(son_ek);
-    değişken i = 0;
-    döngü i < son_boy {
-        eğer dizgi[boy - son_boy + i] != son_ek[i] { döndür 0; }
-        i = i + 1;
+sonuyla_mı_bitiyor fonksiyon olsun dizgi, son_ek alsın {
+    boy = uzunluk(dizgi) olsun
+    son_boy = uzunluk(son_ek) olsun
+    i = 0 olsun
+    i < son_boy olduğu sürece {
+        dizgi[boy - son_boy + i] != son_ek[i] ise { 0'ı döndür }
+        i = i + 1 olsun
     }
-    döndür 1;
+    1'i döndür
 }
 
-fonksiyon kırp(dizgi) {
-    değişken bas = 0;
-    değişken son = uzunluk(dizgi) - 1;
+kırp fonksiyon olsun dizgi alsın {
+    bas = 0 olsun
+    son = uzunluk(dizgi) - 1 olsun
     
-    döngü (bas <= son) ve boşluk_mu(dizgi[bas]) {
-        bas = bas + 1;
+    (bas <= son) ve boşluk_mu(dizgi[bas]) olduğu sürece {
+        bas = bas + 1 olsun
     }
     
-    döngü (son >= bas) ve boşluk_mu(dizgi[son]) {
-        son = son - 1;
+    (son >= bas) ve boşluk_mu(dizgi[son]) olduğu sürece {
+        son = son - 1 olsun
     }
     
-    değişken sonuc = "";
-    değişken i = bas;
-    döngü i <= son {
-        sonuc = sonuc + dizgi[i];
-        i = i + 1;
+    sonuc = "" olsun
+    i = bas olsun
+    i <= son olduğu sürece {
+        sonuc = sonuc + dizgi[i] olsun
+        i = i + 1 olsun
     }
-    döndür sonuc;
+    sonuc'u döndür
 }

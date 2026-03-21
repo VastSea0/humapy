@@ -1,56 +1,56 @@
 yükle "matematik.hb";
 
-fonksiyon ortalama(liste) {
-    değişken toplam = 0;
-    değişken boy = uzunluk(liste);
-    eğer boy == 0 { döndür 0; }
+ortalama fonksiyon olsun liste alsın {
+    toplam = 0 olsun
+    boy = uzunluk(liste) olsun
+    boy = 0 ise { 0'ı döndür }
     
-    değişken i = 0;
-    döngü i < boy {
-        toplam = toplam + liste[i];
-        i = i + 1;
+    i = 0 olsun
+    i < boy olduğu sürece {
+        toplam = toplam + liste[i] olsun
+        i = i + 1 olsun
     }
-    döndür toplam / boy;
+    toplam / boy'u döndür
 }
 
-fonksiyon en_büyük(liste) {
-    değişken boy = uzunluk(liste);
-    eğer boy == 0 { döndür Boş; }
-    değişken eb = liste[0];
-    değişken i = 1;
-    döngü i < boy {
-        eğer liste[i] > eb { eb = liste[i]; }
-        i = i + 1;
+en_büyük fonksiyon olsun liste alsın {
+    boy = uzunluk(liste) olsun
+    boy = 0 ise { 0'ı döndür }
+    eb = liste[0] olsun
+    i = 1 olsun
+    i < boy olduğu sürece {
+        liste[i] > eb ise { eb = liste[i] olsun }
+        i = i + 1 olsun
     }
-    döndür eb;
+    eb'yi döndür
 }
 
-fonksiyon en_küçük(liste) {
-    değişken boy = uzunluk(liste);
-    eğer boy == 0 { döndür Boş; }
-    değişken ek = liste[0];
-    değişken i = 1;
-    döngü i < boy {
-        eğer liste[i] < ek { ek = liste[i]; }
-        i = i + 1;
+en_küçük fonksiyon olsun liste alsın {
+    boy = uzunluk(liste) olsun
+    boy = 0 ise { 0'ı döndür }
+    ek = liste[0] olsun
+    i = 1 olsun
+    i < boy olduğu sürece {
+        liste[i] < ek ise { ek = liste[i] olsun }
+        i = i + 1 olsun
     }
-    döndür ek;
+    ek'i döndür
 }
 
-fonksiyon varyans(liste) {
-    değişken ort = ortalama(liste);
-    değişken toplam_kare_fark = 0;
-    değişken boy = uzunluk(liste);
+varyans fonksiyon olsun liste alsın {
+    ort = ortalama(liste) olsun
+    toplam_kare_fark = 0 olsun
+    boy = uzunluk(liste) olsun
     
-    değişken i = 0;
-    döngü i < boy {
-        değişken fark = liste[i] - ort;
-        toplam_kare_fark = toplam_kare_fark + karesi(fark);
-        i = i + 1;
+    i = 0 olsun
+    i < boy olduğu sürece {
+        fark = liste[i] - ort olsun
+        toplam_kare_fark = toplam_kare_fark + karesi(fark) olsun
+        i = i + 1 olsun
     }
-    döndür toplam_kare_fark / boy;
+    toplam_kare_fark / boy'u döndür
 }
 
-fonksiyon standart_sapma(liste) {
-    döndür karekök(varyans(liste));
+standart_sapma fonksiyon olsun liste alsın {
+    karekök(varyans(liste))'yi döndür
 }
