@@ -58,29 +58,92 @@ fn main() {
     }
 }
 
+use std::net::TcpListener;
+use std::io::Read; // Write is already imported globally
+use serde_json::{Value, json};
+
 fn ide_baslat() {
-    println!("🐦 Hüma Modern IDE (Web Tabanlı + Tauri) başlatılıyor...");
-    
-    // Eğer Huma IDE sistemde kurulu bir binary ise onu çalıştır (Örn: /usr/bin/huma-ide)
-    let installed_app = std::process::Command::new("huma-ide").spawn();
-    
-    // Yüklü değilse, belki projenin kaynak kod dizinindeyizdir (Geliştirici modu)
-    if installed_app.is_err() {
-        if std::path::Path::new("src-tauri/tauri.conf.json").exists() {
-            println!("Proje dizinindesiniz. Geliştirici modunda başlanıyor...");
-            let status = std::process::Command::new("npx")
-                .args(["--yes", "@tauri-apps/cli@latest", "dev"])
-                .status();
+    let listener = TcpListener::bind("127.0.0.1:3737").expect("Port 3737 zaten kullanımda! Başka bir IDE veya sunucu açık olabilir.");
+    let html_content = include_str!("../ide/public/index.html");
+
+    println!("🐦 Hüma Modern IDE (Tamamen Gömmülü Web Sürümü) başlatılıyor...");
+    println!("Tarayıcınızda açılıyor: http://localhost:3737\n(Kapatmak için CTRL+C yapın)");
+
+    // İşletim sistemine göre tarayıcıda URL'yi aç
+    #[cfg(target_os = "linux")]
+    let _ = std::process::Command::new("xdg-open").arg("http://localhost:3737").status();
+    #[cfg(target_os = "windows")]
+    let _ = std::process::Command::new("cmd").args(["/C", "start", "http://localhost:3737"]).status();
+    #[cfg(target_os = "macos")]
+    let _ = std::process::Command::new("open").arg("http://localhost:3737").status();
+
+    // İstekleri dinle
+    for stream in listener.incoming() {
+        if let Ok(mut stream) = stream {
+            let mut buffer = vec![0; 1024 * 1024]; // 1MB Tampom (Kod dosyaları için fazlasıyla yeterli)
+            let bytes_read = stream.read(&mut buffer).unwrap_or(0);
+            if bytes_read == 0 { continue; }
             
-            if let Err(e) = status {
-                eprintln!("HATA: Geliştirici IDE'si başlatılamadı! Lütfen npm'in yüklü olduğunu doğrulayın.\n({})", e);
+            let request = String::from_utf8_lossy(&buffer[..bytes_read]);
+            
+            if request.starts_with("GET / ") || request.starts_with("GET /index.html") {
+                let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nConnection: close\r\n\r\n{}", html_content);
+                let _ = stream.write_all(response.as_bytes());
+            } else if request.starts_with("POST /api/run") {
+                let start_time = std::time::Instant::now();
+                
+                let mut body_str = "";
+                if let Some(body_idx) = request.find("\r\n\r\n") {
+                    body_str = &request[(body_idx + 4)..].trim_matches(char::from(0));
+                }
+                
+                let mut output_str = String::new();
+                let mut error_str = String::new();
+                
+                if let Ok(json_val) = serde_json::from_str::<Value>(body_str) {
+                    if let Some(code) = json_val.get("code").and_then(|v| v.as_str()) {
+                        let tmp_file = env::temp_dir().join(format!("huma_run_{}.hb", std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_millis()));
+                        let _ = fs::write(&tmp_file, code);
+
+                        let exe = env::current_exe().unwrap();
+                        let result = std::process::Command::new(exe)
+                            .arg(tmp_file.to_str().unwrap())
+                            .output();
+
+                        let _ = fs::remove_file(tmp_file);
+
+                        match result {
+                            Ok(out) => {
+                                output_str = String::from_utf8_lossy(&out.stdout).to_string();
+                                error_str = String::from_utf8_lossy(&out.stderr).to_string();
+                            }
+                            Err(e) => {
+                                error_str = e.to_string();
+                            }
+                        }
+                    } else {
+                        error_str = "Hata: İstekte 'code' alanı bulunamadı".to_string();
+                    }
+                } else {
+                    error_str = format!("Hata: Geçersiz JSON.\n{}", body_str);
+                }
+
+                let elapsed_ms = start_time.elapsed().as_millis() as u64;
+                let resp_json = json!({
+                    "output": output_str,
+                    "error": error_str,
+                    "elapsed": elapsed_ms
+                });
+                
+                let resp_body = resp_json.to_string();
+                let http_resp = format!("HTTP/1.1 200 OK\r\nContent-Type: application/json; charset=utf-8\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}", resp_body.len(), resp_body);
+                
+                let _ = stream.write_all(http_resp.as_bytes());
+            } else {
+                let resp = "HTTP/1.1 404 NOT FOUND\r\nConnection: close\r\n\r\n";
+                let _ = stream.write_all(resp.as_bytes());
             }
-        } else {
-            eprintln!("HATA: Hüma IDE sisteminizde kurulu değil. Lütfen 'huma-ide' paketini (örn. .deb veya AppImage) kurun.");
         }
-    } else {
-        let mut app = installed_app.unwrap();
-        let _ = app.wait();
     }
 }
 
