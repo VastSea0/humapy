@@ -53,23 +53,34 @@ fn main() {
             _ => dosya_calistir(&args[1]),
         }
     } else {
-        // Argüman yoksa: Masaüstü ortamında IDE, terminalde REPL başlat
-        if env::var("DISPLAY").is_ok() || env::var("WAYLAND_DISPLAY").is_ok() {
-            ide_baslat();
-        } else {
-            repl_baslat();
-        }
+        // Argüman yoksa her zaman REPL başlat (Standart yorumlayıcı davranışı)
+        repl_baslat();
     }
 }
 
 fn ide_baslat() {
     println!("🐦 Hüma Modern IDE (Web Tabanlı + Tauri) başlatılıyor...");
-    let status = std::process::Command::new("npx")
-        .args(["--yes", "@tauri-apps/cli@latest", "dev"])
-        .status();
     
-    if let Err(e) = status {
-        eprintln!("HATA: Tauri başlatılamadı! Lütfen npm'in yüklü olduğunu doğrulayın.\n({})", e);
+    // Eğer Huma IDE sistemde kurulu bir binary ise onu çalıştır (Örn: /usr/bin/huma-ide)
+    let installed_app = std::process::Command::new("huma-ide").spawn();
+    
+    // Yüklü değilse, belki projenin kaynak kod dizinindeyizdir (Geliştirici modu)
+    if installed_app.is_err() {
+        if std::path::Path::new("src-tauri/tauri.conf.json").exists() {
+            println!("Proje dizinindesiniz. Geliştirici modunda başlanıyor...");
+            let status = std::process::Command::new("npx")
+                .args(["--yes", "@tauri-apps/cli@latest", "dev"])
+                .status();
+            
+            if let Err(e) = status {
+                eprintln!("HATA: Geliştirici IDE'si başlatılamadı! Lütfen npm'in yüklü olduğunu doğrulayın.\n({})", e);
+            }
+        } else {
+            eprintln!("HATA: Hüma IDE sisteminizde kurulu değil. Lütfen 'huma-ide' paketini (örn. .deb veya AppImage) kurun.");
+        }
+    } else {
+        let mut app = installed_app.unwrap();
+        let _ = app.wait();
     }
 }
 
