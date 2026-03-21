@@ -6,10 +6,11 @@
   "build": {
     "frontendDist": "../ide/public",
     "devUrl": "http://localhost:3737",
-    "beforeDevCommand": "npm run dev",
-    "beforeBuildCommand": "npm run build"
+    "beforeDevCommand": "npm start --prefix ../ide",
+    "beforeBuildCommand": ""
   },
   "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
         "title": "Hüma IDE",

@@ -63,28 +63,14 @@ fn main() {
 }
 
 fn ide_baslat() {
-    println!("🐦 Hüma Modern IDE (Web Tabanlı) başlatılıyor...");
-    println!("Sunucu adresi: http://localhost:3737");
+    println!("🐦 Hüma Modern IDE (Web Tabanlı + Tauri) başlatılıyor...");
+    let status = std::process::Command::new("npx")
+        .args(["--yes", "@tauri-apps/cli@latest", "dev"])
+        .status();
     
-    // Arka planda Node.js sunucusunu başlat
-    let mut server = std::process::Command::new("node")
-        .arg("ide/server.js")
-        .spawn()
-        .expect("IDE başlatılamadı. Sisteme Node.js yüklü olduğundan emin olun.");
-        
-    // Sunucunun ayağa kalkması için kısa bir süre bekle
-    std::thread::sleep(std::time::Duration::from_millis(1500));
-    
-    // İşletim sistemine göre tarayıcıda URL'yi aç
-    #[cfg(target_os = "linux")]
-    let _ = std::process::Command::new("xdg-open").arg("http://localhost:3737").status();
-    #[cfg(target_os = "windows")]
-    let _ = std::process::Command::new("cmd").args(["/C", "start", "http://localhost:3737"]).status();
-    #[cfg(target_os = "macos")]
-    let _ = std::process::Command::new("open").arg("http://localhost:3737").status();
-
-    // IDE penceresi açık kaldığı sürece Hüma sunucusunu ayakta tut
-    let _ = server.wait();
+    if let Err(e) = status {
+        eprintln!("HATA: Tauri başlatılamadı! Lütfen npm'in yüklü olduğunu doğrulayın.\n({})", e);
+    }
 }
 
 fn ikili_dosya_olustur(girdi: &str, cikti: &str) {
