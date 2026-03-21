@@ -46,6 +46,7 @@ pub enum Komut {
         ad: String,
         deger: Ifade,
     },
+    #[allow(dead_code)]
     Atama {
         ad: String,
         deger: Ifade,
