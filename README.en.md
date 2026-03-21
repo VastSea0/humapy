@@ -1,6 +1,6 @@
 # Hüma Programming Language
 
-Hüma is a high-performance, safe, and intuitive programming language that combines modern software principles with Turkish natural language syntax. Developed in Rust, it features a hybrid architecture supporting both tree-walking interpretation and a bytecode-based Virtual Machine (VM).
+Hüma is a high-performance, safe, and intuitive programming language that combines modern software principles with a natural Turkish syntax. Developed in Rust, it features a hybrid architecture supporting both tree-walking interpretation and a bytecode-based Virtual Machine (VM).
 
 [**Türkçe README için tıklayın.**](README.md)
 
@@ -8,25 +8,12 @@ Hüma is a high-performance, safe, and intuitive programming language that combi
 
 ## 🚀 Key Features
 
-- **Natural Turkish Syntax:** Write code as you think in your native language.
-- **Hybrid Execution:** Choose between direct interpretation for development and bytecode execution for performance.
+- **Natural Language Syntax:** Write code as you think in your native language (using terms like `olsun` for definition, `ise / yoksa` for conditionals, and `olduğu sürece` for loops).
+- **Flexible Suffix System:** Turkish grammatical suffixes like `x'i yazdır` or `liste'ye ekle` are automatically handled for a most natural writing experience.
+- **Hybrid Execution:** Choose between direct interpretation for development and bytecode execution for higher performance.
 - **Standalone Compilation:** Compile your code into native binary executables with zero external dependencies.
-- **Rich Standard Library:** Built-in support for mathematics, terminal coloring, time management, file I/O, and advanced list manipulation.
-- **Flexible Syntax:** Choose between accented (yazdır, eğer) or plain ASCII (yazdir, eger) keywords for convenience.
+- **Rich Standard Library:** Built-in support for mathematics, terminal coloring, time management, advanced list manipulation, and unit testing.
 - **Modern IDE Support:** Full-featured IDEs available in both Native (GTK) and Web/Tauri flavors.
-- **Safety First:** Leverages Rust's memory safety guarantees.
-
----
-
-## 🏗️ Technical Architecture
-
-Hüma has evolved from a simple tree-walking interpreter into a sophisticated multi-stage pipeline:
-
-1. **Lexical Analysis (Lexer):** Tokenizes Turkish keywords and UTF-8 characters.
-2. **Syntactic Analysis (Parser):** Generates an Abstract Syntax Tree (AST).
-3. **Bytecode Compilation:** The `Derleyici` (Compiler) transforms the AST into a custom, stack-based instruction set (`OpCode`).
-4. **Virtual Machine (VM):** A high-performance execution engine that processes bytecode instructions with a managed stack and global memory.
-5. **Native Code Generation:** The `--inşa-et` (build) flag generates standalone Rust source code that embeds the bytecode and a minimal VM runtime, which is then compiled into a single native binary by `rustc`.
 
 ---
 
@@ -59,6 +46,9 @@ cargo run
 Run a `.hb` file using the tree-walking interpreter:
 
 ```bash
+# General usage
+cargo run -- script.hb
+# Example
 cargo run -- examples/fibonacci.hb
 ```
 
@@ -73,42 +63,6 @@ cargo run -- --derle script.hb output.hbc
 cargo run -- --yürüt output.hbc
 ```
 
-### 4. Standalone Executable (Native Binary)
-
-Generate a native executable from your Hüma script:
-
-```bash
-cargo run -- --inşa-et script.hb my_app
-rustc my_app.rs
-./my_app
-```
-
----
-
-## 🎨 Hüma IDE
-
-Two professional desktop editor options are available for Hüma development:
-
-### 1. Native IDE
-
-A high-performance, GTK-based native Linux editor with a minimal footprint.
-
-```bash
-cargo run --bin ide_native
-```
-
-### 2. Modern Web IDE (Tauri)
-
-A feature-rich desktop experience powered by Tauri (syntax highlighting, file management, etc.).
-
-```bash
-# As a web server
-cd ide && npm start
-
-# Or as a Tauri desktop app
-npx tauri dev
-```
-
 ---
 
 ## 📖 Language Reference
@@ -116,65 +70,72 @@ npx tauri dev
 ### Basic Syntax
 
 ```huma
-// Variable Definition
-değişken x = 10;
-değişken name = "Hüma";
+// Variable Definition and Assignment
+x = 10 olsun
+name = "Hüma" olsun
 
-// Math
-değişken total = x + 5 * 2;
+// Arithmetic
+total = x + 5 * 2 olsun
 
-// Conditionals
-eğer x > 5 {
-    yazdır("Greater than 5");
-} değilse {
-    yazdır("Less than or equal to 5");
+// Conditionals (ise / yoksa)
+x > 5 ise {
+    "Greater than 5"'ı yazdır;
+} yoksa {
+    "Less than or equal to 5"'ı yazdır;
 }
 
-// Loops
-değişken i = 0;
-döngü i < 5 {
-    yazdır("Index: " + i);
-    i = i + 1;
+// Loops (olduğu sürece)
+i = 0 olsun
+i < 5 olduğu sürece {
+    "Index: " + i'yi yazdır;
+    i = i + 1 olsun
 }
 ```
 
-### Functions & Modules
+### Functions & Classes
 
 ```huma
 yükle "matematik.hb";
 
-fonksiyon greet(user) {
-    yazdır("Hello, " + user + "!");
+greet fonksiyon olsun user alsın {
+    "Hello, " + user + "!"'ı döndür
 }
 
-greet("World");
-yazdır("PI: " + PI);
+msg = greet("World") olsun
+msg'yı yazdır;
+
+calculator sınıf olsun {
+    add fonksiyon olsun a, b alsın {
+        a + b'yi döndür
+    }
+}
+calc = calculator() olsun
+calc.add(10, 20)'yi yazdır;
 ```
 
-### Slicing & Functional Tools
+### Lists
 
 ```huma
-değişken numbers = [1, 2, 3, 4, 5];
-fonksiyon double(n) { döndür n * 2; }
-değişken results = eşle(numbers, double);
-yazdır(results); // [2, 4, 6, 8, 10]
+fruits = ["Apple", "Pear"] olsun
+fruits'e ["Banana"]'yı ekle;
+fruits'ten [0]'ı çıkar; // delete by index
+
+i = 0 olsun
+i < fruits'ın uzunluğu olduğu sürece {
+    fruits[i]'yi yazdır;
+    i = i + 1 olsun
+}
 ```
 
 ---
 
 ## 📚 Standard Libraries (`lib/`)
 
-- **`matematik.hb`**: `PI`, `E`, `karesi(n)`, `kuvvet(a, b)`, `faktöriyel(n)`.
-- **`renkler.hb`**: `başarı_yaz(msg)`, `hata_yaz(msg)`, terminal colors.
+- **`matematik.hb`**: `karesi(n)`, `kuvvet(a, b)`, `faktöriyel(n)`.
+- **`renkler.hb`**: `başarı_yaz(m)`, `hata_yaz(m)`, terminal colors.
 - **`dizgi.hb`**: String tools like `kırp` (trim), `içeriyor_mu` (contains).
-- **`liste.hb`**: `eşle` (map), `filtrele` (filter), `indirge` (reduce).
+- **`liste.hb`**: `eşle(d, f)`, `filtrele(d, f)`, `indirge(d, f, b)`.
 - **`birim_test.hb`**: Native unit testing framework.
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request or open an issue.
 
 ---
 

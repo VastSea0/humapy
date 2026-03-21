@@ -6,11 +6,11 @@ Hüma, modern yazılım geliştirme prensiplerini Türkçe doğal dil yapısıyl
 
 ## 🚀 Öne Çıkan Özellikler
 
-- **Doğal Türkçe Sözdizimi:** Kod yazarken kendi dilinizde düşünebilirsiniz.
+- **Tamamen Doğal Türkçe Sözdizimi:** Kod yazarken Türkçe konuşma dilinin akışını (olsun, ise, yoksa, olduğu sürece vb.) kullanabilirsiniz.
+- **Esnek Ek Yönetimi (Suffix):** `liste'yi yazdır`, `x'ten çıkar` gibi ifadelerdeki ekler otomatik olarak temizlenir, en doğal yazıma imkan tanır.
 - **Hibrit Çalışma Modu:** İsterseniz doğrudan yorumlayın, isterseniz bytecode'a derleyip sanal makinede (VM) koşturun.
 - **Bağımsız İkili Dosyalar (Standalone):** Kodlarınızı derleyip herhangi bir bağımlılık olmadan çalışabilen native binary'lere dönüştürebilirsiniz.
-- **Zengin Sistem Kütüphaneleri:** Matematik, terminal renklendirme, zaman yönetimi ve liste araçları kutudan çıktığı gibi hazırdır.
-- **Esnek Dil Yapısı:** İster aksanlı (yazdır, eğer), ister aksansız (yazdir, eger) sözdizimini kullanabilirsiniz.
+- **Zengin Sistem Kütüphaneleri:** Matematik, terminal renklendirme, zaman yönetimi, liste araçları ve birim test çerçevesi hazırdır.
 - **Modern IDE Desteği:** Kod yazmanız için hem Native (GTK) hem de Web tabanlı modern editörler sunulur.
 
 ---
@@ -41,7 +41,7 @@ cargo run
 
 ### 2. Dosya Çalıştırma (Yorumlayıcı)
 
-Bir `.hb` dosyasını ağaç-gezinme (tree-walking) yöntemiyle çalıştırmak için:
+Bir `.hb` dosyasını çalıştırmak için:
 
 ```bash
 cargo run -- program.hb
@@ -58,42 +58,6 @@ cargo run -- --derle program.hb cikti.hbc
 cargo run -- --yürüt cikti.hbc
 ```
 
-### 4. Bağımsız Uygulama Oluşturma (Native Binary)
-
-Hüma kodunuzu standalone bir Rust dosyasına dönüştürüp native binary olarak derleyebilirsiniz:
-
-```bash
-cargo run -- --inşa-et program.hb uygulama
-rustc uygulama.rs
-./uygulama
-```
-
----
-
-## 🎨 Hüma IDE
-
-Hüma ile kod geliştirmek için iki farklı masaüstü editör seçeneği mevcuttur:
-
-### 1. Yerel (Native) IDE
-
-Linux üzerinde en yüksek performansla çalışan, GTK tabanlı hafif bir editördür.
-
-```bash
-cargo run --bin ide_native
-```
-
-### 2. Modern Web IDE (Tauri)
-
-Zengin özellikli (syntax highlighting, örnek listesi vb.) bir deneyim için Tauri tabanlı masaüstü uygulamasını kullanabilirsiniz.
-
-```bash
-# Web sunucusu olarak
-cd ide && npm start
-
-# Veya Tauri masaüstü uygulaması olarak
-npx tauri dev
-```
-
 ---
 
 ## 📖 Dil Referansı
@@ -101,65 +65,72 @@ npx tauri dev
 ### Temel Sözdizimi
 
 ```huma
-// Değişken Tanımlama
-değişken x = 10;
-değişken isim = "Hüma";
+// Değişken Tanımlama ve Atama
+x = 10 olsun
+isim = "Hüma" olsun
 
 // Matematiksel İşlemler
-değişken toplam = x + 5 * 2;
+toplam = x + 5 * 2 olsun
 
-// Koşullu İfadeler
-eğer x > 5 {
-    yazdır("Sayı büyüktür.");
-} değilse {
-    yazdır("Sayı küçüktür.");
+// Koşullu İfadeler (ise / yoksa)
+x > 5 ise {
+    "Sayı büyüktür."'ü yazdır;
+} yoksa {
+    "Sayı küçüktür."'ü yazdır;
 }
 
-// Döngüler
-değişken i = 0;
-döngü i < 5 {
-    yazdır("Sıra: " + i);
-    i = i + 1;
+// Döngüler (olduğu sürece)
+i = 0 olsun
+i < 5 olduğu sürece {
+    "Sıra: " + i'yi yazdır;
+    i = i + 1 olsun
 }
 ```
 
-### Fonksiyonlar ve Modüller
+### Fonksiyonlar ve Sınıflar
 
 ```huma
 yükle "matematik.hb";
 
-fonksiyon merhaba_de(ad) {
-    yazdır("Merhaba " + ad + "!");
+merhaba_de fonksiyon olsun ad alsın {
+    "Merhaba " + ad + "!"'i döndür
 }
 
-merhaba_de("Dünya");
-yazdır("PI Değeri: " + PI);
+sonuç = merhaba_de("Dünya") olsun
+sonuç'u yazdır;
+
+islem sınıf olsun {
+    toplama fonksiyon olsun a, b alsın {
+        a + b'yi döndür
+    }
+}
+hesap = islem() olsun
+hesap.toplama(10, 20)'yi yazdır;
 ```
 
 ### Listeler
 
 ```huma
-değişken meyveler = ["Elma", "Armut", "Muz"];
-yazdır(meyveler[0]); // Elma
-yazdır("Boyut: " + uzunluk(meyveler));
+meyveler = ["Elma", "Armut"] olsun
+meyveler'e ["Muz"]'u ekle;
+meyveler'den [0]'ı çıkar; // İndeks bazlı silme
+
+i = 0 olsun
+i < meyveler'in uzunluğu olduğu sürece {
+    meyveler[i]'yi yazdır;
+    i = i + 1 olsun
+}
 ```
 
 ---
 
 ## 📚 Sistem Kütüphaneleri (`lib/`)
 
-Hüma, işinizi kolaylaştıran bir dizi dahili modül ile gelir:
-
-- **`matematik.hb`**: `PI`, `E`, `karesi(n)`, `küpü(n)`, `kuvvet(a, b)`, `mutlak_değer(n)`
-- **`renkler.hb`**: `renkli_yaz(metin, renk)`, `başarı_yaz(metin)`, `hata_yaz(metin)`, `uyarı_yaz(metin)`
-- **`zaman.hb`**: `beklet(saniye)`, `kronometre_başlat()`, `kronometre_bitir(başlangıç)`
-- **`liste.hb`**: `yazdır_liste(liste)`, `iceriyor_mu(liste, eleman)`, `ters_cevir(liste)`
-
----
-
-## 🤝 Katkıda Bulunma
-
-Hüma dilini geliştirmek ve katkıda bulunmak isterseniz lütfen bir Pull Request (PR) gönderin veya hata bildirimi yapın.
+- **`matematik.hb`**: `karesi(n)`, `küpü(n)`, `kuvvet(a, b)`, `faktöriyel(n)`
+- **`renkler.hb`**: `renkli_yaz(m, r)`, `başarı_yaz(m)`, `hata_yaz(m)`
+- **`zaman.hb`**: `beklet(s)`, `kronometre_başlat()`, `kronometre_bitir(b)`
+- **`liste.hb`**: `eşle(d, f)`, `filtrele(d, f)`, `indirge(d, f, b)`
+- **`birim_test.hb`**: `test_et(ad, f)`, `iddia_et(a, b, m)`
 
 ---
 
