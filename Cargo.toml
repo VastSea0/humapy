@@ -1,6 +1,6 @@
 [package]
 name = "huma"
-version = "0.1.0"
+version = "0.2.0"
 description = "A high-performance, safe, and intuitive programming language with Turkish syntax, featuring a bytecode VM."
 authors = ["VastSea0 <vastseaoffical0@outlook.com>"]
 license = "MIT"
