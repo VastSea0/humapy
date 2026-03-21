@@ -6,16 +6,16 @@ r_tamsayı fonksiyon olsun min, max alsın {
     sonuc - (sonuc % 1)'i döndür
 }
 
-r_seç fonksiyon olsun liste alsın {
-    boy = uzunluk(liste) olsun
+r_seç fonksiyon olsun d alsın {
+    boy = uzunluk(d) olsun
     boy = 0 ise { 0'ı döndür }
     idx = r_tamsayı(0, boy - 1) olsun
-    liste[idx]'i döndür
+    d[idx]'i döndür
 }
 
-r_karıştır fonksiyon olsun liste alsın {
-    yeni = liste olsun
-    boy = uzunluk(liste) olsun
+r_karıştır fonksiyon olsun d alsın {
+    yeni = d olsun
+    boy = uzunluk(d) olsun
     i = 0 olsun
     i < boy olduğu sürece {
         j = r_tamsayı(0, boy - 1) olsun
