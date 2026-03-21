@@ -6,6 +6,9 @@ authors = ["VastSea0 <vastseaoffical0@outlook.com>"]
 license = "MIT"
 edition = "2024"
 default-run = "huma"
+[[bin]]
+name = "ide"
+path = "src/bin/ide.rs"
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }

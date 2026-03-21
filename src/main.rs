@@ -23,6 +23,12 @@ fn main() {
 
     if args.len() > 1 {
         match args[1].as_str() {
+            "--ide" => {
+                ide_baslat();
+            }
+            "--repl" | "-r" => {
+                repl_baslat();
+            }
             "--derle" | "-d" => {
                 if args.len() > 2 {
                     derle_ve_kaydet(&args[2], args.get(3).map(|s| s.as_str()).unwrap_or("cikti.hbc"));
@@ -47,8 +53,38 @@ fn main() {
             _ => dosya_calistir(&args[1]),
         }
     } else {
-        repl_baslat();
+        // Argüman yoksa: Masaüstü ortamında IDE, terminalde REPL başlat
+        if env::var("DISPLAY").is_ok() || env::var("WAYLAND_DISPLAY").is_ok() {
+            ide_baslat();
+        } else {
+            repl_baslat();
+        }
     }
+}
+
+fn ide_baslat() {
+    println!("🐦 Hüma Modern IDE (Web Tabanlı) başlatılıyor...");
+    println!("Sunucu adresi: http://localhost:3737");
+    
+    // Arka planda Node.js sunucusunu başlat
+    let mut server = std::process::Command::new("node")
+        .arg("ide/server.js")
+        .spawn()
+        .expect("IDE başlatılamadı. Sisteme Node.js yüklü olduğundan emin olun.");
+        
+    // Sunucunun ayağa kalkması için kısa bir süre bekle
+    std::thread::sleep(std::time::Duration::from_millis(1500));
+    
+    // İşletim sistemine göre tarayıcıda URL'yi aç
+    #[cfg(target_os = "linux")]
+    let _ = std::process::Command::new("xdg-open").arg("http://localhost:3737").status();
+    #[cfg(target_os = "windows")]
+    let _ = std::process::Command::new("cmd").args(["/C", "start", "http://localhost:3737"]).status();
+    #[cfg(target_os = "macos")]
+    let _ = std::process::Command::new("open").arg("http://localhost:3737").status();
+
+    // IDE penceresi açık kaldığı sürece Hüma sunucusunu ayakta tut
+    let _ = server.wait();
 }
 
 fn ikili_dosya_olustur(girdi: &str, cikti: &str) {
