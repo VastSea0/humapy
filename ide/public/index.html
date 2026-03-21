@@ -447,7 +447,11 @@ async function runCode() {
     // Tauri Check
     if (window.__TAURI__) {
       try {
-        output = await window.__TAURI__.invoke('run_huma', { code });
+        let invokeFn = window.__TAURI__.invoke || (window.__TAURI__.core && window.__TAURI__.core.invoke);
+        if (!invokeFn && window.__TAURI_INTERNALS__ && window.__TAURI_INTERNALS__.invoke) {
+            invokeFn = window.__TAURI_INTERNALS__.invoke;
+        }
+        output = await invokeFn('run_huma', { code });
         elapsed = Date.now() - startTime;
       } catch (e) {
         error = e.toString();
