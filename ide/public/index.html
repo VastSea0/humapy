@@ -375,7 +375,7 @@ CodeMirror.defineSimpleMode('huma', {
   start: [
     { regex: /\/\/.*/, token: 'comment' },
     { regex: /"(?:[^\\]|\\.)*?(?:"|$)/, token: 'string' },
-    { regex: /\b(?:yazdır|yazdir|eğer|eger|değilse|degilse|döngü|dongu|döndür|dondur|fonksiyon|değişken|degisken|yükle|yukle|sınıf|sinif|değil|degil|ve|veya|yada)\b/, token: 'keyword' },
+    { regex: /\b(?:olsun|alsın|alsin|ise|yoksa|olduğu|oldugu|sürece|surece|yazdır|yazdir|döndür|dondur|fonksiyon|sınıf|sinif|yükle|yukle|dene|hata|var|ve|veya|değil|degil)\b/, token: 'keyword' },
     { regex: /\b(?:uzunluk|oku|uyut|zaman|listeye_ekle|karekök|rastgele|dosya_oku|dosya_yaz|tipi|argümanlar)\b/, token: 'builtin' },
     { regex: /\b\d+(?:\.\d+)?\b/, token: 'number' },
     { regex: /[=!<>]=?|[+\-*\/%.]/,  token: 'operator' },
@@ -402,18 +402,18 @@ editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
 });
 
 const DEFAULT_CODE = `// Merhaba Hüma!
-yazdır("Merhaba, Dünya!");
+"Merhaba, Dünya!"'yı yazdır;
 
 // Değişken tanımla
-değişken sayı = 42;
-yazdır("Sayı: " + sayı);
+sayı = 42 olsun
+"Sayı: " + sayı'yı yazdır;
 
 // Fonksiyon örneği
-fonksiyon topla(a, b) {
-  döndür a + b;
+topla fonksiyon olsun a, b alsın {
+  a + b'yi döndür
 }
 
-yazdır("5 + 3 = " + topla(5, 3));
+"5 + 3 = " + topla(5, 3)'ü yazdır;
 `;
 
 editor.setValue(DEFAULT_CODE);
