@@ -1,4 +1,4 @@
-use crate::ast::Komut;
+use crate::ast::{Ifade, Komut};
 use std::collections::{HashMap};
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -18,6 +18,7 @@ pub enum Deger {
     Sinif {
         ad: String,
         metotlar: HashMap<String, (Vec<String>, Vec<Komut>)>,
+        alan_baslangic: Vec<(String, Ifade)>,
     },
     Nesne {
         sinif_adi: String,
@@ -28,7 +29,13 @@ pub enum Deger {
 impl std::fmt::Display for Deger {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Deger::Sayi(n) => write!(f, "{}", n),
+            Deger::Sayi(n) => {
+                if *n == (*n as i64) as f64 {
+                    write!(f, "{}", *n as i64)
+                } else {
+                    write!(f, "{}", n)
+                }
+            },
             Deger::Metin(s) => write!(f, "{}", s),
             Deger::Liste(l) => {
                 let p: Vec<String> = l.iter().map(|d| d.to_string()).collect();

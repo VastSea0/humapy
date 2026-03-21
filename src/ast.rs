@@ -5,6 +5,8 @@ pub enum Ifade {
     Bos,
     Sayi(f64),
     Metin(String),
+    Dogru,
+    Yanlis,
     Degisken(String),
     IkiliIslem {
         sol: Box<Ifade>,
@@ -30,6 +32,12 @@ pub enum Ifade {
         fonksiyon: Box<Ifade>,
         argumanlar: Vec<Ifade>,
     },
+    /// kendisi'nin özellik erişimi
+    KendisiErisim {
+        ozellik: String,
+    },
+    /// liste'nin uzunluğu ifadesi
+    Uzunluk(Box<Ifade>),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -64,4 +72,29 @@ pub enum Komut {
     },
     YazdirKomutu(Ifade),
     IfadeKomutu(Ifade),
+    /// sayılar liste olsun
+    ListeOlustur {
+        ad: String,
+    },
+    /// sayılar'a [5]'i ekle
+    ListeEkle {
+        liste: String,
+        deger: Ifade,
+    },
+    /// sayılar'dan [0]'ı çıkar
+    ListeCikar {
+        liste: String,
+        indeks: Ifade,
+    },
+    /// dene { } hata var ise { }
+    DeneKomutu {
+        dene_govde: Vec<Komut>,
+        hata_govde: Vec<Komut>,
+    },
+    /// Nesne alanına atama: kendisi'nin alan = değer olsun
+    NesneAlaniAtama {
+        nesne: Ifade,
+        ozellik: String,
+        deger: Ifade,
+    },
 }

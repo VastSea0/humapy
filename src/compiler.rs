@@ -51,6 +51,14 @@ impl Derleyici {
             Ifade::Degisken(ad) => {
                 self.instructions.push(OpCode::LoadVar(ad));
             }
+            Ifade::Dogru => {
+                let idx = self.constant_ekle(Constant::Sayi(1.0));
+                self.instructions.push(OpCode::PushConstant(idx));
+            }
+            Ifade::Yanlis => {
+                let idx = self.constant_ekle(Constant::Sayi(0.0));
+                self.instructions.push(OpCode::PushConstant(idx));
+            }
             Ifade::IkiliIslem { sol, operator, sag } => {
                 self.ifade_derle(*sol);
                 self.ifade_derle(*sag);
@@ -61,7 +69,7 @@ impl Derleyici {
                     Token::Bolnu => self.instructions.push(OpCode::Div),
                     Token::Buyuktur => self.instructions.push(OpCode::Greater),
                     Token::Kucuktur => self.instructions.push(OpCode::Less),
-                    Token::EsitEsittir => self.instructions.push(OpCode::Equal),
+                    Token::EsitEsittir | Token::Esittir => self.instructions.push(OpCode::Equal),
                     Token::EsitDegil => self.instructions.push(OpCode::NotEqual),
                     _ => {}
                 }
@@ -150,7 +158,7 @@ impl Derleyici {
                 self.instructions.push(OpCode::Return);
             }
             _ => {
-                // Placeholder for unimplemented commands
+                // Placeholder for unimplemented commands in bytecode
             }
         }
     }
