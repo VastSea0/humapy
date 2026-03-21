@@ -1,47 +1,47 @@
 // Gelişmiş Liste İşlemleri
 
-yazdır_liste fonksiyon olsun liste alsın {
-    liste'yi yazdır
+yazdır_liste fonksiyon olsun d alsın {
+    d'yi yazdır
 }
 
-iceriyor_mu fonksiyon olsun liste, eleman alsın {
-    boy = uzunluk(liste) olsun
+iceriyor_mu fonksiyon olsun d, eleman alsın {
+    boy = uzunluk(d) olsun
     i = 0 olsun
     i < boy olduğu sürece {
-        liste[i] = eleman ise { 1'i döndür }
+        d[i] = eleman ise { 1'i döndür }
         i = i + 1 olsun
     }
     0'ı döndür
 }
 
-ters_cevir fonksiyon olsun liste alsın {
+ters_cevir fonksiyon olsun d alsın {
     yeni = [] olsun
-    i = uzunluk(liste) - 1 olsun
+    i = uzunluk(d) - 1 olsun
     i >= 0 olduğu sürece {
-        yeni = listeye_ekle(yeni, liste[i]) olsun
+        yeni = listeye_ekle(yeni, d[i]) olsun
         i = i - 1 olsun
     }
     yeni'yi döndür
 }
 
 // Fonksiyonel Araçlar
-eşle fonksiyon olsun liste, f alsın {
+eşle fonksiyon olsun d, f alsın {
     sonuç = [] olsun
     i = 0 olsun
-    boy = uzunluk(liste) olsun
+    boy = uzunluk(d) olsun
     i < boy olduğu sürece {
-        sonuç = listeye_ekle(sonuç, f(liste[i])) olsun
+        sonuç = listeye_ekle(sonuç, f(d[i])) olsun
         i = i + 1 olsun
     }
     sonuç'u döndür
 }
 
-filtrele fonksiyon olsun liste, f alsın {
+filtrele fonksiyon olsun d, f alsın {
     sonuç = [] olsun
     i = 0 olsun
-    boy = uzunluk(liste) olsun
+    boy = uzunluk(d) olsun
     i < boy olduğu sürece {
-        eleman = liste[i] olsun
+        eleman = d[i] olsun
         f(eleman) ise {
             sonuç = listeye_ekle(sonuç, eleman) olsun
         }
@@ -50,22 +50,22 @@ filtrele fonksiyon olsun liste, f alsın {
     sonuç'u döndür
 }
 
-indirge fonksiyon olsun liste, f, başlangıç alsın {
+indirge fonksiyon olsun d, f, başlangıç alsın {
     akümülatör = başlangıç olsun
     i = 0 olsun
-    boy = uzunluk(liste) olsun
+    boy = uzunluk(d) olsun
     i < boy olduğu sürece {
-        akümülatör = f(akümülatör, liste[i]) olsun
+        akümülatör = f(akümülatör, d[i]) olsun
         i = i + 1 olsun
     }
     akümülatör'ü döndür
 }
 
-dilimle fonksiyon olsun liste, baş, son alsın {
+dilimle fonksiyon olsun d, baş, son alsın {
     sonuç = [] olsun
     i = baş olsun
     i < son olduğu sürece {
-        sonuç = listeye_ekle(sonuç, liste[i]) olsun
+        sonuç = listeye_ekle(sonuç, d[i]) olsun
         i = i + 1 olsun
     }
     sonuç'u döndür
