@@ -522,14 +522,30 @@ function clearOutput() {
 
 // ── Sidebar ───────────────────────────────────────────────────────────────
 async function loadSidebar() {
+  let ex, libs;
+  
+  if (window.__TAURI__) {
+    try {
+      let invokeFn = window.__TAURI__.invoke || (window.__TAURI__.core && window.__TAURI__.core.invoke);
+      if (!invokeFn && window.__TAURI_INTERNALS__ && window.__TAURI_INTERNALS__.invoke) {
+        invokeFn = window.__TAURI_INTERNALS__.invoke;
+      }
+      ex = await invokeFn('get_examples');
+      libs = await invokeFn('get_libs');
+    } catch (e) { console.error('Tauri load error:', e); }
+  } else {
+    try {
+      ex = await fetch('/api/examples').then(r => r.json());
+      libs = await fetch('/api/libs').then(r => r.json());
+    } catch(e) { console.error('Web load error:', e); }
+  }
+
   // Examples
-  try {
-    const ex = await fetch('/api/examples').then(r => r.json());
-    const el = document.getElementById('examples-list');
-    el.innerHTML = '';
-    if (ex.length === 0) {
-      el.innerHTML = '<div class="sidebar-file" style="color:var(--text-3);font-size:11px">Bulunamadı</div>';
-    }
+  const el = document.getElementById('examples-list');
+  el.innerHTML = '';
+  if (!ex || ex.length === 0) {
+    el.innerHTML = '<div class="sidebar-file" style="color:var(--text-3);font-size:11px">Bulunamadı</div>';
+  } else {
     ex.forEach(f => {
       const div = document.createElement('div');
       div.className = 'sidebar-file';
@@ -538,16 +554,14 @@ async function loadSidebar() {
       div.onclick = () => loadFile(f.name, f.content, div, 'ex');
       el.appendChild(div);
     });
-  } catch(e) {}
+  }
 
   // Libs
-  try {
-    const libs = await fetch('/api/libs').then(r => r.json());
-    const ll = document.getElementById('libs-list');
-    ll.innerHTML = '';
-    if (libs.length === 0) {
-      ll.innerHTML = '<div class="sidebar-file" style="color:var(--text-3);font-size:11px">Bulunamadı</div>';
-    }
+  const ll = document.getElementById('libs-list');
+  ll.innerHTML = '';
+  if (!libs || libs.length === 0) {
+    ll.innerHTML = '<div class="sidebar-file" style="color:var(--text-3);font-size:11px">Bulunamadı</div>';
+  } else {
     libs.forEach(f => {
       const div = document.createElement('div');
       div.className = 'sidebar-file';
@@ -556,7 +570,7 @@ async function loadSidebar() {
       div.onclick = () => loadFile(f.name, f.content, div, 'lib');
       ll.appendChild(div);
     });
-  } catch(e) {}
+  }
 }
 
 let activeFileEl = null;
@@ -603,19 +617,31 @@ async function saveFile() {
   const filename = document.getElementById('save-filename').value.trim();
   if (!filename) return;
   closeSaveModal();
+  let res;
 
-  const res = await fetch('/api/save', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ filename, content: editor.getValue() })
-  }).then(r => r.json());
+  const content = editor.getValue();
+  if (window.__TAURI__) {
+    try {
+      let invokeFn = window.__TAURI__.invoke || (window.__TAURI__.core && window.__TAURI__.core.invoke);
+      if (!invokeFn && window.__TAURI_INTERNALS__ && window.__TAURI_INTERNALS__.invoke) {
+        invokeFn = window.__TAURI_INTERNALS__.invoke;
+      }
+      res = await invokeFn('save_file', { filename, content });
+    } catch (e) { res = { error: e.toString() }; }
+  } else {
+    res = await fetch('/api/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename, content })
+    }).then(r => r.json());
+  }
 
   if (res.ok) {
     currentFilename = filename.endsWith('.hb') ? filename : filename + '.hb';
     document.getElementById('tab-filename-display').textContent = currentFilename;
     document.getElementById('main-tab').classList.remove('modified');
     isModified = false;
-    appendOutput('success', `✅ Kaydedildi: ${res.path}`);
+    appendOutput('system', `✅ Kaydedildi: ${res.path}`);
     loadSidebar(); // refresh
   } else {
     appendOutput('stderr', '❌ Kaydetme hatası: ' + (res.error || 'Bilinmeyen'));

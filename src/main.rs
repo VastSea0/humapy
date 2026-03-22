@@ -7,6 +7,7 @@ mod interpreter;
 mod bytecode;
 mod compiler;
 mod vm;
+mod builtin_files;
 
 use lexer::Lexer;
 use parser::Parser;
@@ -17,6 +18,8 @@ use vm::VM;
 use std::io::{self, Write};
 use std::fs;
 use std::env;
+use std::rc::Rc;
+use std::cell::RefCell;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -80,7 +83,7 @@ fn ide_baslat() {
     // İstekleri dinle
     for stream in listener.incoming() {
         if let Ok(mut stream) = stream {
-            let mut buffer = vec![0; 1024 * 1024]; // 1MB Tampom (Kod dosyaları için fazlasıyla yeterli)
+            let mut buffer = vec![0; 1024 * 1024]; 
             let bytes_read = stream.read(&mut buffer).unwrap_or(0);
             if bytes_read == 0 { continue; }
             
@@ -89,9 +92,51 @@ fn ide_baslat() {
             if request.starts_with("GET / ") || request.starts_with("GET /index.html") {
                 let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nConnection: close\r\n\r\n{}", html_content);
                 let _ = stream.write_all(response.as_bytes());
+            } else if request.starts_with("GET /api/libs") {
+                let libs: Vec<Value> = builtin_files::get_lib_files().iter().map(|(ad, icerik)| {
+                    json!({ "name": ad, "content": icerik })
+                }).collect();
+                let body = json!(libs).to_string();
+                let resp = format!("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}", body.len(), body);
+                let _ = stream.write_all(resp.as_bytes());
+            } else if request.starts_with("GET /api/examples") {
+                let examples: Vec<Value> = builtin_files::get_example_files().iter().map(|(ad, icerik)| {
+                    json!({ "name": ad, "content": icerik })
+                }).collect();
+                let body = json!(examples).to_string();
+                let resp = format!("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}", body.len(), body);
+                let _ = stream.write_all(resp.as_bytes());
+            } else if request.starts_with("POST /api/save") {
+                let mut body_str = "";
+                if let Some(body_idx) = request.find("\r\n\r\n") {
+                    body_str = &request[(body_idx + 4)..].trim_matches(char::from(0));
+                }
+                
+                let mut ok = false;
+                let mut path = String::new();
+                let mut err = String::new();
+
+                if let Ok(json_val) = serde_json::from_str::<Value>(body_str) {
+                    let filename = json_val.get("filename").and_then(|v| v.as_str()).unwrap_or("adsiz.hb");
+                    let content = json_val.get("content").and_then(|v| v.as_str()).unwrap_or("");
+                    
+                    let mut file_path = filename.to_string();
+                    if !file_path.ends_with(".hb") { file_path.push_str(".hb"); }
+                    
+                    if let Ok(_) = fs::write(&file_path, content) {
+                        ok = true;
+                        path = file_path;
+                    } else {
+                        err = "Dosya yazılamadı".to_string();
+                    }
+                }
+
+                let resp_body = json!({ "ok": ok, "path": path, "error": err }).to_string();
+                let resp = format!("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}", resp_body.len(), resp_body);
+                let _ = stream.write_all(resp.as_bytes());
+
             } else if request.starts_with("POST /api/run") {
                 let start_time = std::time::Instant::now();
-                
                 let mut body_str = "";
                 if let Some(body_idx) = request.find("\r\n\r\n") {
                     body_str = &request[(body_idx + 4)..].trim_matches(char::from(0));
@@ -102,25 +147,14 @@ fn ide_baslat() {
                 
                 if let Ok(json_val) = serde_json::from_str::<Value>(body_str) {
                     if let Some(code) = json_val.get("code").and_then(|v| v.as_str()) {
-                        let tmp_file = env::temp_dir().join(format!("huma_run_{}.hb", std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_millis()));
-                        let _ = fs::write(&tmp_file, code);
-
-                        let exe = env::current_exe().unwrap();
-                        let result = std::process::Command::new(exe)
-                            .arg(tmp_file.to_str().unwrap())
-                            .output();
-
-                        let _ = fs::remove_file(tmp_file);
-
-                        match result {
-                            Ok(out) => {
-                                output_str = String::from_utf8_lossy(&out.stdout).to_string();
-                                error_str = String::from_utf8_lossy(&out.stderr).to_string();
-                            }
-                            Err(e) => {
-                                error_str = e.to_string();
-                            }
-                        }
+                        let output_capture = Rc::new(RefCell::new(String::new()));
+                        let mut interp = Yorumlayici::new().with_output_buffer(output_capture.clone());
+                        let lexer = Lexer::new(code);
+                        let mut parser = Parser::new(lexer);
+                        let program = parser.parse_program();
+                        
+                        interp.yorumla(program);
+                        output_str = output_capture.borrow().to_string();
                     } else {
                         error_str = "Hata: İstekte 'code' alanı bulunamadı".to_string();
                     }
@@ -137,7 +171,6 @@ fn ide_baslat() {
                 
                 let resp_body = resp_json.to_string();
                 let http_resp = format!("HTTP/1.1 200 OK\r\nContent-Type: application/json; charset=utf-8\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}", resp_body.len(), resp_body);
-                
                 let _ = stream.write_all(http_resp.as_bytes());
             } else {
                 let resp = "HTTP/1.1 404 NOT FOUND\r\nConnection: close\r\n\r\n";
