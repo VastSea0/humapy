@@ -128,6 +128,17 @@ AY_LİSTESİ = [
     "temmuz", "ağustos", "eylül", "ekim", "kasım", "aralık"
 ] olsun
 
+KURUM_LİSTESİ = [
+    "bakanlığı", "belediyesi", "üniversitesi", "müdürlüğü",
+    "başkanlığı", "genel", "merkezi", "ajansı", "kurumu",
+    "afad", "tübitak", "tobb", "tesk"
+] olsun
+
+UNVAN_LİSTESİ = [
+    "başkan", "müdür", "bakan", "vali", "kaymakam",
+    "profesör", "doktor", "uzman", "yetkili", "sözcü"
+] olsun
+
 BÜYÜK_HARFLER = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ" olsun
 RAKAMLAR      = "0123456789" olsun
 
@@ -151,7 +162,7 @@ NEGATİF_KELİMELER = [
 ] olsun
 
 GÜÇLENDİRİCİLER = [
-    "çok", "son", "aşırı", "oldukça", "gayet", "epey", "pek",
+    "çok", "derece", "aşırı", "oldukça", "gayet", "epey", "pek",
     "kesinlikle", "gerçekten", "tam", "fazlasıyla"
 ] olsun
 
@@ -345,6 +356,17 @@ toplu_stem fonksiyon olsun tokens alsın {
         i = i + 1 olsun
     }
     sonuç'u döndür
+}
+
+akıllı_stem fonksiyon olsun kelime, ner_etiketi alsın {
+    özel = 0 olsun
+    ner_etiketi = NER_KİŞİ ise { özel = 1 olsun }
+    ner_etiketi = NER_YER  ise { özel = 1 olsun }
+    ner_etiketi = NER_ORG  ise { özel = 1 olsun }
+    özel = 1 ise {
+        küçük_harf(kelime)'yi döndür
+    }
+    stem(kelime)'yi döndür
 }
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -638,7 +660,7 @@ sayı_token_mu fonksiyon olsun kelime alsın {
     tümü'yü döndür
 }
 
-ner_etiket fonksiyon olsun kelime, önceki alsın {
+ner_etiket fonksiyon olsun kelime, önceki, önceki_nokta alsın {
     etiket = NER_O olsun
     buldu  = 0 olsun
 
@@ -661,19 +683,33 @@ ner_etiket fonksiyon olsun kelime, önceki alsın {
         }
     }
     buldu = 0 ise {
+        hızlı_içeriyor(KURUM_LİSTESİ, küçük_harf(kelime)) ise {
+            etiket = NER_ORG olsun
+            buldu  = 1 olsun
+        }
+    }
+    buldu = 0 ise {
+        hızlı_içeriyor(UNVAN_LİSTESİ, küçük_harf(kelime)) ise {
+            etiket = NER_O olsun
+            buldu  = 1 olsun
+        }
+    }
+    buldu = 0 ise {
         uzunluk(kelime) > 0 ise {
-            bü = büyük_harf_mi(kelime[0]) olsun
-            bü = 1 ise {
-                önceki_kişi = 0 olsun
-                önceki = NER_KİŞİ ise { önceki_kişi = 1 olsun }
-                önceki = NER_ORG  ise { önceki_kişi = 1 olsun }
-                önceki_kişi = 1 ise {
-                    etiket = önceki olsun
-                    buldu  = 1 olsun
-                }
-                önceki_kişi = 0 ise {
-                    etiket = NER_KİŞİ olsun
-                    buldu  = 1 olsun
+            önceki_nokta = 0 ise {
+                bü = büyük_harf_mi(kelime[0]) olsun
+                bü = 1 ise {
+                    önceki_kişi = 0 olsun
+                    önceki = NER_KİŞİ ise { önceki_kişi = 1 olsun }
+                    önceki = NER_ORG  ise { önceki_kişi = 1 olsun }
+                    önceki_kişi = 1 ise {
+                        etiket = önceki olsun
+                        buldu  = 1 olsun
+                    }
+                    önceki_kişi = 0 ise {
+                        etiket = NER_KİŞİ olsun
+                        buldu  = 1 olsun
+                    }
                 }
             }
         }
@@ -683,16 +719,28 @@ ner_etiket fonksiyon olsun kelime, önceki alsın {
 }
 
 ner_etiketle fonksiyon olsun tokens alsın {
-    sonuç  = [] olsun
-    önceki = NER_O olsun
+    sonuç        = [] olsun
+    önceki       = NER_O olsun
+    önceki_nokta = 1 olsun
+
     i = 0 olsun
     n = uzunluk(tokens) olsun
     i < n olduğu sürece {
         kelime = tokens[i] olsun
-        etiket = ner_etiket(kelime, önceki) olsun
+        etiket = ner_etiket(kelime, önceki, önceki_nokta) olsun
         çift   = [kelime, etiket] olsun
         sonuç'a [çift] ekle
         önceki = etiket olsun
+
+        yeni_nokta  = 0 olsun
+        kel_boy     = uzunluk(kelime) olsun
+        kel_boy > 0 ise {
+            son_idx = kel_boy - 1 olsun
+            kelime[son_idx] = "." ise { yeni_nokta = 1 olsun }
+            kelime[son_idx] = "!" ise { yeni_nokta = 1 olsun }
+            kelime[son_idx] = "?" ise { yeni_nokta = 1 olsun }
+        }
+        önceki_nokta = yeni_nokta olsun
         i = i + 1 olsun
     }
     sonuç'u döndür
@@ -784,8 +832,8 @@ duygu_yazdır fonksiyon olsun metin alsın {
 // ════════════════════════════════════════════════════════════════════════════
 
 metin_ortak_kelime fonksiyon olsun metin1, metin2 alsın {
-    t1    = durak_kelime_filtrele(nlp_tokenize(metin1)) olsun
-    t2    = durak_kelime_filtrele(nlp_tokenize(metin2)) olsun
+    t1 = toplu_stem(durak_kelime_filtrele(nlp_tokenize(metin1))) olsun
+    t2 = toplu_stem(durak_kelime_filtrele(nlp_tokenize(metin2))) olsun
     ortak = 0 olsun
     i = 0 olsun
     n = uzunluk(t1) olsun

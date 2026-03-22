@@ -89,9 +89,36 @@ i < 5 olduğu sürece {
         "    (varlık bulunamadı)"'yı yazdır
     }
 
-    // Anahtar kelimeler (en sık 3 kök)
-    temiz  = durak_kelime_filtrele(tokenler) olsun
-    kökler = toplu_stem(temiz) olsun
+    // Anahtar kelimeler (en sık 3 kök) - akıllı_stem ile
+    kökler = [] olsun
+    z = 0 olsun
+    z_len = uzunluk(ner_sonuç) olsun
+    z < z_len olduğu sürece {
+        çift = ner_sonuç[z] olsun
+        kelime = çift[0] olsun
+        etiket = çift[1] olsun
+        
+        // nlp_temizle ile noktalama ve büyük/küçük harf düzelt
+        temizlenmiş = nlp_temizle(kelime) olsun
+        
+        // boş değilse ve durak değilse
+        kırpılmış = kırp(temizlenmiş) olsun
+        uzunluk(kırpılmış) > 0 ise {
+            parçalar = tokenize(kırpılmış) olsun
+            pz = 0 olsun
+            pz_len = uzunluk(parçalar) olsun
+            pz < pz_len olduğu sürece {
+                alt_kel = parçalar[pz] olsun
+                dur = durak_mı(alt_kel) olsun
+                dur = 0 ise {
+                    akıllı = akıllı_stem(alt_kel, etiket) olsun
+                    kökler'e [akıllı] ekle
+                }
+                pz = pz + 1 olsun
+            }
+        }
+        z = z + 1 olsun
+    }
     frekans = kelime_frekansları(kökler) olsun
     en3    = en_sık_n(frekans, 3) olsun
     "  🔑 Anahtar kökler:"'i yazdır
