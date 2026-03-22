@@ -87,33 +87,6 @@ impl Parser {
                         if self.current_token == Token::NoktaliVirgul { self.next_token(); }
                         return Some(Komut::ListeOlustur { ad });
                     }
-                    Token::AcikKose => {
-                        // sayılar'dan [idx] çıkar/yazdır veya sayılar'a [val] ekle
-                        let ad = if let Token::Tanimlayici(ref s) = self.current_token { s.clone() } else { unreachable!() };
-                        self.next_token(); // identifier yut
-                        self.next_token(); // '[' yut
-                        let inner = self.parse_ifade();
-                        self.consume(Token::KapaliKose);
-                        
-                        if self.current_token == Token::Ekle {
-                            self.next_token();
-                            if self.current_token == Token::NoktaliVirgul { self.next_token(); }
-                            return Some(Komut::ListeEkle { liste: ad, deger: inner });
-                        }
-                        if self.current_token == Token::Cikar {
-                            self.next_token();
-                            if self.current_token == Token::NoktaliVirgul { self.next_token(); }
-                            return Some(Komut::ListeCikar { liste: ad, indeks: inner });
-                        }
-                        if self.current_token == Token::Yazdir {
-                            self.next_token();
-                            if self.current_token == Token::NoktaliVirgul { self.next_token(); }
-                            let erisim = Ifade::ListeErisim { liste: Box::new(Ifade::Degisken(ad)), indeks: Box::new(inner) };
-                            return Some(Komut::YazdirKomutu(erisim));
-                        }
-                        let erisim = Ifade::ListeErisim { liste: Box::new(Ifade::Degisken(ad)), indeks: Box::new(inner) };
-                        return self.parse_ifade_devam(erisim);
-                    }
                     _ => {}
                 }
 
@@ -192,30 +165,30 @@ impl Parser {
             return self.parse_oldugu_surece(ifade);
         }
 
-        // Identifier sonrası [val] ekle/çıkar
-        if self.current_token == Token::AcikKose {
-            if let Ifade::Degisken(ref liste_ad) = ifade {
-                let liste_ad = liste_ad.clone();
-                self.next_token(); // '[' yut
-                let inner = self.parse_ifade();
-                self.consume(Token::KapaliKose);
-                if self.current_token == Token::Ekle {
-                    self.next_token();
-                    if self.current_token == Token::NoktaliVirgul { self.next_token(); }
-                    return Some(Komut::ListeEkle { liste: liste_ad, deger: inner });
+        // Postfix: ekle
+        if self.current_token == Token::Ekle {
+            self.next_token();
+            if self.current_token == Token::NoktaliVirgul { self.next_token(); }
+            if let Ifade::ListeErisim { liste, indeks } = ifade {
+                if let Ifade::Degisken(ref ad) = *liste {
+                    return Some(Komut::ListeEkle { liste: ad.clone(), deger: *indeks });
                 }
-                if self.current_token == Token::Cikar {
-                    self.next_token();
-                    if self.current_token == Token::NoktaliVirgul { self.next_token(); }
-                    return Some(Komut::ListeCikar { liste: liste_ad, indeks: inner });
-                }
-                if self.current_token == Token::Yazdir {
-                    self.next_token();
-                    if self.current_token == Token::NoktaliVirgul { self.next_token(); }
-                    let erisim = Ifade::ListeErisim { liste: Box::new(ifade), indeks: Box::new(inner) };
-                    return Some(Komut::YazdirKomutu(erisim));
-                }
+                return Some(Komut::IfadeKomutu(Ifade::ListeErisim { liste, indeks }));
             }
+            return Some(Komut::IfadeKomutu(ifade));
+        }
+
+        // Postfix: çıkar
+        if self.current_token == Token::Cikar {
+            self.next_token();
+            if self.current_token == Token::NoktaliVirgul { self.next_token(); }
+            if let Ifade::ListeErisim { liste, indeks } = ifade {
+                if let Ifade::Degisken(ref ad) = *liste {
+                    return Some(Komut::ListeCikar { liste: ad.clone(), indeks: *indeks });
+                }
+                return Some(Komut::IfadeKomutu(Ifade::ListeErisim { liste, indeks }));
+            }
+            return Some(Komut::IfadeKomutu(ifade));
         }
 
         if self.current_token == Token::NoktaliVirgul { self.next_token(); }
