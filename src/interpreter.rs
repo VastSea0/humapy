@@ -9,13 +9,15 @@ use std::path::Path;
 use std::time::{SystemTime, UNIX_EPOCH};
 use std::thread;
 use std::time::Duration;
+use crate::builtin_files;
 
 pub struct Yorumlayici {
-    global_degiskenler: HashMap<String, Deger>,
-    yerel_scopes: Vec<HashMap<String, Deger>>,
-    donus_degeri: Option<Deger>,
-    yuklenen_dosyalar: HashSet<String>,
-    arama_yolları: Vec<String>,
+    pub global_degiskenler: HashMap<String, Deger>,
+    pub yerel_scopes: Vec<HashMap<String, Deger>>,
+    pub donus_degeri: Option<Deger>,
+    pub yuklenen_dosyalar: HashSet<String>,
+    pub arama_yolları: Vec<String>,
+    pub output_buffer: Option<Rc<RefCell<String>>>,
 }
 
 impl Yorumlayici {
@@ -92,6 +94,30 @@ impl Yorumlayici {
             donus_degeri: None, 
             yuklenen_dosyalar: HashSet::new(), 
             arama_yolları: vec![".".to_string(), "./lib".to_string()],
+            output_buffer: None,
+        }
+    }
+
+    pub fn with_output_buffer(mut self, buffer: Rc<RefCell<String>>) -> Self {
+        self.output_buffer = Some(buffer);
+        self
+    }
+
+    fn yazdir(&self, content: &str) {
+        if let Some(buf) = &self.output_buffer {
+            buf.borrow_mut().push_str(content);
+        } else {
+            print!("{}", content);
+            let _ = io::stdout().flush();
+        }
+    }
+
+    fn satir_yazdir(&self, content: &str) {
+        if let Some(buf) = &self.output_buffer {
+            buf.borrow_mut().push_str(content);
+            buf.borrow_mut().push('\n');
+        } else {
+            println!("{}", content);
         }
     }
 
@@ -129,7 +155,7 @@ impl Yorumlayici {
         match komut {
             Komut::YazdirKomutu(ifade) => {
                 let d = self.ifade_hesapla(ifade);
-                println!("{}", d);
+                self.satir_yazdir(&format!("{}", d));
             }
             Komut::DegiskenTanimla { ad, deger } => {
                 let res = self.ifade_hesapla(deger);
@@ -265,6 +291,20 @@ impl Yorumlayici {
     }
 
     fn modül_yükle(&mut self, dosya_adı: &str) {
+        // Önce gömülü kütüphaneleri kontrol et
+        for (ad, icerik) in builtin_files::get_lib_files() {
+            if ad == dosya_adı {
+                if self.yuklenen_dosyalar.contains(ad) { return; }
+                self.yuklenen_dosyalar.insert(ad.to_string());
+                let mut parser = crate::parser::Parser::new(crate::lexer::Lexer::new(icerik));
+                let prog = parser.parse_program();
+                let eski = self.donus_degeri.take(); // Save return value state
+                self.yorumla(prog);
+                self.donus_degeri = eski; // Restore return value state
+                return;
+            }
+        }
+
         let mut bulundu = None;
         for temel in &self.arama_yolları {
             let tam_yol = format!("{}/{}", temel, dosya_adı);

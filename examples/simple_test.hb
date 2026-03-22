@@ -1,0 +1,1 @@
+"Merhaba Dünya!"'yı yazdır;

@@ -1,51 +1,52 @@
-use std::process::Command;
 use std::fs;
-use std::env;
+use serde_json::{Value, json};
+use huma::interpreter::Yorumlayici;
+use huma::lexer::Lexer;
+use huma::parser::Parser;
+use huma::builtin_files;
+use std::rc::Rc;
+use std::cell::RefCell;
 
 #[tauri::command]
 async fn run_huma(code: String) -> Result<String, String> {
-    let tmp_dir = env::temp_dir();
-    let tmp_file = tmp_dir.join(format!("tauri_huma_{}.hb", std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_millis()));
+    let output_capture = Rc::new(RefCell::new(String::new()));
+    let mut interp = Yorumlayici::new().with_output_buffer(output_capture.clone());
     
-    fs::write(&tmp_file, code).map_err(|e| e.to_string())?;
-
-    // Try to find the actual workspace root containing the Huma compiler
-    let mut root_dir = env::current_exe().unwrap();
-    while root_dir.pop() {
-        // Look for the main Cargo.toml that defines the workspace or huma, rather than the tauri "app"
-        if root_dir.join("src").exists() && root_dir.join("lib").exists() && root_dir.join("Cargo.toml").exists() {
-            if root_dir.join("src-tauri").exists() {
-                break;
-            }
-        }
-        if root_dir.parent().is_none() {
-            root_dir = env::current_dir().unwrap();
-            break;
-        }
-    }
+    let lexer = Lexer::new(&code);
+    let mut parser = Parser::new(lexer);
+    let program = parser.parse_program();
     
-    let output = Command::new("cargo")
-        .args(["run", "--bin", "huma", "--", tmp_file.to_str().unwrap()])
-        .current_dir(root_dir)
-        .output()
-        .map_err(|e| e.to_string())?;
+    interp.yorumla(program);
+    
+    Ok(output_capture.borrow().to_string())
+}
 
-    let _ = fs::remove_file(tmp_file);
+#[tauri::command]
+fn get_libs() -> Value {
+    let libs = builtin_files::get_lib_files();
+    json!(libs.iter().map(|(n, c)| json!({ "name": n, "content": c })).collect::<Vec<_>>())
+}
 
-    let stdout = String::from_utf8_lossy(&output.stdout).to_string();
-    let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+#[tauri::command]
+fn get_examples() -> Value {
+    let examples = builtin_files::get_example_files();
+    json!(examples.iter().map(|(n, c)| json!({ "name": n, "content": c })).collect::<Vec<_>>())
+}
 
-    if !stderr.is_empty() && output.status.code() != Some(0) {
-        Ok(format!("{}\nHATA: {}", stdout, stderr))
-    } else {
-        Ok(stdout)
-    }
+#[tauri::command]
+async fn save_file(filename: String, content: String) -> Result<Value, String> {
+    let mut file_path = filename.clone();
+    if !file_path.ends_with(".hb") { file_path.push_str(".hb"); }
+    
+    fs::write(&file_path, content).map_err(|e| e.to_string())?;
+    
+    Ok(json!({ "ok": true, "path": file_path }))
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
   tauri::Builder::default()
-    .invoke_handler(tauri::generate_handler![run_huma])
+    .invoke_handler(tauri::generate_handler![run_huma, get_libs, get_examples, save_file])
     .setup(|app| {
       if cfg!(debug_assertions) {
         #[allow(unused_must_use)]
