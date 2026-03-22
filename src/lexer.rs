@@ -150,44 +150,52 @@ impl Lexer {
     /// Kesme işareti sonrası ek yönetimi.
     /// Türkçe suffix (ek) varsa strip eder ve:
     /// - 'nin/'nın → Token::Nin döndürür (nesne erişimi, kendisi'nin)
-    /// - Diğer ekler → yok sayılır, bir sonraki token'a geçilir
+    /// - Diğer ekler → yutulur ve bir sonraki token'a geçilir
     fn handle_apostrophe(&mut self) -> Token {
-        // Kesme işaretinden sonraki eki oku
-        let mut suffix = String::new();
-        let save_pos = self.pos;
-        let save_line = self.line;
-        let save_col = self.col;
+        loop {
+            // Kesme işaretinden sonraki eki oku
+            let mut suffix = String::new();
+            let save_pos = self.pos;
+            let save_line = self.line;
+            let save_col = self.col;
 
-        while let Some(ch) = self.peek() {
-            if is_turkish_alpha(ch) && !ch.is_ascii_digit() {
-                suffix.push(ch);
-                self.advance();
-            } else {
-                break;
+            while let Some(ch) = self.peek() {
+                if is_turkish_alpha(ch) && !ch.is_ascii_digit() {
+                    suffix.push(ch);
+                    self.advance();
+                } else {
+                    break;
+                }
             }
-        }
 
-        if suffix.is_empty() {
-            // Kesme işareti tek başına — hata
-            return Token::Hata("Beklenmeyen kesme işareti".to_string());
-        }
+            if suffix.is_empty() {
+                return Token::Hata("Beklenmeyen kesme işareti (ek bulunamadı)".to_string());
+            }
 
-        // "nin", "nın", "nun", "nün" ekleri → Nin token döndür (kendisi'nin hız gibi)
-        if matches!(suffix.as_str(), "nin" | "nın" | "nun" | "nün") {
-            return Token::Nin;
-        }
+            // "nin", "nın", "nun", "nün" ekleri → Nin token döndür
+            if matches!(suffix.as_str(), "nin" | "nın" | "nun" | "nün") {
+                return Token::Nin;
+            }
 
-        // Bilinen bir Türkçe ek mi?
-        if is_turkish_suffix(&suffix) {
-            // Eki yut ve sonraki token'ı döndür
-            return self.next_token();
-        }
+            // Bilinen bir Türkçe ek mi?
+            if is_turkish_suffix(&suffix) {
+                // Eki yuttuk. Eğer arkasından başka bir kesme işareti geliyorsa devam et,
+                // gelmiyorsa asıl sonraki token'ı döndür.
+                self.skip_whitespace();
+                if self.peek() == Some('\'') {
+                    self.advance(); // Sonraki kesme işaretini yut ve döngüye devam et
+                    continue;
+                } else {
+                    return self.next_token();
+                }
+            }
 
-        // Bilinmeyen ek — geri al, hata döndür
-        self.pos = save_pos;
-        self.line = save_line;
-        self.col = save_col;
-        Token::Hata(format!("Bilinmeyen ek: '{}", suffix))
+            // Bilinmeyen ek — geri al ve hata döndür
+            self.pos = save_pos;
+            self.line = save_line;
+            self.col = save_col;
+            return Token::Hata(format!("Bilinmeyen ek: '{}", suffix));
+        }
     }
 
     fn read_string(&mut self) -> Token {
@@ -288,47 +296,7 @@ impl Lexer {
                 break;
             }
         }
-
-        // Identifier'dan sonra kesme işareti + ek kontrolü
-        if self.peek() == Some('\'') {
-            let save_pos = self.pos;
-            let save_line = self.line;
-            let save_col = self.col;
-            self.advance(); // kesme işaretini yut
-
-            let mut suffix = String::new();
-            while let Some(sc) = self.peek() {
-                if is_turkish_alpha(sc) && !sc.is_ascii_digit() {
-                    suffix.push(sc);
-                    self.advance();
-                } else {
-                    break;
-                }
-            }
-
-            if matches!(suffix.as_str(), "nin" | "nın" | "nun" | "nün") {
-                // Önce identifier token'ını kaydet, sonra Nin token'ını queue'ya ekle
-                // Ama tek-token lexer'da bunu yapamayız, o yüzden identifier'ı döndür
-                // ve Nin token'ını peek-buffer ile idare edelim
-                // Aslında daha basit yaklaşım: suffix'i geri koy, parser handle etsin
-                self.pos = save_pos;
-                self.line = save_line;
-                self.col = save_col;
-            } else if is_turkish_suffix(&suffix) {
-                // Eki yut — identifier zaten oluştu
-            } else if suffix.is_empty() {
-                // Sadece kesme işareti var, ek yok — geri al
-                self.pos = save_pos;
-                self.line = save_line;
-                self.col = save_col;
-            } else {
-                // Bilinmeyen ek — geri al
-                self.pos = save_pos;
-                self.line = save_line;
-                self.col = save_col;
-            }
-        }
-
+        
         match s.as_str() {
             // Yeni Türkçe anahtar kelimeler
             "yazdır" | "yazdir" => Token::Yazdir,

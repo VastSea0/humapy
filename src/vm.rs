@@ -98,7 +98,7 @@ impl VM {
         match d {
             Deger::Sayi(n) => n != 0.0,
             Deger::Metin(s) => !s.is_empty(),
-            Deger::Liste(l) => !l.is_empty(),
+            Deger::Liste(l) => !l.borrow().is_empty(),
             Deger::Bos => false,
             _ => true,
         }

@@ -17,16 +17,8 @@ yükle "liste.hb";
 TÜRKÇE_ÜNLÜLER   = "aeıioöuüAEIİOÖUÜ" olsun
 TÜRKÇE_NOKTALAMA = ".,;:!?()[]{}\"'/-–—" olsun
 
-// Yaygın Türkçe durak kelimeler (stop words)
-DURAK_KELİMELER = [
-    "bir", "bu", "şu", "o", "ve", "veya", "ile", "da", "de", "mi", "mı",
-    "mu", "mü", "ki", "ise", "de", "da", "çok", "az", "daha", "en", "ne",
-    "ama", "için", "gibi", "kadar", "sonra", "önce", "üzere", "göre",
-    "hem", "ya", "yahut", "ancak", "fakat", "lakin", "hatta", "bile",
-    "ben", "sen", "o", "biz", "siz", "onlar", "bu", "şu", "bunlar", "şunlar",
-    "var", "yok", "olan", "oldu", "olacak", "etmek", "yapmak",
-    "midir", "mıdır", "mudur", "müdür", "değil", "her"
-] olsun
+// Yaygın Türkçe durak kelimeler — Liste formatında hızlı arama için
+DURAK_LISTESİ = ["bir", "bu", "şu", "o", "ve", "veya", "ile", "da", "de", "mi", "mı", "mu", "mü", "ki", "ise", "çok", "az", "daha", "en", "ne", "ama", "için", "gibi", "kadar", "sonra", "önce", "üzere", "göre", "hem", "ya", "ancak", "fakat", "hatta", "bile", "ben", "sen", "biz", "siz", "onlar", "bunlar", "şunlar", "var", "yok", "olan", "değil", "her"] olsun
 
 // Türkçe yaygın çekim ekleri (sondan eklemeli sıralama önemlidir)
 ÇEKIM_EKLERİ = [
@@ -82,7 +74,7 @@ tokenize fonksiyon olsun metin alsın {
     i < n olduğu sürece {
         tok = kırp(parcalar[i]) olsun
         uzunluk(tok) > 0 ise {
-            temiz_parcalar'a [tok]'u ekle
+            temiz_parcalar'a [tok] ekle
         }
         i = i + 1 olsun
     }
@@ -102,16 +94,10 @@ karakter_tokenize fonksiyon olsun metin alsın {
 
 // ─── MODÜL 3: DURAK KELİME FİLTRELEME ─────────────────────────────────────
 
-// durak_mı(kelime) → kelimenin durak kelime olup olmadığını kontrol et
+// durak_mı(kelime) → hızlı küme araması ile durak kelime kontrolü
 durak_mı fonksiyon olsun kelime alsın {
     küçük = küçük_harf(kelime) olsun
-    i = 0 olsun
-    n = uzunluk(DURAK_KELİMELER) olsun
-    i < n olduğu sürece {
-        DURAK_KELİMELER[i] = küçük ise { 1'i döndür }
-        i = i + 1 olsun
-    }
-    0'ı döndür
+    hızlı_içeriyor(DURAK_LISTESİ, küçük)'i döndür
 }
 
 // durak_kelime_filtrele(tokens) → durak kelimeleri çıkar
@@ -120,8 +106,10 @@ durak_kelime_filtrele fonksiyon olsun tokens alsın {
     i = 0 olsun
     n = uzunluk(tokens) olsun
     i < n olduğu sürece {
-        durak_mı(tokens[i]) değil ise {
-            sonuç'a [tokens[i]]'yi ekle
+        eleman = tokens[i] olsun
+        d = durak_mı(eleman) olsun
+        d = 0 ise {
+            sonuç'a [eleman] ekle
         }
         i = i + 1 olsun
     }
@@ -232,7 +220,8 @@ toplu_stem fonksiyon olsun tokens alsın {
     i = 0 olsun
     n = uzunluk(tokens) olsun
     i < n olduğu sürece {
-        sonuç'a [stem(tokens[i])]'yi ekle
+        t = tokens[i] olsun
+        sonuç'a [stem(t)] ekle
         i = i + 1 olsun
     }
     sonuç'u döndür
@@ -243,29 +232,25 @@ toplu_stem fonksiyon olsun tokens alsın {
 // frekans_ekle(frek_listesi, kelime) → kelimeyi frekans listesine ekle ya da artır
 // frek_listesi: [[kelime, sayı], [kelime, sayı], ...] şeklinde iç içe liste
 frekans_ekle fonksiyon olsun frekanslar, kelime alsın {
-    yeni_liste = [] olsun
     bulundu = 0 olsun
     i = 0 olsun
     n = uzunluk(frekanslar) olsun
     i < n olduğu sürece {
         çift = frekanslar[i] olsun
         çift[0] = kelime ise {
-            // Güncelle: yeni sayıyla yeni çift oluştur
-            yeni_çift = [kelime, çift[1] + 1] olsun
-            yeni_liste'a [yeni_çift]'i ekle
+            // Doğrudan çift'in içindeki sayıyı güncelle (In-place mutation)
+            çift[1] = çift[1] + 1 olsun
             bulundu = 1 olsun
-        }
-        çift[0] != kelime ise {
-            yeni_liste'a [çift]'i ekle
+            i = n olsun // Döngüden çık
         }
         i = i + 1 olsun
     }
     // Kelime listede yoksa ekle
     bulundu = 0 ise {
         yeni_çift = [kelime, 1] olsun
-        yeni_liste'a [yeni_çift]'i ekle
+        frekanslar'a [yeni_çift] ekle
     }
-    yeni_liste'yi döndür
+    frekanslar'ı döndür
 }
 
 // kelime_frekansları(tokens) → token listesinden frekans listesi oluştur
@@ -342,8 +327,10 @@ bigram fonksiyon olsun tokens alsın {
     n = uzunluk(tokens) olsun
     i = 0 olsun
     i < (n - 1) olduğu sürece {
-        çift = tokens[i] + " " + tokens[i + 1] olsun
-        sonuç'a [çift]'i ekle
+        t1 = tokens[i] olsun
+        t2 = tokens[i + 1] olsun
+        çift = t1 + " " + t2 olsun
+        sonuç'a [çift] ekle
         i = i + 1 olsun
     }
     sonuç'u döndür
@@ -355,8 +342,11 @@ trigram fonksiyon olsun tokens alsın {
     n = uzunluk(tokens) olsun
     i = 0 olsun
     i < (n - 2) olduğu sürece {
-        üçlü = tokens[i] + " " + tokens[i + 1] + " " + tokens[i + 2] olsun
-        sonuç'a [üçlü]'yü ekle
+        t1 = tokens[i] olsun
+        t2 = tokens[i + 1] olsun
+        t3 = tokens[i + 2] olsun
+        üçlü = t1 + " " + t2 + " " + t3 olsun
+        sonuç'a [üçlü] ekle
         i = i + 1 olsun
     }
     sonuç'u döndür
@@ -374,10 +364,11 @@ ngram fonksiyon olsun tokens, n alsın {
             j > 0 ise {
                 gram = gram + " " olsun
             }
-            gram = gram + tokens[i + j] olsun
+            t = tokens[i + j] olsun
+            gram = gram + t olsun
             j = j + 1 olsun
         }
-        sonuç'a [gram]'ı ekle
+        sonuç'a [gram] ekle
         i = i + 1 olsun
     }
     sonuç'u döndür
