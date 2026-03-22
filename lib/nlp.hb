@@ -1,15 +1,14 @@
 // ══════════════════════════════════════════════════════════════════════════════
 // nlp.hb — Hüma Dili Türkçe NLP Kütüphanesi
-// Sürüm: 3.0.0
+// Sürüm: 3.1.0
 // Lisans: MIT
 //
-// DEĞİŞİKLİKLER (v3.0.0):
-//   - "değilse" tamamen kaldırıldı → bayrak değişkeni pattern'i kullanıldı
-//   - "/" ve "*" operatörleri kaldırıldı → tam sayı tabanlı skorlara geçildi
-//   - nlp_temizle içine kesme işareti "'" temizliği eklendi
-//   - cümle_böl sıfırdan bayrak tabanlı yeniden yazıldı
-//   - duygu_yazdır doğrudan yazdır çağrılarına dönüştürüldü
-//   - pos_etiket / ner_etiket bayrak zinciriyle yeniden yazıldı
+// DEĞİŞİKLİKLER (v3.1.0):
+//   - NER: cümle başı bayrağı eklendi (önceki_nokta)
+//   - NER: kurum ve unvan blacklist eklendi → ORG/O doğruluğu arttı
+//   - akıllı_stem: KİŞİ/YER/ORG tokenlarına stem uygulanmıyor
+//   - metin_ortak_kelime: stem tabanlıya geçildi → benzerlik daha doğru
+//   - GÜÇLENDİRİCİLER: "son" çıkarıldı, "derece" eklendi
 // ══════════════════════════════════════════════════════════════════════════════
 
 yükle "dizgi.hb";
@@ -29,7 +28,8 @@ DURAK_LISTESİ = [
     "şey", "şeyi", "şeye", "şeyden", "böyle", "öyle", "böylece", "zaten", "artık",
     "hep", "hiçbir", "herhangi", "kendi", "kendine", "kendisi", "dahi",
     "oysa", "oysaki", "lakin", "belki", "mutlaka", "kesinlikle", "tabii",
-    "evet", "hayır", "peki", "tamam", "olarak", "aracılığıyla", "vasıtasıyla"
+    "evet", "hayır", "peki", "tamam", "olarak", "aracılığıyla", "vasıtasıyla",
+    "göre", "kadar", "beri", "itibaren", "doğru", "karşı", "rağmen"
 ] olsun
 
 ÇEKIM_EKLERİ = [
@@ -56,14 +56,13 @@ DURAK_LISTESİ = [
 
 // ─── POS SABİTLERİ ────────────────────────────────────────────────────────────
 
-POS_İSİM     = "İSİM" olsun
-POS_FİİL     = "FİİL" olsun
-POS_SIFAT    = "SIFAT" olsun
-POS_ZARF     = "ZARF" olsun
-POS_ZAMİR    = "ZAMİR" olsun
-POS_BAĞLAÇ   = "BAĞLAÇ" olsun
-POS_EDAT     = "EDAT" olsun
-POS_BELİRSİZ = "?" olsun
+POS_İSİM   = "İSİM" olsun
+POS_FİİL   = "FİİL" olsun
+POS_SIFAT  = "SIFAT" olsun
+POS_ZARF   = "ZARF" olsun
+POS_ZAMİR  = "ZAMİR" olsun
+POS_BAĞLAÇ = "BAĞLAÇ" olsun
+POS_EDAT   = "EDAT" olsun
 
 FİİL_KÖKLERİ = [
     "gel", "git", "ver", "al", "yap", "bil", "gör", "kal", "çık", "gir",
@@ -72,7 +71,8 @@ FİİL_KÖKLERİ = [
     "uç", "ulaş", "vur", "yürü", "sat", "sev", "say", "sor", "bul", "sil",
     "kullan", "düşün", "konuş", "öğren", "öğret", "bekle", "izle", "dene",
     "çiz", "gönder", "otur", "kalk", "uyan", "uyu", "iç", "ye", "kur",
-    "geliş", "geliştir", "ilerle", "katıl", "sun", "üret"
+    "geliş", "geliştir", "ilerle", "katıl", "sun", "üret", "açıkla",
+    "değerlendir", "gerçekleştir", "düzenle", "tanıt", "artır"
 ] olsun
 
 SIFAT_LİSTESİ = [
@@ -81,7 +81,7 @@ SIFAT_LİSTESİ = [
     "sıcak", "soğuk", "sert", "yumuşak", "kırmızı", "mavi", "yeşil", "sarı",
     "beyaz", "siyah", "doğru", "yanlış", "kolay", "zor", "güçlü", "zayıf",
     "mutlu", "üzgün", "önemli", "gerekli", "farklı", "aynı", "tek", "çift",
-    "yapay", "gerçek", "dijital", "modern", "temel"
+    "yapay", "gerçek", "dijital", "modern", "temel", "kapsamlı", "başarılı"
 ] olsun
 
 ZARF_LİSTESİ = [
@@ -120,7 +120,10 @@ BİLİNEN_YERLER = [
     "ankara", "istanbul", "izmir", "bursa", "antalya", "adana", "konya",
     "gaziantep", "kayseri", "mersin", "eskişehir", "diyarbakır", "samsun",
     "denizli", "trabzon", "erzurum", "malatya", "van", "elazığ", "manisa",
-    "kahramanmaraş", "kocaeli", "türkiye", "anadolu", "kapadokya", "avrupa", "asya"
+    "kahramanmaraş", "kocaeli", "muğla", "aydın", "tekirdağ", "balıkesir",
+    "türkiye", "anadolu", "kapadokya", "avrupa", "asya", "akdeniz",
+    "karadeniz", "ege", "marmara", "kadıköy", "üsküdar", "beşiktaş",
+    "avrupa", "almanya", "fransa", "italya", "ispanya", "hollanda"
 ] olsun
 
 AY_LİSTESİ = [
@@ -128,15 +131,20 @@ AY_LİSTESİ = [
     "temmuz", "ağustos", "eylül", "ekim", "kasım", "aralık"
 ] olsun
 
+// v3.1.0: Kurum ve unvan blacklist'leri — NER kirliliğini önler
 KURUM_LİSTESİ = [
-    "bakanlığı", "belediyesi", "üniversitesi", "müdürlüğü",
-    "başkanlığı", "genel", "merkezi", "ajansı", "kurumu",
-    "afad", "tübitak", "tobb", "tesk"
+    "bakanlığı", "bakanlığı", "belediyesi", "üniversitesi", "müdürlüğü",
+    "başkanlığı", "merkezi", "ajansı", "kurumu", "enstitüsü", "vakfı",
+    "sendikası", "federasyonu", "konfederasyonu", "birliği", "derneği",
+    "şirketi", "grubu", "holdingı", "bankası", "sigortası", "hastanesi",
+    "afad", "tübitak", "tobb", "tesk", "tsk", "tbmm", "chp", "akp", "mhp"
 ] olsun
 
 UNVAN_LİSTESİ = [
-    "başkan", "müdür", "bakan", "vali", "kaymakam",
-    "profesör", "doktor", "uzman", "yetkili", "sözcü"
+    "başkan", "müdür", "bakan", "vali", "kaymakam", "belediye",
+    "profesör", "doktor", "uzman", "yetkili", "sözcü", "temsilci",
+    "genel", "milli", "ulusal", "cumhurbaşkanı", "başbakan",
+    "bakanı", "başkanı", "müdürü", "valisi"
 ] olsun
 
 BÜYÜK_HARFLER = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ" olsun
@@ -150,7 +158,7 @@ POZİTİF_KELİMELER = [
     "sevimli", "güçlü", "zeki", "yetenekli", "başarı", "sevmek", "beğenmek",
     "teşekkür", "tebrik", "bravo", "aferin", "umut", "neşe", "sevinç",
     "huzur", "barış", "sevgi", "aşk", "eğlenceli", "ilginç", "faydalı",
-    "yararlı", "tavsiye", "öneririm"
+    "yararlı", "tavsiye", "öneririm", "rekor", "tamamlandı", "güven"
 ] olsun
 
 NEGATİF_KELİMELER = [
@@ -158,12 +166,15 @@ NEGATİF_KELİMELER = [
     "başarısız", "hata", "yanlış", "sorun", "problem", "tehlike",
     "zararlı", "rezalet", "felaket", "facia", "dehşet", "acı",
     "zor", "imkansız", "istemiyorum", "sevmiyorum", "beğenmedim",
-    "şikayet", "kaygı", "endişe", "korku", "stres", "yorgun", "bıktım"
+    "şikayet", "kaygı", "endişe", "korku", "stres", "yorgun", "bıktım",
+    "yandı", "yıkıldı", "mahvoldu", "battı", "çöktü", "hasar", "zarar"
 ] olsun
 
+// v3.1.0: "son" çıkarıldı — "son derece" ifadesindeki "son" yanlış eşleşiyordu
+// "derece" eklendi — "son derece" için sadece "derece" yeterli
 GÜÇLENDİRİCİLER = [
     "çok", "derece", "aşırı", "oldukça", "gayet", "epey", "pek",
-    "kesinlikle", "gerçekten", "tam", "fazlasıyla"
+    "kesinlikle", "gerçekten", "tam", "fazlasıyla", "büyük", "çok"
 ] olsun
 
 KISALTMALAR = [
@@ -320,13 +331,12 @@ ek_çıkar fonksiyon olsun kelime, ek alsın {
 }
 
 stem fonksiyon olsun kelime alsın {
-    kök      = küçük_harf(kelime) olsun
-    değişti  = 1 olsun
-
+    kök     = küçük_harf(kelime) olsun
+    değişti = 1 olsun
     değişti = 1 olduğu sürece {
         değişti = 0 olsun
         uzunluk(kök) > 3 ise {
-            i        = 0 olsun
+            i         = 0 olsun
             ek_sayısı = uzunluk(ÇEKIM_EKLERİ) olsun
             i < ek_sayısı olduğu sürece {
                 ek      = ÇEKIM_EKLERİ[i] olsun
@@ -347,17 +357,7 @@ stem fonksiyon olsun kelime alsın {
     kök'ü döndür
 }
 
-toplu_stem fonksiyon olsun tokens alsın {
-    sonuç = [] olsun
-    i = 0 olsun
-    n = uzunluk(tokens) olsun
-    i < n olduğu sürece {
-        sonuç'a [stem(tokens[i])] ekle
-        i = i + 1 olsun
-    }
-    sonuç'u döndür
-}
-
+// v3.1.0: NER-aware stemmer — KİŞİ/YER/ORG tokenlarına stem uygulanmaz
 akıllı_stem fonksiyon olsun kelime, ner_etiketi alsın {
     özel = 0 olsun
     ner_etiketi = NER_KİŞİ ise { özel = 1 olsun }
@@ -367,6 +367,17 @@ akıllı_stem fonksiyon olsun kelime, ner_etiketi alsın {
         küçük_harf(kelime)'yi döndür
     }
     stem(kelime)'yi döndür
+}
+
+toplu_stem fonksiyon olsun tokens alsın {
+    sonuç = [] olsun
+    i = 0 olsun
+    n = uzunluk(tokens) olsun
+    i < n olduğu sürece {
+        sonuç'a [stem(tokens[i])] ekle
+        i = i + 1 olsun
+    }
+    sonuç'u döndür
 }
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -437,7 +448,7 @@ en_sık_n fonksiyon olsun frekanslar, n alsın {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// MODÜL 6: CÜMLE BÖLME — bayrak tabanlı, değilse yok
+// MODÜL 6: CÜMLE BÖLME — bayrak tabanlı, kısaltma destekli
 // ════════════════════════════════════════════════════════════════════════════
 
 kısaltma_mı fonksiyon olsun kelime alsın {
@@ -450,22 +461,16 @@ cümle_böl fonksiyon olsun metin alsın {
     mevcut   = "" olsun
     i = 0 olsun
     n = uzunluk(metin) olsun
-
     i < n olduğu sürece {
-        kar = metin[i] olsun
-
-        // Hangi tür cümle sonu? 0=normal, 1=nokta, 2=ünlem/soru
+        kar  = metin[i] olsun
         sonu = 0 olsun
         kar = "." ise { sonu = 1 olsun }
         kar = "!" ise { sonu = 2 olsun }
         kar = "?" ise { sonu = 2 olsun }
 
-        // Normal karakter
         sonu = 0 ise {
             mevcut = mevcut + kar olsun
         }
-
-        // Nokta — kısaltma mı kontrol et
         sonu = 1 ise {
             parcalar = böl(kırp(mevcut), " ") olsun
             pn       = uzunluk(parcalar) olsun
@@ -474,13 +479,9 @@ cümle_böl fonksiyon olsun metin alsın {
                 son_k = parcalar[pn - 1] olsun
             }
             kıs = kısaltma_mı(son_k) olsun
-
-            // Kısaltma → nokta ekle ama cümleyi kapatma
             kıs = 1 ise {
                 mevcut = mevcut + kar olsun
             }
-
-            // Gerçek cümle sonu
             kıs = 0 ise {
                 mevcut  = mevcut + kar olsun
                 temiz_c = kırp(mevcut) olsun
@@ -490,8 +491,6 @@ cümle_böl fonksiyon olsun metin alsın {
                 mevcut = "" olsun
             }
         }
-
-        // Ünlem / Soru — direkt kapat
         sonu = 2 ise {
             mevcut  = mevcut + kar olsun
             temiz_c = kırp(mevcut) olsun
@@ -500,21 +499,17 @@ cümle_böl fonksiyon olsun metin alsın {
             }
             mevcut = "" olsun
         }
-
         i = i + 1 olsun
     }
-
-    // Sonda noktalama olmayan kalan
     kalan = kırp(mevcut) olsun
     uzunluk(kalan) > 0 ise {
         cümleler'e [kalan] ekle
     }
-
     cümleler'i döndür
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// MODÜL 7: POS ETİKETLEME — bayrak zinciri, değilse yok
+// MODÜL 7: POS ETİKETLEME
 // ════════════════════════════════════════════════════════════════════════════
 
 pos_etiket fonksiyon olsun kelime alsın {
@@ -552,8 +547,6 @@ pos_etiket fonksiyon olsun kelime alsın {
             buldu  = 1 olsun
         }
     }
-
-    // Sıfat ek tabanlı
     buldu = 0 ise {
         sek = 0 olsun
         ek_var_mı(k, "lı")  ise { sek = 1 olsun }
@@ -569,8 +562,6 @@ pos_etiket fonksiyon olsun kelime alsın {
             buldu  = 1 olsun
         }
     }
-
-    // Fiil kök listesi
     buldu = 0 ise {
         kök = stem(k) olsun
         hızlı_içeriyor(FİİL_KÖKLERİ, kök) ise {
@@ -578,8 +569,6 @@ pos_etiket fonksiyon olsun kelime alsın {
             buldu  = 1 olsun
         }
     }
-
-    // Fiil ek tabanlı
     buldu = 0 ise {
         fek = 0 olsun
         ek_var_mı(k, "mak")  ise { fek = 1 olsun }
@@ -599,7 +588,6 @@ pos_etiket fonksiyon olsun kelime alsın {
             buldu  = 1 olsun
         }
     }
-
     etiket'i döndür
 }
 
@@ -632,7 +620,8 @@ pos_yazdır fonksiyon olsun etiketli alsın {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// MODÜL 8: VARLİK İSMİ TANIMA (NER) — bayrak tabanlı
+// MODÜL 8: VARLİK İSMİ TANIMA (NER) v3.1.0
+// Yenilik: önceki_nokta bayrağı + kurum/unvan filtresi
 // ════════════════════════════════════════════════════════════════════════════
 
 büyük_harf_mi fonksiyon olsun karakter alsın {
@@ -644,8 +633,8 @@ rakam_mı fonksiyon olsun karakter alsın {
 }
 
 sayı_token_mu fonksiyon olsun kelime alsın {
-    n       = uzunluk(kelime) olsun
-    tümü    = 0 olsun
+    n    = uzunluk(kelime) olsun
+    tümü = 0 olsun
     n > 0 ise {
         tümü = 1 olsun
         i    = 0 olsun
@@ -660,45 +649,63 @@ sayı_token_mu fonksiyon olsun kelime alsın {
     tümü'yü döndür
 }
 
+// v3.1.0: önceki_nokta parametresi eklendi
 ner_etiket fonksiyon olsun kelime, önceki, önceki_nokta alsın {
     etiket = NER_O olsun
     buldu  = 0 olsun
 
+    // Sayı
     buldu = 0 ise {
         sayı_token_mu(kelime) ise {
             etiket = NER_SAYI olsun
             buldu  = 1 olsun
         }
     }
+
+    // Bilinen yer
     buldu = 0 ise {
         hızlı_içeriyor(BİLİNEN_YERLER, küçük_harf(kelime)) ise {
             etiket = NER_YER olsun
             buldu  = 1 olsun
         }
     }
+
+    // Ay → tarih
     buldu = 0 ise {
         hızlı_içeriyor(AY_LİSTESİ, küçük_harf(kelime)) ise {
             etiket = NER_TARİH olsun
             buldu  = 1 olsun
         }
     }
+
+    // Kurum eki taşıyan kelime → ORG
     buldu = 0 ise {
         hızlı_içeriyor(KURUM_LİSTESİ, küçük_harf(kelime)) ise {
             etiket = NER_ORG olsun
             buldu  = 1 olsun
         }
     }
+
+    // Unvan → O (kişi değil)
     buldu = 0 ise {
         hızlı_içeriyor(UNVAN_LİSTESİ, küçük_harf(kelime)) ise {
             etiket = NER_O olsun
             buldu  = 1 olsun
         }
     }
+
+    // Büyük harfle başlayan — ama cümle başında değilse
     buldu = 0 ise {
         uzunluk(kelime) > 0 ise {
-            önceki_nokta = 0 ise {
-                bü = büyük_harf_mi(kelime[0]) olsun
-                bü = 1 ise {
+            bü = büyük_harf_mi(kelime[0]) olsun
+            bü = 1 ise {
+                // Cümle başındaki büyük harf → KİŞİ sayılmaz
+                önceki_nokta = 1 ise {
+                    etiket = NER_O olsun
+                    buldu  = 1 olsun
+                }
+                // Cümle ortasında büyük harf → adday
+                önceki_nokta = 0 ise {
                     önceki_kişi = 0 olsun
                     önceki = NER_KİŞİ ise { önceki_kişi = 1 olsun }
                     önceki = NER_ORG  ise { önceki_kişi = 1 olsun }
@@ -718,10 +725,11 @@ ner_etiket fonksiyon olsun kelime, önceki, önceki_nokta alsın {
     etiket'i döndür
 }
 
+// v3.1.0: önceki_nokta bayrağı ile donatılmış NER pipeline
 ner_etiketle fonksiyon olsun tokens alsın {
     sonuç        = [] olsun
     önceki       = NER_O olsun
-    önceki_nokta = 1 olsun
+    önceki_nokta = 1 olsun   // İlk token her zaman cümle başı sayılır
 
     i = 0 olsun
     n = uzunluk(tokens) olsun
@@ -732,8 +740,9 @@ ner_etiketle fonksiyon olsun tokens alsın {
         sonuç'a [çift] ekle
         önceki = etiket olsun
 
-        yeni_nokta  = 0 olsun
-        kel_boy     = uzunluk(kelime) olsun
+        // Bu token noktalama ile bitiyor mu? → sonraki cümle başı olur
+        yeni_nokta = 0 olsun
+        kel_boy    = uzunluk(kelime) olsun
         kel_boy > 0 ise {
             son_idx = kel_boy - 1 olsun
             kelime[son_idx] = "." ise { yeni_nokta = 1 olsun }
@@ -770,7 +779,7 @@ ner_yazdır fonksiyon olsun etiketli alsın {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// MODÜL 9: DUYGU ANALİZİ — tam sayı skoru, direkt yazdır
+// MODÜL 9: DUYGU ANALİZİ v3.1.0
 // ════════════════════════════════════════════════════════════════════════════
 
 duygu_puan fonksiyon olsun tokens alsın {
@@ -779,8 +788,8 @@ duygu_puan fonksiyon olsun tokens alsın {
     i = 0 olsun
     n = uzunluk(tokens) olsun
     i < n olduğu sürece {
-        k     = küçük_harf(tokens[i]) olsun
-        güçl  = hızlı_içeriyor(GÜÇLENDİRİCİLER, k) olsun
+        k    = küçük_harf(tokens[i]) olsun
+        güçl = hızlı_içeriyor(GÜÇLENDİRİCİLER, k) olsun
         güçl = 1 ise {
             çarpan = 2 olsun
         }
@@ -828,12 +837,13 @@ duygu_yazdır fonksiyon olsun metin alsın {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// MODÜL 10: METİN BENZERLİĞİ — bölme yok, ortak kelime sayısı döndürür
+// MODÜL 10: METİN BENZERLİĞİ v3.1.0 — stem tabanlı
 // ════════════════════════════════════════════════════════════════════════════
 
 metin_ortak_kelime fonksiyon olsun metin1, metin2 alsın {
-    t1 = toplu_stem(durak_kelime_filtrele(nlp_tokenize(metin1))) olsun
-    t2 = toplu_stem(durak_kelime_filtrele(nlp_tokenize(metin2))) olsun
+    // v3.1.0: stem uygulandıktan sonra karşılaştır
+    t1    = toplu_stem(durak_kelime_filtrele(nlp_tokenize(metin1))) olsun
+    t2    = toplu_stem(durak_kelime_filtrele(nlp_tokenize(metin2))) olsun
     ortak = 0 olsun
     i = 0 olsun
     n = uzunluk(t1) olsun
@@ -848,11 +858,11 @@ metin_ortak_kelime fonksiyon olsun metin1, metin2 alsın {
 
 metin_benzerlik_yazdır fonksiyon olsun isim, metin1, metin2 alsın {
     ortak = metin_ortak_kelime(metin1, metin2) olsun
-    "  " + isim + "  →  ortak kelime sayısı: " + ortak'ı yazdır
+    "  " + isim + "  →  ortak kök: " + ortak'ı yazdır
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// MODÜL 11: BELGE SKORLAMA (TF tabanlı, bölme yok)
+// MODÜL 11: BELGE SKORLAMA (TF tabanlı)
 // ════════════════════════════════════════════════════════════════════════════
 
 tf_say fonksiyon olsun tokens, kelime alsın {
@@ -1045,4 +1055,4 @@ nlp_pipeline fonksiyon olsun metin alsın {
 }
 
 // ─── YÜKLEME ONAYI ───────────────────────────────────────────────────────────
-"[nlp.hb v3.0.0] Türkçe NLP kütüphanesi yüklendi ✓"'ü yazdır
+"[nlp.hb v3.1.0] Türkçe NLP kütüphanesi yüklendi ✓"'ü yazdır
