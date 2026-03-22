@@ -15,6 +15,50 @@
 yükle "dizgi.hb";
 yükle "liste.hb";
 
+// hızlı_içeriyor(d, eleman) → eleman listede var mı
+hızlı_içeriyor fonksiyon olsun d, eleman alsın {
+    i = 0 olsun
+    n = uzunluk(d) olsun
+    i < n olduğu sürece {
+        d[i] = eleman ise { 1'i döndür }
+        i = i + 1 olsun
+    }
+    0'ı döndür
+}
+
+// böl(metin, ayrac) → metni ayraca göre böler ve liste döndürür
+böl fonksiyon olsun metin, ayrac alsın {
+    sonuç = [] olsun
+    mevcut = "" olsun
+    i = 0 olsun
+    n = uzunluk(metin) olsun
+    ayrac_boy = uzunluk(ayrac) olsun
+    
+    i < n olduğu sürece {
+        eslesti = 1 olsun
+        j = 0 olsun
+        j < ayrac_boy olduğu sürece {
+            (i + j < n) ve (metin[i + j] = ayrac[j]) ise {
+                j = j + 1 olsun
+            } yoksa {
+                eslesti = 0 olsun
+                j = ayrac_boy olsun
+            }
+        }
+        
+        eslesti = 1 ise {
+            sonuç'a [mevcut] ekle
+            mevcut = "" olsun
+            i = i + ayrac_boy olsun
+        } yoksa {
+            mevcut = mevcut + metin[i] olsun
+            i = i + 1 olsun
+        }
+    }
+    sonuç'a [mevcut] ekle
+    sonuç'u döndür
+}
+
 // ─── SABITLER ────────────────────────────────────────────────────────────────
 TÜRKÇE_ÜNLÜLER   = "aeıioöuüAEIİOÖUÜ" olsun
 TÜRKÇE_NOKTALAMA = ".,;:!?()[]{}\"'/-–—" olsun
@@ -189,6 +233,7 @@ nlp_temizle fonksiyon olsun metin alsın {
     sonuç = değiştir(sonuç, "(", " ") olsun
     sonuç = değiştir(sonuç, ")", " ") olsun
     sonuç = değiştir(sonuç, "\"", " ") olsun
+    sonuç = değiştir(sonuç, "'", " ") olsun
     sonuç = değiştir(sonuç, "\n", " ") olsun
     sonuç = değiştir(sonuç, "\t", " ") olsun
     sonuç'u döndür
@@ -505,7 +550,7 @@ cümle_böl fonksiyon olsun metin alsın {
                     i = i + 1 olsun
                 }
                 // Kısaltma değil — cümleyi bitir
-                kısaltma_mı(son_kelime) değilse {
+                yoksa {
                     mevcut = mevcut + karakter olsun
                     temiz_cümle = kırp(mevcut) olsun
                     uzunluk(temiz_cümle) > 0 ise {
@@ -516,7 +561,7 @@ cümle_böl fonksiyon olsun metin alsın {
                 }
             }
             // ! veya ? — doğrudan cümleyi bitir
-            karakter = "." değilse {
+            yoksa {
                 mevcut = mevcut + karakter olsun
                 temiz_cümle = kırp(mevcut) olsun
                 uzunluk(temiz_cümle) > 0 ise {
@@ -527,7 +572,7 @@ cümle_böl fonksiyon olsun metin alsın {
             }
         }
         // Normal karakter — birikime ekle
-        (karakter = ".") değilse ve (karakter = "!") değilse ve (karakter = "?") değilse ise {
+        yoksa {
             mevcut = mevcut + karakter olsun
             i = i + 1 olsun
         }
@@ -640,7 +685,7 @@ sayı_token_mu fonksiyon olsun kelime alsın {
     n = 0 ise { 0'ı döndür }
     i = 0 olsun
     i < n olduğu sürece {
-        rakam_mı(kelime[i]) değilse ise { 0'ı döndür }
+        rakam_mı(kelime[i]) = 0 ise { 0'ı döndür }
         i = i + 1 olsun
     }
     1'i döndür
@@ -703,7 +748,7 @@ ner_yazdır fonksiyon olsun etiketli_tokens alsın {
     n = uzunluk(etiketli_tokens) olsun
     i < n olduğu sürece {
         çift = etiketli_tokens[i] olsun
-        çift[1] = NER_BELİRSİZ değilse ise {
+        çift[1] != NER_BELİRSİZ ise {
             "  [" + çift[1] + "]  " + çift[0]'ı yazdır
             bulunan = bulunan + 1 olsun
         }
@@ -735,7 +780,7 @@ duygu_puan fonksiyon olsun tokens alsın {
             çarpan = 2 olsun
             i = i + 1 olsun
         }
-        hızlı_içeriyor(GÜÇLENDIRICI_KELİMELER, kelime) değilse ise {
+        hızlı_içeriyor(GÜÇLENDIRICI_KELİMELER, kelime) = 0 ise {
             hızlı_içeriyor(POZİTİF_KELİMELER, kelime) ise {
                 puan = puan + (1 * çarpan) olsun
                 çarpan = 1 olsun
