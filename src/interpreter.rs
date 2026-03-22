@@ -84,7 +84,176 @@ impl Yorumlayici {
             }
         }));
 
-        // Argümanları al
+        // ── NLP / Metin İşleme Built-in Fonksiyonları ──────────────────────────
+
+        // küçük_harf(metin) → Türkçe-farkında küçük harf dönüşümü
+        globals.insert("küçük_harf".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Metin(s)) = args.first() {
+                let sonuc: String = s.chars().map(|c| match c {
+                    'I' => 'ı', 'İ' => 'i', 'Ğ' => 'ğ', 'Ş' => 'ş',
+                    'Ç' => 'ç', 'Ö' => 'ö', 'Ü' => 'ü',
+                    _ => c.to_lowercase().next().unwrap_or(c),
+                }).collect();
+                Deger::Metin(sonuc)
+            } else { Deger::Bos }
+        }));
+
+        // büyük_harf(metin) → Türkçe-farkında büyük harf dönüşümü
+        globals.insert("büyük_harf".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Metin(s)) = args.first() {
+                let sonuc: String = s.chars().map(|c| match c {
+                    'ı' => 'I', 'i' => 'İ', 'ğ' => 'Ğ', 'ş' => 'Ş',
+                    'ç' => 'Ç', 'ö' => 'Ö', 'ü' => 'Ü',
+                    _ => c.to_uppercase().next().unwrap_or(c),
+                }).collect();
+                Deger::Metin(sonuc)
+            } else { Deger::Bos }
+        }));
+
+        // böl(metin, ayraç) → Liste döndürür
+        globals.insert("böl".to_string(), Deger::DahiliFonksiyon(|args| {
+            if args.len() >= 2 {
+                if let (Deger::Metin(s), Deger::Metin(ayrac)) = (&args[0], &args[1]) {
+                    let parcalar: Vec<Deger> = if ayrac.is_empty() {
+                        s.chars().map(|c| Deger::Metin(c.to_string())).collect()
+                    } else {
+                        s.split(ayrac.as_str()).map(|p| Deger::Metin(p.to_string())).collect()
+                    };
+                    return Deger::Liste(parcalar);
+                }
+            }
+            Deger::Bos
+        }));
+
+        // birleştir(liste, ayraç) → birleştirilmiş metin
+        globals.insert("birleştir".to_string(), Deger::DahiliFonksiyon(|args| {
+            if args.len() >= 2 {
+                if let (Deger::Liste(l), Deger::Metin(ayrac)) = (&args[0], &args[1]) {
+                    let parcalar: Vec<String> = l.iter().map(|d| d.to_string()).collect();
+                    return Deger::Metin(parcalar.join(ayrac.as_str()));
+                }
+            } else if let Some(Deger::Liste(l)) = args.first() {
+                let parcalar: Vec<String> = l.iter().map(|d| d.to_string()).collect();
+                return Deger::Metin(parcalar.join(""));
+            }
+            Deger::Bos
+        }));
+
+        // değiştir(metin, aranan, yeni) → yeni metin
+        globals.insert("değiştir".to_string(), Deger::DahiliFonksiyon(|args| {
+            if args.len() >= 3 {
+                if let (Deger::Metin(s), Deger::Metin(aranan), Deger::Metin(yeni)) =
+                    (&args[0], &args[1], &args[2])
+                {
+                    return Deger::Metin(s.replace(aranan.as_str(), yeni.as_str()));
+                }
+            }
+            Deger::Bos
+        }));
+
+        // kırp(metin) → baştaki ve sondaki boşlukları sil
+        globals.insert("kırp".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Metin(s)) = args.first() {
+                Deger::Metin(s.trim().to_string())
+            } else { Deger::Bos }
+        }));
+
+        // tekrar_sayısı(metin, aranan) → kaç kez geçiyor
+        globals.insert("tekrar_sayısı".to_string(), Deger::DahiliFonksiyon(|args| {
+            if args.len() >= 2 {
+                if let (Deger::Metin(s), Deger::Metin(aranan)) = (&args[0], &args[1]) {
+                    if aranan.is_empty() { return Deger::Sayi(0.0); }
+                    return Deger::Sayi(s.matches(aranan.as_str()).count() as f64);
+                }
+            }
+            Deger::Bos
+        }));
+
+        // sayıya_çevir(metin) → Sayı değerine dönüştür
+        globals.insert("sayıya_çevir".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Metin(s)) = args.first() {
+                if let Ok(n) = s.trim().parse::<f64>() { return Deger::Sayi(n); }
+            } else if let Some(Deger::Sayi(n)) = args.first() {
+                return Deger::Sayi(*n);
+            }
+            Deger::Bos
+        }));
+
+        // metne_çevir(değer) → Metin değerine dönüştür
+        globals.insert("metne_çevir".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(d) = args.first() {
+                Deger::Metin(d.to_string())
+            } else { Deger::Bos }
+        }));
+
+        // ascii_kodu(karakter) → Unicode kod noktası
+        globals.insert("ascii_kodu".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Metin(s)) = args.first() {
+                if let Some(c) = s.chars().next() {
+                    return Deger::Sayi(c as u32 as f64);
+                }
+            }
+            Deger::Bos
+        }));
+
+        // karakterden(kod) → Unicode karakterini metin olarak döndür
+        globals.insert("karakterden".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Sayi(n)) = args.first() {
+                if let Some(c) = char::from_u32(*n as u32) {
+                    return Deger::Metin(c.to_string());
+                }
+            }
+            Deger::Bos
+        }));
+
+        // içeriyor(metin, aranan) → 1 veya 0
+        globals.insert("içeriyor".to_string(), Deger::DahiliFonksiyon(|args| {
+            if args.len() >= 2 {
+                if let (Deger::Metin(s), Deger::Metin(aranan)) = (&args[0], &args[1]) {
+                    return Deger::Sayi(if s.contains(aranan.as_str()) { 1.0 } else { 0.0 });
+                }
+            }
+            Deger::Bos
+        }));
+
+        // başlıyor_mu(metin, ön_ek) → 1 veya 0
+        globals.insert("başlıyor_mu".to_string(), Deger::DahiliFonksiyon(|args| {
+            if args.len() >= 2 {
+                if let (Deger::Metin(s), Deger::Metin(onek)) = (&args[0], &args[1]) {
+                    return Deger::Sayi(if s.starts_with(onek.as_str()) { 1.0 } else { 0.0 });
+                }
+            }
+            Deger::Bos
+        }));
+
+        // bitiyor_mu(metin, son_ek) → 1 veya 0
+        globals.insert("bitiyor_mu".to_string(), Deger::DahiliFonksiyon(|args| {
+            if args.len() >= 2 {
+                if let (Deger::Metin(s), Deger::Metin(sonek)) = (&args[0], &args[1]) {
+                    return Deger::Sayi(if s.ends_with(sonek.as_str()) { 1.0 } else { 0.0 });
+                }
+            }
+            Deger::Bos
+        }));
+
+        // dizi_dilim(metin, baş, son) → alt metin (char-bazlı, Unicode güvenli)
+        globals.insert("dizi_dilim".to_string(), Deger::DahiliFonksiyon(|args| {
+            if args.len() >= 3 {
+                if let (Deger::Metin(s), Deger::Sayi(bas), Deger::Sayi(son)) =
+                    (&args[0], &args[1], &args[2])
+                {
+                    let chars: Vec<char> = s.chars().collect();
+                    let b = *bas as usize;
+                    let e = (*son as usize).min(chars.len());
+                    if b <= e {
+                        return Deger::Metin(chars[b..e].iter().collect());
+                    }
+                }
+            }
+            Deger::Bos
+        }));
+
+        // ── Argümanları al ──────────────────────────────────────────────────────
         let cli_args: Vec<Deger> = std::env::args().map(|s| Deger::Metin(s)).collect();
         globals.insert("argümanlar".to_string(), Deger::Liste(cli_args));
 
