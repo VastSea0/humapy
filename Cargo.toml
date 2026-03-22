@@ -18,6 +18,10 @@ path = "src/main.rs"
 name = "ide"
 path = "src/bin/ide.rs"
 
+[[bin]]
+name = "debug_parse"
+path = "src/bin/debug_parse.rs"
+
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"

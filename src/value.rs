@@ -8,7 +8,7 @@ use std::cell::RefCell;
 pub enum Deger {
     Sayi(f64),
     Metin(String),
-    Liste(Vec<Deger>),
+    Liste(Rc<RefCell<Vec<Deger>>>),
     Bos,
     Fonksiyon {
         parametreler: Vec<String>,
@@ -38,7 +38,8 @@ impl std::fmt::Display for Deger {
             },
             Deger::Metin(s) => write!(f, "{}", s),
             Deger::Liste(l) => {
-                let p: Vec<String> = l.iter().map(|d| d.to_string()).collect();
+                let l_borrow = l.borrow();
+                let p: Vec<String> = l_borrow.iter().map(|d| d.to_string()).collect();
                 write!(f, "[{}]", p.join(", "))
             }
             Deger::Bos => write!(f, "Boş"),

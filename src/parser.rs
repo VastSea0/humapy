@@ -29,13 +29,28 @@ impl Parser {
 
     fn consume(&mut self, expected: Token) -> bool {
         if self.current_token == expected { self.next_token(); true }
-        else { self.error(&format!("{:?} bekleniyordu ama {:?} geldi", expected, self.current_token)); false }
+        else {
+            let msg = format!("{:?} bekleniyordu ama {:?} geldi", expected, self.current_token);
+            self.error(&msg);
+            // Hata durumunda ilerlemezsek sonsuz döngü olabilir. 
+            // Eğer mevcut token beklenen değilse, onu yutalım ki döngü kırılabilsin.
+            if self.current_token != Token::Son { self.next_token(); }
+            false 
+        }
     }
 
     pub fn parse_program(&mut self) -> Vec<Komut> {
         let mut komutlar = Vec::new();
         while self.current_token != Token::Son {
-            if let Some(komut) = self.parse_komut() { komutlar.push(komut); }
+            let start_pos = self.current_pos;
+            if let Some(komut) = self.parse_komut() { 
+                komutlar.push(komut); 
+            }
+            // Güvenlik: parse_komut bir şey tüketmediyse zorla ilerlet
+            if self.current_pos == start_pos && self.current_token != Token::Son {
+                eprintln!("[Kritik Ayrıştırıcı Hatası] {}:{} konumunda sonsuz döngü engellendi.", self.current_pos.0, self.current_pos.1);
+                self.next_token();
+            }
         }
         komutlar
     }
@@ -315,7 +330,15 @@ impl Parser {
     fn parse_blok(&mut self) -> Vec<Komut> {
         let mut komutlar = Vec::new();
         while self.current_token != Token::KapaliSuskun && self.current_token != Token::Son {
-            if let Some(komut) = self.parse_komut() { komutlar.push(komut); }
+            let start_pos = self.current_pos;
+            if let Some(komut) = self.parse_komut() { 
+                komutlar.push(komut); 
+            }
+            // Güvenlik: parse_komut bir şey tüketmediyse zorla ilerlet
+            if self.current_pos == start_pos && self.current_token != Token::Son && self.current_token != Token::KapaliSuskun {
+                eprintln!("[Kritik Ayrıştırıcı Hatası] {}:{} konumunda sonsuz döngü engellendi.", self.current_pos.0, self.current_pos.1);
+                self.next_token();
+            }
         }
         self.consume(Token::KapaliSuskun);
         komutlar

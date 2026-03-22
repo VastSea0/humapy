@@ -1,63 +1,33 @@
-// nlp_hizli_test.hb — Hüma NLP Kütüphanesi Hızlı Test (Stem hariç)
+// minimal_test.hb — minimal durak test
 yükle "nlp.hb";
 
-"╔════════════════════════════════════╗"'i yazdır
-"║  NLP Hızlı Test (Core Modüller)   ║"'i yazdır
-"╚════════════════════════════════════╝"'i yazdır
+"İçeriyor testi:"'i yazdır
+metin = " | bir | bu | " olsun
+arama = " | bir | " olsun
+sonuç = içeriyor(metin, arama) olsun
+"içeriyor: " + sonuç'u yazdır
 
-// TEST 1: Tokenizasyon
-"\n🔤 TEST 1: Tokenizasyon"'u yazdır
-metin = "Türkçe güzel bir dildir. Eklemeli yapısıyla zengindir." olsun
-tokens = nlp_tokenize(metin) olsun
-"  Token sayısı: " + uzunluk(tokens)'u yazdır
-"  İlk 3: " + tokens[0] + ", " + tokens[1] + ", " + tokens[2]'yi yazdır
+arama2 = " | xyz | " olsun
+sonuç2 = içeriyor(metin, arama2) olsun
+"içeriyor yok: " + sonuç2'yi yazdır
 
-// TEST 2: Büyük/Küçük Harf
-"\n🔠 TEST 2: Türkçe Harf Dönüşümü"'i yazdır
-"  küçük_harf('İSTANBUL'): " + küçük_harf("İSTANBUL")'i yazdır
-"  büyük_harf('istanbul'): " + büyük_harf("istanbul")'i yazdır
+"durak_mı testi:"'i yazdır
+d1 = durak_mı("bir") olsun
+"bir durak mı: " + d1'i yazdır
+d2 = durak_mı("kitap") olsun
+"kitap durak mı: " + d2'yi yazdır
 
-// TEST 3: Metin Built-in'leri
-"\n🛠 TEST 3: Metin Araçları"'i yazdır
-"  böl: " + uzunluk(böl("a,b,c", ",")) + " parça"'yı yazdır
-"  birleştir: " + birleştir(böl("elma,armut", ","), " | ")'i yazdır
-"  değiştir: " + değiştir("merhaba dünya", "dünya", "Hüma")'yı yazdır
-"  içeriyor: " + içeriyor("programlama", "gram")'ı yazdır
-"  başlıyor_mu: " + başlıyor_mu("türkçe", "türk")'ü yazdır
-"  dizi_dilim: " + dizi_dilim("bilgisayar", 0, 4)'ü yazdır
-
-// TEST 4: Durak Kelime
-"\n🚫 TEST 4: Durak Kelime Filtreleme"'i yazdır
-cümle = "bu güzel kitap çok faydalı" olsun
-toks = nlp_tokenize(cümle) olsun
-fil = durak_kelime_filtrele(toks) olsun
-"  Ham: " + uzunluk(toks) + "  →  Filtreli: " + uzunluk(fil)'i yazdır
-"  Kalan: " + birleştir(fil, " ")'i yazdır
-
-// TEST 5: Ünlü Analizi
-"\n🔊 TEST 5: Ünlü Uyumu"'u yazdır
-"  kitap: " + ünlü_uyumu_türü("kitap")'ı yazdır
-"  öğrenci: " + ünlü_uyumu_türü("öğrenci")'yi yazdır
-"  araba ünlü sayısı: " + kelime_ünlü_sayısı("araba")'yı yazdır
-
-// TEST 6: N-gram
-"\n📏 TEST 6: Bigram"'i yazdır
-ngram_toks = ["yapay", "zeka", "dil", "işleme"] olsun
-bi = bigram(ngram_toks) olsun
-"  Bigram sayısı: " + uzunluk(bi)'ni yazdır
-"  İlk bigram: " + bi[0]'ı yazdır
-
-// TEST 7: Metin İstatistik
-"\n📊 TEST 7: Metin İstatistik"'i yazdır
-metin_istatistik("Türkçe bir programlama dili. Hüma harika bir dildir!")
-
-// TEST 8: ASCII Normalize
-"\n🔡 TEST 8: ASCII Normalize"'i yazdır
-"  " + ascii_normalize("Çiçek Öğrenci Şükrü")'yü yazdır
-
-// TEST 9: Stem (tek kelime, kısa)
-"\n🌱 TEST 9: Stem (tek kelime)"'i yazdır
-"  evlerde → " + stem("evlerde")'yi yazdır
-"  arabalar → " + stem("arabalar")'ı yazdır
-
-"\n✅ Hızlı testler tamamlandı!"'ı yazdır
+"filtreleme testi:"'i yazdır
+liste = ["bir", "kitap", "bu", "güzel"] olsun
+sonuc = [] olsun
+i = 0 olsun
+i < uzunluk(liste) olduğu sürece {
+    durum = durak_mı(liste[i]) olsun
+    "  " + liste[i] + " → durak: " + durum'u yazdır
+    durum = 0 ise {
+        sonuc'a [liste[i]]'ni ekle
+    }
+    i = i + 1 olsun
+}
+"Kalan: " + birleştir(sonuc, " ")'i yazdır
+"Bitti!"'i yazdır

@@ -26,7 +26,7 @@ impl Yorumlayici {
         globals.insert("uzunluk".to_string(), Deger::DahiliFonksiyon(|args| {
             match args.first() {
                 Some(Deger::Metin(s)) => Deger::Sayi(s.chars().count() as f64),
-                Some(Deger::Liste(l)) => Deger::Sayi(l.len() as f64),
+                Some(Deger::Liste(l)) => Deger::Sayi(l.borrow().len() as f64),
                 _ => Deger::Sayi(0.0),
             }
         }));
@@ -45,8 +45,11 @@ impl Yorumlayici {
         globals.insert("listeye_ekle".to_string(), Deger::DahiliFonksiyon(|args| {
             if args.len() >= 2 {
                 if let Deger::Liste(l) = &args[0] {
-                    let mut yeni = l.clone(); yeni.push(args[1].clone());
-                    return Deger::Liste(yeni);
+                    // Semantik: Eski kodu bozmamak için kopyasını döndür (O(N))
+                    // Ama NLP kütüphanesi mutation kullanacak şekilde güncellenecek.
+                    let mut yeni = l.borrow().clone();
+                    yeni.push(args[1].clone());
+                    return Deger::Liste(Rc::new(RefCell::new(yeni)));
                 }
             }
             Deger::Bos
@@ -119,7 +122,7 @@ impl Yorumlayici {
                     } else {
                         s.split(ayrac.as_str()).map(|p| Deger::Metin(p.to_string())).collect()
                     };
-                    return Deger::Liste(parcalar);
+                    return Deger::Liste(Rc::new(RefCell::new(parcalar)));
                 }
             }
             Deger::Bos
@@ -129,11 +132,11 @@ impl Yorumlayici {
         globals.insert("birleştir".to_string(), Deger::DahiliFonksiyon(|args| {
             if args.len() >= 2 {
                 if let (Deger::Liste(l), Deger::Metin(ayrac)) = (&args[0], &args[1]) {
-                    let parcalar: Vec<String> = l.iter().map(|d| d.to_string()).collect();
+                    let parcalar: Vec<String> = l.borrow().iter().map(|d| d.to_string()).collect();
                     return Deger::Metin(parcalar.join(ayrac.as_str()));
                 }
             } else if let Some(Deger::Liste(l)) = args.first() {
-                let parcalar: Vec<String> = l.iter().map(|d| d.to_string()).collect();
+                let parcalar: Vec<String> = l.borrow().iter().map(|d| d.to_string()).collect();
                 return Deger::Metin(parcalar.join(""));
             }
             Deger::Bos
@@ -206,11 +209,31 @@ impl Yorumlayici {
             Deger::Bos
         }));
 
-        // içeriyor(metin, aranan) → 1 veya 0
+        // içeriyor(metin_veya_liste, aranan) → 1 veya 0
         globals.insert("içeriyor".to_string(), Deger::DahiliFonksiyon(|args| {
             if args.len() >= 2 {
-                if let (Deger::Metin(s), Deger::Metin(aranan)) = (&args[0], &args[1]) {
-                    return Deger::Sayi(if s.contains(aranan.as_str()) { 1.0 } else { 0.0 });
+                match (&args[0], &args[1]) {
+                    (Deger::Metin(s), Deger::Metin(aranan)) => {
+                        return Deger::Sayi(if s.contains(aranan.as_str()) { 1.0 } else { 0.0 });
+                    }
+                    (Deger::Liste(l), aranan) => {
+                        return Deger::Sayi(if l.borrow().contains(aranan) { 1.0 } else { 0.0 });
+                    }
+                    _ => {}
+                }
+            }
+            Deger::Bos
+        }));
+
+        // hızlı_içeriyor(liste, eleman) → O(1) arama (HashSet kullanarak)
+        // NOT: Bu fonksiyon ilk çağrıda listeyi bir küme gibi önbelleğe alırsa daha da hızlanır,
+        // ancak KISS prensibi gereği şimdilik her seferinde HashSet oluşturuyoruz (geçici çözüm).
+        // Gerçek çözüm: Liste'yi küme tipine çeviren bir built-in eklemek.
+        globals.insert("hızlı_içeriyor".to_string(), Deger::DahiliFonksiyon(|args| {
+            if args.len() >= 2 {
+                if let (Deger::Liste(l), eleman) = (&args[0], &args[1]) {
+                    let set: HashSet<String> = l.borrow().iter().map(|d| d.to_string()).collect();
+                    return Deger::Sayi(if set.contains(&eleman.to_string()) { 1.0 } else { 0.0 });
                 }
             }
             Deger::Bos
@@ -255,7 +278,7 @@ impl Yorumlayici {
 
         // ── Argümanları al ──────────────────────────────────────────────────────
         let cli_args: Vec<Deger> = std::env::args().map(|s| Deger::Metin(s)).collect();
-        globals.insert("argümanlar".to_string(), Deger::Liste(cli_args));
+        globals.insert("argümanlar".to_string(), Deger::Liste(Rc::new(RefCell::new(cli_args))));
 
         Self { 
             global_degiskenler: globals, 
@@ -290,8 +313,8 @@ impl Yorumlayici {
         }
     }
 
-    pub fn yorumla(&mut self, program: Vec<Komut>) {
-        for komut in program {
+    pub fn yorumla(&mut self, komutlar: Vec<Komut>) {
+        for komut in komutlar {
             self.komut_calistir(komut);
             if self.donus_degeri.is_some() { break; }
         }
@@ -371,24 +394,24 @@ impl Yorumlayici {
             }
             Komut::YukleKomutu(yol) => self.modül_yükle(&yol),
             Komut::ListeOlustur { ad } => {
-                self.degisken_tanimla(ad, Deger::Liste(Vec::new()));
+                self.degisken_tanimla(ad, Deger::Liste(Rc::new(RefCell::new(Vec::new()))));
             }
             Komut::ListeEkle { liste, deger } => {
                 let deger_val = self.ifade_hesapla(deger);
                 let liste_val = self.get_degisken(&liste);
-                if let Deger::Liste(mut l) = liste_val {
-                    l.push(deger_val);
-                    self.degisken_ata(liste, Deger::Liste(l));
+                if let Deger::Liste(l) = liste_val {
+                    l.borrow_mut().push(deger_val);
+                    // O(1) mutation: degisken_ata gerekmez çünkü Rc paylaşımlı
                 }
             }
             Komut::ListeCikar { liste, indeks } => {
                 let idx_val = self.ifade_hesapla(indeks);
                 let liste_val = self.get_degisken(&liste);
-                if let (Deger::Liste(mut l), Deger::Sayi(i)) = (liste_val, idx_val) {
+                if let (Deger::Liste(l), Deger::Sayi(i)) = (liste_val, idx_val) {
                     let idx = i as usize;
-                    if idx < l.len() {
-                        l.remove(idx);
-                        self.degisken_ata(liste, Deger::Liste(l));
+                    let mut b = l.borrow_mut();
+                    if idx < b.len() {
+                        b.remove(idx);
                     }
                 }
             }
@@ -442,13 +465,11 @@ impl Yorumlayici {
                         Ifade::ListeErisim { liste, indeks } => {
                             let l_val = self.ifade_hesapla((*liste).clone());
                             let i_val = self.ifade_hesapla(*indeks);
-                            if let (Deger::Liste(mut l), Deger::Sayi(i)) = (l_val, i_val) {
+                            if let (Deger::Liste(l), Deger::Sayi(i)) = (l_val, i_val) {
                                 let idx = i as usize;
-                                if idx < l.len() {
-                                    l[idx] = d;
-                                    if let Ifade::Degisken(ad) = *liste {
-                                        self.degisken_ata(ad, Deger::Liste(l));
-                                    }
+                                let mut b = l.borrow_mut();
+                                if idx < b.len() {
+                                    b[idx] = d;
                                 }
                             }
                         }
@@ -502,12 +523,12 @@ impl Yorumlayici {
             Ifade::Dogru => Deger::Sayi(1.0),
             Ifade::Yanlis => Deger::Sayi(0.0),
             Ifade::Degisken(ad) => self.get_degisken(&ad),
-            Ifade::Liste(el) => Deger::Liste(el.into_iter().map(|e| self.ifade_hesapla(e)).collect()),
+            Ifade::Liste(el) => Deger::Liste(Rc::new(RefCell::new(el.into_iter().map(|e| self.ifade_hesapla(e)).collect()))),
             Ifade::ListeErisim { liste, indeks } => {
                 let l_val = self.ifade_hesapla(*liste);
                 let i_val = self.ifade_hesapla(*indeks);
                 match (l_val, i_val) {
-                    (Deger::Liste(l), Deger::Sayi(i)) => l.get(i as usize).cloned().unwrap_or(Deger::Bos),
+                    (Deger::Liste(l), Deger::Sayi(i)) => l.borrow().get(i as usize).cloned().unwrap_or(Deger::Bos),
                     (Deger::Metin(s), Deger::Sayi(i)) => s.chars().nth(i as usize).map(|c| Deger::Metin(c.to_string())).unwrap_or(Deger::Bos),
                     _ => Deger::Bos
                 }
@@ -528,7 +549,7 @@ impl Yorumlayici {
             Ifade::Uzunluk(ifade) => {
                 let val = self.ifade_hesapla(*ifade);
                 match val {
-                    Deger::Liste(l) => Deger::Sayi(l.len() as f64),
+                    Deger::Liste(l) => Deger::Sayi(l.borrow().len() as f64),
                     Deger::Metin(s) => Deger::Sayi(s.chars().count() as f64),
                     _ => Deger::Sayi(0.0),
                 }
@@ -632,7 +653,7 @@ impl Yorumlayici {
         match deger {
             Deger::Sayi(n) => n != 0.0,
             Deger::Metin(s) => !s.is_empty(),
-            Deger::Liste(l) => !l.is_empty(),
+            Deger::Liste(l) => !l.borrow().is_empty(),
             Deger::Bos => false,
             _ => true
         }
