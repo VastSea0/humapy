@@ -22,25 +22,34 @@ DURAK_LISTESİ = ["bir", "bu", "şu", "o", "ve", "veya", "ile", "da", "de", "mi"
 
 // Türkçe yaygın çekim ekleri (sondan eklemeli sıralama önemlidir)
 ÇEKIM_EKLERİ = [
-    "ştırmak", "ştirmek", "laştır", "leştir",
-    "abilmek", "ebilmek", "abilir", "ebilir",
-    "acaklar", "ecekler", "acaktı", "ecekti",
-    "maktan", "mekten", "makta", "mekte",
-    "lardan", "lerden", "larla", "lerle",
-    "ından", "inden", "undan", "ünden",
-    "ların", "lerin", "lara", "lere",
-    "acak", "ecek", "ıyor", "iyor",
-    "uyor", "üyor", "ardı", "erdi",
-    "mak", "mek", "lar", "ler",
-    "dan", "den", "tan", "ten",
-    "lar", "ler", "nın", "nin",
-    "nun", "nün", "ının", "inin",
-    "da", "de", "ta", "te",
-    "la", "le", "ya", "ye",
-    "ın", "in", "un", "ün",
-    "ı", "i", "u", "ü",
-    "a", "e", "y", "n",
-    "m", "k", "r"
+    // Fiilimsiler ve birleşik ekler
+    "ştırmak", "ştirmek", "laştır", "leştir", "abilmek", "ebilmek", "abilir", "ebilir",
+    "acaklar", "ecekler", "acaktı", "ecekti", "maktan", "mekten", "makta", "mekte",
+    "dıkça", "dikçe", "dukça", "dükçe", "tıkça", "tikçe", "tukça", "tükçe",
+    "yacak", "yecek", "arak", "erek", "ınca", "ince", "unca", "ünce", "madan", "meden",
+    
+    // Geçmiş zamanlar, gelecek, şimdiki, geniş zaman
+    "mıştı", "mişti", "muştu", "müştü", "tıydı", "tiydi", "tuydı", "tüydü",
+    "ıyor", "iyor", "uyor", "üyor", "acak", "ecek", "ardı", "erdi", "ırdı", "irdi",
+    "mış", "miş", "muş", "müş", "tık", "tik", "tuk", "tük", "dık", "dik", "duk", "dük",
+    "lar", "ler", "mak", "mek", "ken",
+
+    // Hal Ekleri
+    "lardan", "lerden", "larla", "lerle", "ından", "inden", "undan", "ünden",
+    "ların", "lerin", "ların", "lerin", "ndaki", "ndeki", "daki", "deki", "taki", "teki",
+    "dan", "den", "tan", "ten", "nda", "nde", "nta", "nte",
+    "nın", "nin", "nun", "nün", "na", "ne", "nı", "ni", "nu", "nü",
+    "da", "de", "ta", "te", "ya", "ye", "yı", "yi", "yu", "yü",
+
+    // Kişi ve İyelik
+    "ımız", "imiz", "umuz", "ümüz", "ınız", "iniz", "unuz", "ünüz", "mız", "miz", "nız", "niz",
+    "ları", "leri", "sın", "sin", "sun", "sün", "sın", "sin",
+
+    // Kısa zaman ve fiil ekleri
+    "dı", "di", "du", "dü", "tı", "ti", "tu", "tü", "sa", "se", "ma", "me", "mı", "mi", "mu", "mü",
+    "ar", "er", "ır", "ir", "ur", "ür", "ıp", "ip", "up", "üp", 
+    "ın", "in", "un", "ün", "ım", "im", "um", "üm", "am", "em",
+    "ı", "i", "u", "ü", "a", "e"
 ] olsun
 
 // ─── MODÜL 1: TEMİZLEME VE NORMALİZASYON ──────────────────────────────────
@@ -185,31 +194,35 @@ ek_çıkar fonksiyon olsun kelime, ek alsın {
     kelime'yi döndür
 }
 
-// stem(kelime) → en uzun eşleşen eki tek seferde çıkar (greedy, sonsuz döngüsüz)
+// stem(kelime) → en uzun eşleşen eki çıkar (tekrarlı, tam köke ulaşır)
 stem fonksiyon olsun kelime alsın {
     kök = küçük_harf(kelime) olsun
-
-    // Çok kısa kelimeler için stem yapma (5 veya daha az)
-    uzunluk(kök) <= 4 ise {
-        kök'ü döndür
-    }
-
-    // Ek listesinde en uzundan kısaya doğru ilk eşleşeni bul, çıkar
-    i = 0 olsun
-    ek_sayısı = uzunluk(ÇEKIM_EKLERİ) olsun
-    i < ek_sayısı olduğu sürece {
-        ek = ÇEKIM_EKLERİ[i] olsun
-        ek_boy = uzunluk(ek) olsun
-        kel_boy = uzunluk(kök) olsun
-        // Ek sondan eşleşiyor ve kök en az 3 karakter kalıyor mu?
-        (ek_boy < kel_boy) ve ((kel_boy - ek_boy) >= 3) ise {
-            ek_var_mı(kök, ek) ise {
-                kök = dizi_dilim(kök, 0, kel_boy - ek_boy) olsun
-                // Döngüyü bitirmek için i'yi ek sayısına eşitle
-                i = ek_sayısı olsun
-            }
+    değişti = 1 olsun
+    
+    değişti = 1 olduğu sürece {
+        değişti = 0 olsun // Bu turda değişti mi kontrolü
+        
+        uzunluk(kök) <= 3 ise { // En kısa yaygın kök boyutu: 3
+            kök'ü döndür
         }
-        i = i + 1 olsun
+
+        i = 0 olsun
+        ek_sayısı = uzunluk(ÇEKIM_EKLERİ) olsun
+        i < ek_sayısı olduğu sürece {
+            ek = ÇEKIM_EKLERİ[i] olsun
+            ek_boy = uzunluk(ek) olsun
+            kel_boy = uzunluk(kök) olsun
+            
+            // Ek sondan eşleşiyor ve kök en az 3 karakter kalıyor mu?
+            (ek_boy < kel_boy) ve ((kel_boy - ek_boy) >= 3) ise {
+                ek_var_mı(kök, ek) ise {
+                    kök = dizi_dilim(kök, 0, kel_boy - ek_boy) olsun
+                    değişti = 1 olsun
+                    i = ek_sayısı olsun // Döngüyü kır, en baştan (uzun ekten) tekrar başla
+                }
+            }
+            i = i + 1 olsun
+        }
     }
     kök'ü döndür
 }
