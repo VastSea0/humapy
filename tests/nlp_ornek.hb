@@ -29,8 +29,19 @@ frekanslar = kelime_frekansları(kokler)
 frekanslar'ı yazdır
 
 "--------------------------------"’yı yazdır
+"5. Sıralı Frekans Analizi: "'i yazdır
+sıralı_frekanslar = frekans_sırala(frekanslar)
+sıralı_frekanslar'ı yazdır
+
+"--------------------------------"’yı yazdır
 "Bütüncül NLP Pipeline Çıktısı: "'i yazdır
 sonuc = nlp_pipeline(metin)
 sonuc'u yazdır
+
+"--------------------------------"’yı yazdır
+"Yeni Cümle Bölücü Özelliği (Kısaltma Destekli): "'i yazdır
+cümle_metni = "Prof. Dr. Ahmet Bey, bugün okula geldi! Hemen ders çalıştı vizelerine girdi. Sonuç çok iyiydi." olsun
+cümleler = cümle_böl(cümle_metni)
+cümleler'i yazdır
 
 "NLP Testi Başarıyla Tamamlandı!"'yı yazdır

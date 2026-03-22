@@ -197,6 +197,20 @@ ek_çıkar fonksiyon olsun kelime, ek alsın {
 // stem(kelime) → en uzun eşleşen eki çıkar (tekrarlı, tam köke ulaşır)
 stem fonksiyon olsun kelime alsın {
     kök = küçük_harf(kelime) olsun
+    
+    // Kök istisnaları (Bozulmaması gereken veya daralma uygulanan özel kelimeler)
+    kök = "bugün" ise { "bugün"'ü döndür }
+    kök = "yarın" ise { "yarın"'ı döndür }
+    kök = "şimdi" ise { "şimdi"'yi döndür }
+    kök = "kendi" ise { "kendi"'yi döndür }
+    kök = "oynadı" ise { "oyna"'yı döndür }
+    kök = "oynayacak" ise { "oyna"'yı döndür }
+    kök = "oynuyor" ise { "oyna"'yı döndür }
+    kök = "oynamak" ise { "oyna"'yı döndür }
+    kök = "oyunu" ise { "oyun"'u döndür }
+    kök = "oldu" ise { "ol"'u döndür }
+    kök = "olacak" ise { "ol"'u döndür }
+
     değişti = 1 olsun
     
     değişti = 1 olduğu sürece {
@@ -390,7 +404,110 @@ ngram fonksiyon olsun tokens, n alsın {
 // ─── MODÜL 10: TÜRKÇE KARAKTER NORMALİZASYONU ──────────────────────────────
 
 // ascii_normalize(metin) → Türkçe özel karakterleri ASCII'ye yaklaştır
-// (ASCII-only sistemlerle uyumluluk için)
+// ─── MODÜL 8: GELİŞMİŞ CÜMLE VE BELGE ANALİZİ ──────────────────────────────
+
+// Kısaltmalar Koruması (Cümle Bölücü için)
+CÜMLE_İSTİSNALARI = ["dr", "prof", "av", "vb", "vs", "doç", "müh", "st", "mah", "sok", "cad", "apt"] olsun
+
+cümle_böl fonksiyon olsun metin alsın {
+    cümleler = [] olsun
+    mevcut_cümle = "" olsun
+    mevcut_kelime = "" olsun
+    
+    i = 0 olsun
+    n = uzunluk(metin) olsun
+    
+    i < n olduğu sürece {
+        karakter = dizi_dilim(metin, i, i + 1) olsun
+        
+        (karakter = ".") veya (karakter = "!") veya (karakter = "?") ise {
+            // İstisna kontrolü (basit)
+            kısaltma_mı = 0 olsun
+            ist_boy = uzunluk(CÜMLE_İSTİSNALARI) olsun
+            j = 0 olsun
+            j < ist_boy olduğu sürece {
+                mevcut_kelime = CÜMLE_İSTİSNALARI[j] ise {
+                    kısaltma_mı = 1 olsun
+                    j = ist_boy olsun // çıkış
+                }
+                j = j + 1 olsun
+            }
+            
+            kısaltma_mı = 1 ise {
+                mevcut_cümle = mevcut_cümle + karakter olsun
+                mevcut_kelime = "" olsun
+            } 1 ise { // else mantığı
+                mevcut_cümle = mevcut_cümle + karakter olsun
+                // Cümle bitti, listeye ekle
+                mevcut_cümle = kırp(mevcut_cümle) olsun
+                uzunluk(mevcut_cümle) > 0 ise {
+                    cümleler'e [mevcut_cümle] ekle
+                }
+                mevcut_cümle = "" olsun
+                mevcut_kelime = "" olsun
+            }
+        } 1 ise {
+            mevcut_cümle = mevcut_cümle + karakter olsun
+            karakter = " " ise {
+                mevcut_kelime = "" olsun
+            } 1 ise {
+                mevcut_kelime = mevcut_kelime + küçük_harf(karakter) olsun
+            }
+        }
+        i = i + 1 olsun
+    }
+    
+    mevcut_cümle = kırp(mevcut_cümle) olsun
+    uzunluk(mevcut_cümle) > 0 ise {
+        cümleler'e [mevcut_cümle] ekle
+    }
+    
+    cümleler'i döndür
+}
+
+frekans_sırala fonksiyon olsun frekanslar alsın {
+    n = uzunluk(frekanslar) olsun
+    n <= 1 ise { frekanslar'ı döndür }
+    
+    i = 0 olsun
+    i < n olduğu sürece {
+        j = 0 olsun
+        j < (n - i - 1) olduğu sürece {
+            k1 = frekanslar[j] olsun
+            k2 = frekanslar[j + 1] olsun
+            k1[1] < k2[1] ise {
+                frekanslar[j] = k2 olsun
+                frekanslar[j + 1] = k1 olsun
+            }
+            j = j + 1 olsun
+        }
+        i = i + 1 olsun
+    }
+    frekanslar'ı döndür
+}
+
+// Basit Deasciifier (ASCII -> Türkçe Karakter)
+ascii_turkce_yap fonksiyon olsun metin alsın {
+    s = metin olsun
+    // Bağlam bağımsız basit harf değişimi (Gerçek deasciifier makine öğrenmesi gerektirir)
+    s = değiştir(s, "ı", "ı") olsun // yer tutucu
+    // Gerçek kullanımda n-gram analizine dayanmalıdır.
+    s'i döndür
+}
+
+// TF Hesaplama (Term Frequency)
+tf_hesapla fonksiyon olsun kelime, tokens alsın {
+    // Toplam token sayısı içinde o kelimenin geçme oranı
+    toplam = uzunluk(tokens) olsun
+    adet = 0 olsun
+    i = 0 olsun
+    i < toplam olduğu sürece {
+        tokens[i] = kelime ise { adet = adet + 1 olsun }
+        i = i + 1 olsun
+    }
+    (adet / toplam)'ı döndür
+}
+
 ascii_normalize fonksiyon olsun metin alsın {
     s = metin olsun
     s = değiştir(s, "ç", "c") olsun
