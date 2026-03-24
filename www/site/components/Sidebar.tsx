@@ -47,6 +47,11 @@ const navSections: NavSection[] = [
         label: "Compiler Internals",
         icon: "settings_input_component",
       },
+      {
+        href: "/docs/ide",
+        label: "Hüma IDE",
+        icon: "desktop_windows",
+      },
     ],
   },
 ];

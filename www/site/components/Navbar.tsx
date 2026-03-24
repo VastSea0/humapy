@@ -61,6 +61,16 @@ export default function Navbar() {
               Community
             </Link>
             <Link
+              href="/ide"
+              className={`transition-colors pb-0.5 ${
+                pathname === '/ide'
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-on-surface-variant hover:text-on-surface'
+              }`}
+            >
+              IDE
+            </Link>
+            <Link
               href="https://github.com/VastSea0/huma-lang"
               target="_blank"
               rel="noopener noreferrer"
