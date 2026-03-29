@@ -1,0 +1,108 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    outputs:
+      release_id: ${{ steps.create-release.outputs.id }}
+    steps:
+      - name: Create Release
+        id: create-release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: false
+          prerelease: false
+          name: Release ${{ github.ref_name }}
+          generate_release_notes: true
+          
+  build:
+    needs: create-release
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: 'macos-latest'
+            os: 'macos'
+            args: '--target universal-apple-darwin'
+          - platform: 'ubuntu-latest'
+            os: 'linux'
+            args: ''
+          - platform: 'windows-latest'
+            os: 'windows'
+            args: ''
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Install Rust Stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            .
+            src-tauri
+
+      - name: Install Dependencies (Linux)
+        if: matrix.platform == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - name: Install Frontend Dependencies
+        working-directory: ide
+        run: npm install
+
+      # Build Huma CLI directly
+      - name: Build Huma Compiler (Linux / Windows)
+        if: matrix.platform != 'macos-latest'
+        run: cargo build --release --bin huma
+
+      - name: Build Huma Compiler (macOS Universal)
+        if: matrix.platform == 'macos-latest'
+        run: |
+          cargo build --release --bin huma --target aarch64-apple-darwin
+          cargo build --release --bin huma --target x86_64-apple-darwin
+          lipo -create -output target/release/huma target/aarch64-apple-darwin/release/huma target/x86_64-apple-darwin/release/huma
+
+      - name: Prepare CLI Binaries for Upload
+        shell: bash
+        run: |
+          mkdir -p release_binaries
+          if [ "${{ matrix.platform }}" = "windows-latest" ]; then
+            cp target/release/huma.exe release_binaries/huma-windows-amd64.exe
+          elif [ "${{ matrix.platform }}" = "macos-latest" ]; then
+            cp target/release/huma release_binaries/huma-macos-universal
+          else
+            cp target/release/huma release_binaries/huma-linux-amd64
+          fi
+
+      - name: Upload CLI Binaries to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release_binaries/*
+          tag_name: ${{ github.ref_name }}
+
+      - name: Build and Release Tauri App
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          releaseId: ${{ needs.create-release.outputs.release_id }}
+          projectPath: "src-tauri"
+          args: ${{ matrix.args }}
