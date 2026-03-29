@@ -24,3 +24,5 @@ log = "0.4"
 tauri = { version = "2.10.3", features = [] }
 tauri-plugin-log = "2"
 huma = { path = ".." }
+tokio = { version = "1.37", features = ["full"] }
+portable-pty = "0.8.1"

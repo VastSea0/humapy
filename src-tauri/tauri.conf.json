@@ -4,20 +4,21 @@
   "version": "0.2.0",
   "identifier": "com.vastsea.humaide",
   "build": {
-    "frontendDist": "../ide/public",
+    "frontendDist": "../ide/dist",
     "devUrl": "http://localhost:3737",
-    "beforeDevCommand": "npm start --prefix ../ide",
-    "beforeBuildCommand": ""
+    "beforeDevCommand": "cd ../ide && npm run dev",
+    "beforeBuildCommand": "cd ../ide && npm run build"
   },
   "app": {
     "withGlobalTauri": true,
     "windows": [
       {
         "title": "Hüma IDE",
-        "width": 800,
-        "height": 600,
+        "width": 1200,
+        "height": 800,
         "resizable": true,
-        "fullscreen": false
+        "fullscreen": false,
+        "decorations": true
       }
     ],
     "security": {
