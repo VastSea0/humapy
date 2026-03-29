@@ -1,0 +1,88 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+
+export default function Navbar() {
+  const pathname = usePathname();
+  const [copied, setCopied] = useState(false);
+
+  const isDocsPage = pathname.startsWith("/docs");
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText("curl -fsSL https://huma.lang/install.sh | sh");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <header className="fixed top-0 w-full z-50 bg-[#131313]/80 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+      <nav className="flex justify-between items-center h-16 px-8 max-w-[1440px] mx-auto">
+        {/* Logo + Nav Links */}
+        <div className="flex items-center gap-8">
+          <Link
+            href="/"
+            className="text-xl font-black text-on-surface tracking-tighter hover:text-primary transition-colors"
+          >
+            Hüma
+          </Link>
+          <div className="hidden md:flex items-center gap-6 font-body font-medium tracking-tight text-sm">
+            <Link
+              href="/docs"
+              className={`transition-colors pb-0.5 ${
+                isDocsPage
+                  ? "text-primary border-b-2 border-primary"
+                  : "text-on-surface-variant hover:text-on-surface"
+              }`}
+            >
+              Docs
+            </Link>
+            <Link
+              href="#"
+              className="text-on-surface-variant hover:text-on-surface transition-colors"
+            >
+              Playground
+            </Link>
+            <Link
+              href="#"
+              className="text-on-surface-variant hover:text-on-surface transition-colors"
+            >
+              Community
+            </Link>
+            <Link
+              href="https://github.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-on-surface-variant hover:text-on-surface transition-colors"
+            >
+              GitHub
+            </Link>
+          </div>
+        </div>
+
+        {/* Right Side */}
+        <div className="flex items-center gap-4">
+          {isDocsPage && (
+            <div className="relative hidden sm:block">
+              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-base">
+                search
+              </span>
+              <input
+                type="text"
+                placeholder="Search documentation..."
+                className="bg-surface-container-highest border border-outline-variant/10 rounded-sm pl-9 pr-4 py-1.5 text-xs w-56 focus:outline-none focus:ring-1 focus:ring-tertiary/40 transition-all placeholder:text-on-surface-variant/40 text-on-surface"
+              />
+            </div>
+          )}
+          <button
+            onClick={handleCopy}
+            className="bg-primary text-on-primary px-5 py-2 font-body text-sm font-semibold rounded-sm active:scale-95 transition-all hover:bg-primary-fixed"
+          >
+            {copied ? "Copied!" : "Install"}
+          </button>
+        </div>
+      </nav>
+    </header>
+  );
+}
