@@ -23,15 +23,16 @@ export default function DocsLayout({
             © 2026 Hüma Language Foundation. Kinetic Archive Edition.
           </p>
           <div className="flex gap-8 font-body text-xs uppercase tracking-[0.1em]">
-            {["Twitter", "Discord", "Status", "Security", "Terms"].map((l) => (
-              <Link
-                key={l}
-                href="#"
-                className="text-on-surface-variant/60 hover:text-primary transition-colors"
-              >
-                {l}
-              </Link>
-            ))}
+            <Link href="https://github.com/VastSea0/huma-lang" target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">GitHub</Link>
+            <Link href="https://github.com/VastSea0/huma-lang/discussions" target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">Discord</Link>
+            <Link href="https://github.com/VastSea0/huma-lang/releases" target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">Releases</Link>
+            <Link href="https://github.com/VastSea0/huma-lang/issues" target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">Issues</Link>
+            <Link href="https://github.com/VastSea0/huma-lang/blob/main/LICENSE" target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">License</Link>
           </div>
         </div>
       </footer>
