@@ -11,7 +11,9 @@ export default function Navbar() {
   const isDocsPage = pathname.startsWith("/docs");
 
   const handleCopy = () => {
-    navigator.clipboard.writeText("curl -fsSL https://huma.lang/install.sh | sh");
+    navigator.clipboard.writeText(
+      "curl -fsSL https://raw.githubusercontent.com/VastSea0/huma-lang/main/install.sh | sh"
+    );
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -51,7 +53,7 @@ export default function Navbar() {
               Community
             </Link>
             <Link
-              href="https://github.com"
+              href="https://github.com/VastSea0/huma-lang"
               target="_blank"
               rel="noopener noreferrer"
               className="text-on-surface-variant hover:text-on-surface transition-colors"

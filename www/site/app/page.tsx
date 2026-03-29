@@ -1,14 +1,22 @@
+"use client";
+
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
-import type { Metadata } from "next";
+import { useState } from "react";
 
-export const metadata: Metadata = {
-  title: "Hüma — Code as You Think",
-  description:
-    "High-performance programming language with native Turkish syntax. Built with a Rust-backed core.",
-};
+const INSTALL_URL =
+  "curl -fsSL https://raw.githubusercontent.com/VastSea0/huma-lang/main/install.sh | sh";
+const GITHUB_URL = "https://github.com/VastSea0/huma-lang";
 
 export default function HomePage() {
+  const [ctaCopied, setCtaCopied] = useState(false);
+
+  const copyInstall = () => {
+    navigator.clipboard.writeText(INSTALL_URL);
+    setCtaCopied(true);
+    setTimeout(() => setCtaCopied(false), 2000);
+  };
+
   return (
     <>
       <Navbar />
@@ -201,12 +209,16 @@ export default function HomePage() {
             </div>
             <div className="z-10 flex flex-col gap-4 w-full md:w-auto">
               <div className="bg-surface-container-highest p-4 rounded-sm font-mono text-sm border border-outline-variant/10 flex items-center justify-between gap-8">
-                <span className="text-on-surface-variant">
-                  curl -s https://huma.lang | sh
+                <span className="text-on-surface-variant text-xs break-all">
+                  {INSTALL_URL}
                 </span>
-                <span className="material-symbols-outlined text-on-surface-variant/40 hover:text-primary cursor-pointer transition-colors">
-                  content_copy
-                </span>
+                <button
+                  onClick={copyInstall}
+                  className="material-symbols-outlined text-on-surface-variant/40 hover:text-primary cursor-pointer transition-colors bg-transparent border-none p-0"
+                  aria-label="Copy install command"
+                >
+                  {ctaCopied ? "check" : "content_copy"}
+                </button>
               </div>
               <div className="text-[10px] font-mono uppercase tracking-widest text-on-surface-variant/40 text-center md:text-right">
                 Available for x64 / ARM64
@@ -229,17 +241,16 @@ export default function HomePage() {
             </div>
           </div>
           <div className="flex gap-8 font-body text-xs uppercase tracking-[0.1em]">
-            {["Twitter", "Discord", "Status", "Security", "Terms"].map(
-              (link) => (
-                <Link
-                  key={link}
-                  href="#"
-                  className="text-on-surface-variant/60 hover:text-primary transition-colors"
-                >
-                  {link}
-                </Link>
-              )
-            )}
+            <Link href={GITHUB_URL} target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">GitHub</Link>
+            <Link href={`${GITHUB_URL}/discussions`} target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">Discord</Link>
+            <Link href={`${GITHUB_URL}/releases`} target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">Releases</Link>
+            <Link href={`${GITHUB_URL}/issues`} target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">Issues</Link>
+            <Link href={`${GITHUB_URL}/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">License</Link>
           </div>
         </div>
       </footer>

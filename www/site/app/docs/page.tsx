@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     "Install Hüma and write your first program in minutes. Complete getting-started guide.",
 };
 
-const installCode = `curl -fsSL https://huma.lang/install.sh | sh`;
+const installCode = `curl -fsSL https://raw.githubusercontent.com/VastSea0/huma-lang/main/install.sh | sh`;
 
 const versionCode = `$ huma --version
 Hüma Language Compiler v1.0.4-stable (build 4a92c)`;
