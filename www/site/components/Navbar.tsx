@@ -41,14 +41,22 @@ export default function Navbar() {
               Docs
             </Link>
             <Link
-              href="#"
-              className="text-on-surface-variant hover:text-on-surface transition-colors"
+              href="/playground"
+              className={`transition-colors pb-0.5 ${
+                pathname === '/playground'
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-on-surface-variant hover:text-on-surface'
+              }`}
             >
               Playground
             </Link>
             <Link
-              href="#"
-              className="text-on-surface-variant hover:text-on-surface transition-colors"
+              href="/community"
+              className={`transition-colors pb-0.5 ${
+                pathname === '/community'
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-on-surface-variant hover:text-on-surface'
+              }`}
             >
               Community
             </Link>
