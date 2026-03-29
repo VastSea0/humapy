@@ -1,0 +1,26 @@
+{
+  "name": "huma-lang",
+  "displayName": "Hüma Language Support",
+  "description": "Syntax highlighting and language support for Hüma programming language",
+  "version": "0.1.0",
+  "publisher": "humapy",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "huma",
+      "aliases": ["Hüma", "huma"],
+      "extensions": [".hb"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "huma",
+      "scopeName": "source.huma",
+      "path": "./syntaxes/huma.tmLanguage.json"
+    }]
+  }
+}

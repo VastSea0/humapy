@@ -1,0 +1,105 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Hüma",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#builtins"
+    },
+    {
+      "include": "#operators"
+    },
+    {
+      "include": "#suffixes"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "match": "//.*$",
+          "name": "comment.line.double-slash.huma"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.huma",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.huma",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "match": "\\b\\d+(\\.\\d+)?\\b",
+          "name": "constant.numeric.huma"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "match": "\\b(olsun|ise|yoksa|olduğu sürece|sınıf|fonksiyon|alsın|döndür|yükle|dene|hata var ise|liste)\\b",
+          "name": "keyword.control.huma"
+        },
+        {
+          "match": "\\b(doğru|yanlış)\\b",
+          "name": "constant.language.huma"
+        },
+        {
+          "match": "\\b(ve|veya|değil)\\b",
+          "name": "keyword.operator.logical.huma"
+        },
+        {
+          "match": "\\b(kendisi)\\b",
+          "name": "variable.language.this.huma"
+        }
+      ]
+    },
+    "builtins": {
+      "patterns": [
+        {
+          "match": "\\b(yazdır|ekrana yazdır|terminale yazdır|ekle|çıkar|oku|uzunluğu)\\b",
+          "name": "support.function.huma"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "match": "(\\+|-|\\*|/|=|<|>|<=|>=|!=)",
+          "name": "keyword.operator.huma"
+        }
+      ]
+    },
+    "suffixes": {
+      "patterns": [
+        {
+          "match": "'(i|ı|u|ü|e|a|in|ın|un|ün|nin|nın|nun|nün|ye|ya|yi|yı|yu|yü|den|dan|ten|tan|de|da|te|ta|ndan|nden|nda|nde|nı|ni|nu|nü)",
+          "name": "keyword.other.suffix.huma"
+        }
+      ]
+    }
+  },
+  "scopeName": "source.huma"
+}
