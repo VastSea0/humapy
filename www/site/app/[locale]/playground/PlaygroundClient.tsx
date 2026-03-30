@@ -8,78 +8,66 @@ const GITHUB_URL = "https://github.com/VastSea0/huma-lang";
 const EXAMPLES = [
   {
     id: "hello",
-    label: "Welcome to Hüma",
-    description: "A basic example of variable assignment and printing in Hüma. The simplest structure that utilizes the natural flow of the Turkish language.",
-    code: `// Define variable and print
-isim = "World" olsun
-"Hello, " + isim'i yazdır;`,
-    output: "Hello, World",
+    code: `// Değişken tanımla ve yazdır
+isim = "Dünya" olsun
+"Merhaba, " + isim'i yazdır;`,
+    output: "Merhaba, Dünya",
   },
   {
     id: "conditions",
-    label: "Decision Mechanisms",
-    description: "Flow control with ise / yoksa blocks. You can build conditional statements with the 'ise' keyword.",
-    code: `grade = 85 olsun
+    code: `puan = 85 olsun
 
-grade > 50 ise {
-    "You successfully passed the exam!"'i yazdır;
+puan > 50 ise {
+    "Sınavı başarıyla geçtiniz!"'i yazdır;
 } yoksa {
-    "Unfortunately, you failed."'u yazdır;
+    "Maaleset kaldınız."'ı yazdır;
 }`,
-    output: "You successfully passed the exam!",
+    output: "Sınavı başarıyla geçtiniz!",
   },
   {
     id: "loops",
-    label: "Iterative Operations",
-    description: "The 'olduğu sürece' structure is the direct equivalent of the classic while loop.",
-    code: `counter = 1 olsun
+    code: `sayaç = 1 olsun
 
-counter <= 3 olduğu sürece {
-    "Step: " + counter'ı yazdır;
-    counter = counter + 1 olsun
+sayaç <= 3 olduğu sürece {
+    "Adım: " + sayaç'ı yazdır;
+    sayaç = sayaç + 1 olsun
 }`,
-    output: "Step: 1\nStep: 2\nStep: 3",
+    output: "Adım: 1\nAdım: 2\nAdım: 3",
   },
   {
     id: "functions",
-    label: "Function Definition",
-    description: "Functions are defined with the 'olsun' and 'alsın' structure, and return values with 'döndür'.",
-    code: `add fonksiyon olsun a, b alsın {
+    code: `topla fonksiyon olsun a, b alsın {
     a + b'yi döndür
 }
 
-result = add(15, 20)
-"Total: " + result'u yazdır;`,
-    output: "Total: 35",
+sonuç = topla(15, 20)
+"Toplam: " + sonuç'u yazdır;`,
+    output: "Toplam: 35",
   },
   {
     id: "classes",
-    label: "Object-Oriented Programming",
-    description: "Group your data and behaviors (functions) using classes and object structures.",
-    code: `animal sınıf olsun {
-    name = "" olsun
-    sound = "Meow" olsun
+    code: `hayvan sınıf olsun {
+    isim = "" olsun
+    ses = "Miyav" olsun
 
-    speak fonksiyon olsun {
-        kendisi'nin name + " says: " + kendisi'nin sound'u yazdır
+    konuş fonksiyon olsun {
+        kendisi'nin isim + " diyor ki: " + kendisi'nin ses'i yazdır
     }
 }
 
-kitty = animal() olsun
-kitty.name = "Cat" olsun
-kitty.speak()`,
-    output: "Cat says: Meow",
+pisi = hayvan() olsun
+pisi.isim = "Kedi" olsun
+pisi.konuş()`,
+    output: "Kedi diyor ki: Miyav",
   },
   {
     id: "lists",
-    label: "List Management",
-    description: "Add elements, remove them, and check length with Hüma's dynamic list structure.",
-    code: `array = [1, 2, 3] olsun
-array'e [4]'ü ekle;
+    code: `liste = [1, 2, 3] olsun
+liste'ye [4]'ü ekle;
 
-"Element count: " + array'in uzunluğu'nu yazdır;
-"Full list: " + array'i yazdır;`,
-    output: "Element count: 4\nFull list: [1, 2, 3, 4]",
+"Eleman sayısı: " + liste'nin uzunluğu'nu yazdır;
+"Tüm liste: " + liste'yi yazdır;`,
+    output: "Eleman sayısı: 4\nTüm liste: [1, 2, 3, 4]",
   },
 ];
 
@@ -126,65 +114,68 @@ function CodeBlock({ code, label }: { code: string; label: string }) {
   );
 }
 
-export default function ExamplesPage() {
+export default function PlaygroundClient({ dict, locale }: { dict: any; locale: string }) {
   return (
     <>
-      <Navbar />
+      <Navbar dict={dict} locale={locale} />
       <main className="min-h-screen bg-surface pb-24 pt-32">
         {/* Header Section */}
         <div className="max-w-[1440px] mx-auto px-8 md:px-12 mb-24">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high border border-outline-variant/20 mb-8">
             <span className="w-2 h-2 rounded-full bg-tertiary" />
             <span className="font-mono text-[10px] tracking-widest uppercase text-tertiary">
-              v0.3.1-stable kinetic gallery
+              {dict.Playground.badge}
             </span>
           </div>
           <h1 className="text-[clamp(2.5rem,8vw,4rem)] font-black leading-[0.9] tracking-tighter text-on-surface mb-8">
-            Pure Efficiency.<br />
+            {dict.Playground.headline}<br />
             <span className="bg-gradient-to-r from-primary to-primary-container bg-clip-text text-transparent">
-              Native Semantics.
+              {dict.Playground.subheadline}
             </span>
           </h1>
           <p className="text-lg md:text-xl text-on-surface-variant max-w-2xl leading-relaxed">
-            Discover the Hüma language. Programming is now much more accessible and powerful with its syntax close to daily spoken language.
+            {dict.Playground.description}
           </p>
         </div>
 
         {/* Examples List */}
         <section className="max-w-[1440px] mx-auto px-8 md:px-12">
           <div className="space-y-32">
-            {EXAMPLES.map((ex) => (
-              <div key={ex.id} className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-                <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high border border-outline-variant/20 mb-6">
-                    <span className="font-mono text-[10px] tracking-widest uppercase text-on-surface-variant/60">
-                      Module: {ex.id}
-                    </span>
-                  </div>
-                  <h3 className="text-4xl font-black tracking-tight text-on-surface mb-6">
-                    {ex.label}
-                  </h3>
-                  <p className="text-lg text-on-surface-variant leading-relaxed font-medium mb-10">
-                    {ex.description}
-                  </p>
-                  
-                  <div className="bg-[#0E0E0E] rounded-xl p-6 border border-outline-variant/10 font-mono text-xs relative overflow-hidden group">
-                    <div className="flex items-center gap-2 text-on-surface-variant/50 mb-4 pb-4 border-b border-outline-variant/10">
-                      <span className="material-symbols-outlined text-[14px]">terminal</span>
-                      <span>CONSOLE OUTPUT</span>
+            {EXAMPLES.map((ex) => {
+              const trans = dict.Playground.examples[ex.id as keyof typeof dict.Playground.examples];
+              return (
+                <div key={ex.id} className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+                  <div>
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high border border-outline-variant/20 mb-6">
+                      <span className="font-mono text-[10px] tracking-widest uppercase text-on-surface-variant/60">
+                        Module: {ex.id}
+                      </span>
                     </div>
-                    <pre className="text-primary font-bold text-sm whitespace-pre-wrap leading-relaxed relative z-10 transition-transform group-hover:translate-x-1">
-                      {ex.output}
-                    </pre>
+                    <h3 className="text-4xl font-black tracking-tight text-on-surface mb-6">
+                      {trans?.label || ex.id}
+                    </h3>
+                    <p className="text-lg text-on-surface-variant leading-relaxed font-medium mb-10">
+                      {trans?.description}
+                    </p>
+                    
+                    <div className="bg-[#0E0E0E] rounded-xl p-6 border border-outline-variant/10 font-mono text-xs relative overflow-hidden group">
+                      <div className="flex items-center gap-2 text-on-surface-variant/50 mb-4 pb-4 border-b border-outline-variant/10">
+                        <span className="material-symbols-outlined text-[14px]">terminal</span>
+                        <span>{dict.Playground.console_output}</span>
+                      </div>
+                      <pre className="text-primary font-bold text-sm whitespace-pre-wrap leading-relaxed relative z-10 transition-transform group-hover:translate-x-1">
+                        {ex.output}
+                      </pre>
+                    </div>
+                  </div>
+                  
+                  <div className="relative">
+                    <div className="absolute -inset-8 bg-primary/5 blur-[80px] rounded-full" />
+                    <CodeBlock code={ex.code} label={ex.id} />
                   </div>
                 </div>
-                
-                <div className="relative">
-                  <div className="absolute -inset-8 bg-primary/5 blur-[80px] rounded-full" />
-                  <CodeBlock code={ex.code} label={ex.id} />
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 
@@ -194,21 +185,21 @@ export default function ExamplesPage() {
             <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 blur-[150px] -mr-48 -mt-48" />
             <div className="z-10 max-w-xl">
               <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6 leading-none">
-                The Most Natural Way to Code.
+                {dict.Playground.cta_title}
               </h2>
               <p className="text-on-surface-variant text-lg">
-                To use all the features of Hüma, install the CLI tool on your computer and start developing your own software.
+                {dict.Playground.cta_desc}
               </p>
             </div>
             <div className="z-10 flex flex-wrap gap-4 w-full md:w-auto">
-              <Link href="/docs">
+              <Link href={`/${locale}/docs`}>
                 <button className="bg-gradient-to-br from-primary to-primary-container text-on-primary px-8 py-4 font-bold rounded-sm shadow-xl active:scale-95 transition-all">
-                  Read Documentation
+                  {dict.Playground.cta_docs}
                 </button>
               </Link>
               <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
                 <button className="px-8 py-4 font-bold rounded-sm border border-outline/20 text-on-surface hover:bg-surface-bright transition-all">
-                  View on GitHub
+                  {dict.Playground.cta_github}
                 </button>
               </a>
             </div>
@@ -221,24 +212,24 @@ export default function ExamplesPage() {
         <div className="flex flex-col md:flex-row justify-between items-center px-12 py-12 gap-6 max-w-[1440px] mx-auto">
           <div className="flex flex-col items-center md:items-start gap-4">
             <div className="font-body text-xs uppercase tracking-[0.1em] text-on-surface-variant/60 text-center md:text-left">
-              © 2026 Hüma Language Foundation. Kinetic Archive Edition.
+              {dict.Footer.copy}
             </div>
             <div className="flex gap-4 font-mono text-[10px] text-primary/60">
-              <span>LICENSE: MIT</span>
-              <span>BUILD: STABLE-26.03</span>
+              <span>{dict.Footer.license}</span>
+              <span>{dict.Footer.build}</span>
             </div>
           </div>
           <div className="flex flex-wrap justify-center gap-8 font-body text-xs uppercase tracking-[0.1em]">
             <Link href={GITHUB_URL} target="_blank" rel="noopener noreferrer"
-              className="text-on-surface-variant/60 hover:text-primary transition-colors">GitHub</Link>
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">{dict.Footer.github}</Link>
             <Link href={`${GITHUB_URL}/discussions`} target="_blank" rel="noopener noreferrer"
-              className="text-on-surface-variant/60 hover:text-primary transition-colors">Discord</Link>
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">{dict.Footer.discord}</Link>
             <Link href={`${GITHUB_URL}/releases`} target="_blank" rel="noopener noreferrer"
-              className="text-on-surface-variant/60 hover:text-primary transition-colors">Releases</Link>
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">{dict.Footer.releases}</Link>
             <Link href={`${GITHUB_URL}/issues`} target="_blank" rel="noopener noreferrer"
-              className="text-on-surface-variant/60 hover:text-primary transition-colors">Issues</Link>
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">{dict.Footer.issues}</Link>
             <Link href={`${GITHUB_URL}/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer"
-              className="text-on-surface-variant/60 hover:text-primary transition-colors">License</Link>
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">{dict.Footer.license_link}</Link>
           </div>
         </div>
       </footer>

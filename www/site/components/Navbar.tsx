@@ -3,12 +3,20 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import LanguageSwitcher from "./LanguageSwitcher";
 
-export default function Navbar() {
+export default function Navbar({ dict, locale }: { dict: any; locale: string }) {
   const pathname = usePathname();
   const [copied, setCopied] = useState(false);
 
-  const isDocsPage = pathname.startsWith("/docs");
+  // Helper to get localized path
+  const getPath = (path: string) => {
+    if (path.startsWith("http")) return path;
+    return `/${locale}${path}`;
+  };
+
+  // Check if current page is docs
+  const isDocsPage = pathname.includes("/docs");
 
   const handleCopy = () => {
     navigator.clipboard.writeText(
@@ -24,59 +32,49 @@ export default function Navbar() {
         {/* Logo + Nav Links */}
         <div className="flex items-center gap-8">
           <Link
-            href="/"
+            href={getPath("/")}
             className="text-xl font-black text-on-surface tracking-tighter hover:text-primary transition-colors"
           >
             Hüma
           </Link>
           <div className="hidden md:flex items-center gap-6 font-body font-medium tracking-tight text-sm">
             <Link
-              href="/docs"
+              href={getPath("/docs")}
               className={`transition-colors pb-0.5 ${
-                isDocsPage
+                pathname.includes("/docs")
                   ? "text-primary border-b-2 border-primary"
                   : "text-on-surface-variant hover:text-on-surface"
               }`}
             >
-              Docs
+              {dict.Nav.docs}
             </Link>
             <Link
-              href="/playground"
+              href={getPath("/playground")}
               className={`transition-colors pb-0.5 ${
-                pathname === '/playground'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-on-surface-variant hover:text-on-surface'
+                pathname.includes("/playground")
+                  ? "text-primary border-b-2 border-primary"
+                  : "text-on-surface-variant hover:text-on-surface"
               }`}
             >
-              Playground
+              {dict.Nav.playground}
             </Link>
             <Link
-              href="/community"
+              href={getPath("/community")}
               className={`transition-colors pb-0.5 ${
-                pathname === '/community'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-on-surface-variant hover:text-on-surface'
+                pathname.includes("/community")
+                  ? "text-primary border-b-2 border-primary"
+                  : "text-on-surface-variant hover:text-on-surface"
               }`}
             >
-              Community
+              {dict.Nav.community}
             </Link>
             <Link
-              href="/ide"
-              className={`transition-colors pb-0.5 ${
-                pathname === '/ide'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-on-surface-variant hover:text-on-surface'
-              }`}
-            >
-              IDE
-            </Link>
-            <Link
-              href="https://github.com/VastSea0/huma-lang"
+              href={getPath("https://github.com/VastSea0/huma-lang")}
               target="_blank"
               rel="noopener noreferrer"
               className="text-on-surface-variant hover:text-on-surface transition-colors"
             >
-              GitHub
+              {dict.Nav.github}
             </Link>
           </div>
         </div>
@@ -95,9 +93,12 @@ export default function Navbar() {
               />
             </div>
           )}
+          
+          <LanguageSwitcher currentLocale={locale} />
+
           <button
             onClick={handleCopy}
-            className="bg-primary text-on-primary px-5 py-2 font-body text-sm font-semibold rounded-sm active:scale-95 transition-all hover:bg-primary-fixed"
+            className="bg-primary text-on-primary px-5 py-2 font-body text-sm font-semibold rounded-sm active:scale-95 transition-all hover:bg-primary-fixed ml-2"
           >
             {copied ? "Copied!" : "Install"}
           </button>

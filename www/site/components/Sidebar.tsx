@@ -3,66 +3,60 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-interface NavItem {
-  href: string;
-  label: string;
-  icon: string;
-}
-
-interface NavSection {
-  title: string;
-  items: NavItem[];
-}
-
-const navSections: NavSection[] = [
-  {
-    title: "Core",
-    items: [
-      { href: "/docs", label: "Getting Started", icon: "rocket_launch" },
-      { href: "/docs/introduction", label: "Introduction", icon: "info" },
-    ],
-  },
-  {
-    title: "The Language",
-    items: [
-      { href: "/docs/syntax", label: "Basic Syntax", icon: "code" },
-      {
-        href: "/docs/functions-classes",
-        label: "Functions & Classes",
-        icon: "data_object",
-      },
-      {
-        href: "/docs/lists-errors",
-        label: "Lists & Error Handling",
-        icon: "list",
-      },
-    ],
-  },
-  {
-    title: "Ecosystem",
-    items: [
-      { href: "/docs/stdlib", label: "Standard Library", icon: "menu_book" },
-      {
-        href: "/docs/compiler",
-        label: "Compiler Internals",
-        icon: "settings_input_component",
-      },
-      {
-        href: "/docs/ide",
-        label: "Hüma IDE",
-        icon: "desktop_windows",
-      },
-    ],
-  },
-];
-
-export default function Sidebar() {
+export default function Sidebar({ dict, locale }: { dict: any; locale: string }) {
   const pathname = usePathname();
+
+  const getPath = (path: string) => {
+    if (path.startsWith("http")) return path;
+    return `/${locale}${path}`;
+  };
+
+  const navSections = [
+    {
+      title: dict.Sidebar.core,
+      items: [
+        { href: getPath("/docs"), label: dict.Sidebar.items.getting_started, icon: "rocket_launch" },
+        { href: getPath("/docs/introduction"), label: dict.Sidebar.items.introduction, icon: "info" },
+      ],
+    },
+    {
+      title: dict.Sidebar.language,
+      items: [
+        { href: getPath("/docs/syntax"), label: dict.Sidebar.items.syntax, icon: "code" },
+        {
+          href: getPath("/docs/functions-classes"),
+          label: dict.Sidebar.items.functions,
+          icon: "data_object",
+        },
+        {
+          href: getPath("/docs/lists-errors"),
+          label: dict.Sidebar.items.lists,
+          icon: "list",
+        },
+      ],
+    },
+    {
+      title: dict.Sidebar.ecosystem,
+      items: [
+        { href: getPath("/docs/stdlib"), label: dict.Sidebar.items.stdlib, icon: "menu_book" },
+        {
+          href: getPath("/docs/compiler"),
+          label: dict.Sidebar.items.compiler,
+          icon: "settings_input_component",
+        },
+        {
+          href: getPath("/docs/ide"),
+          label: dict.Sidebar.items.ide,
+          icon: "desktop_windows",
+        },
+      ],
+    },
+  ];
 
   return (
     <aside className="hidden lg:flex flex-col h-[calc(100vh-4rem)] w-64 sticky top-16 left-0 bg-surface-container-lowest py-8 px-6 gap-2 border-r border-outline-variant/10 overflow-y-auto shrink-0">
       <div className="mb-6">
-        <h3 className="text-lg font-bold text-on-surface">Documentation</h3>
+        <h3 className="text-lg font-bold text-on-surface">{dict.Sidebar.title}</h3>
         <p className="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant/60 font-semibold mt-0.5">
           v1.0.4-stable
         </p>

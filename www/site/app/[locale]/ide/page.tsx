@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import type { Metadata } from "next";
+import { getDictionary } from "@/dictionaries/dictionaries";
 
 export const metadata: Metadata = {
   title: "Hüma IDE",
@@ -10,43 +11,49 @@ export const metadata: Metadata = {
 
 const GITHUB_URL = "https://github.com/VastSea0/huma-lang";
 
-export default function IDEPage() {
+export default async function IDEPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const dict = await getDictionary(locale as "en" | "tr");
+
   return (
     <>
-      <Navbar />
+      <Navbar dict={dict} locale={locale} />
       <main className="pt-32 pb-24 overflow-hidden">
         {/* ── Hero ── */}
         <section className="max-w-[1440px] mx-auto px-8 md:px-12 flex flex-col items-center text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high border border-outline-variant/20 mb-8">
             <span className="w-2 h-2 rounded-full bg-tertiary" />
             <span className="font-mono text-[10px] tracking-widest uppercase text-tertiary">
-              v0.2.0 Desktop Preview
+              {dict.IDE_Page.badge}
             </span>
           </div>
 
           <h1 className="text-[clamp(3rem,8vw,5.5rem)] font-black leading-[0.9] tracking-tighter text-on-surface mb-8">
-            The Official <br />
+            {dict.IDE_Page.headline} <br />
             <span className="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
-              Hüma IDE.
+              {dict.IDE_Page.subheadline}
             </span>
           </h1>
 
           <p className="text-lg md:text-xl text-on-surface-variant max-w-2xl mb-12 leading-relaxed">
-            A native, cross-platform desktop application powered by Tauri and React. 
-            Experience zero-latency editing with Monaco and an integrated xterm.js terminal.
+            {dict.IDE_Page.description}
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center">
             <Link href={`${GITHUB_URL}/releases`} target="_blank">
               <button className="bg-gradient-to-tr from-primary to-primary-container text-on-primary px-8 py-4 font-bold rounded-sm shadow-xl active:scale-95 transition-all flex items-center gap-2">
                 <span className="material-symbols-outlined text-[1.2em]">download</span>
-                Download Latest Release
+                {dict.IDE_Page.cta_download}
               </button>
             </Link>
-            <Link href="/docs/ide">
+            <Link href={`/${locale}/docs/ide`}>
               <button className="px-8 py-4 font-bold rounded-sm border border-outline/20 text-on-surface hover:bg-surface-bright transition-all flex items-center gap-2">
                 <span className="material-symbols-outlined text-[1.2em]">menu_book</span>
-                Read Documentation
+                {dict.IDE_Page.cta_docs}
               </button>
             </Link>
           </div>
@@ -84,7 +91,7 @@ export default function IDEPage() {
         <section className="mt-48 max-w-[1440px] mx-auto px-8 md:px-12">
           <div className="mb-16">
             <h2 className="text-3xl font-black tracking-tight mb-4 text-center">
-              A Complete Developer Workflow
+              {dict.IDE_Page.features_headline}
             </h2>
             <div className="w-12 h-1 bg-primary mx-auto" />
           </div>
@@ -93,18 +100,18 @@ export default function IDEPage() {
             {[
               {
                 icon: "data_object",
-                title: "Monaco Editor",
-                desc: "Powered by the same core as VS Code. Get full semantic highlighting, minimap support, and multi-cursor editing out of the box.",
+                title: dict.IDE_Page.features.monaco.title,
+                desc: dict.IDE_Page.features.monaco.desc,
               },
               {
                 icon: "terminal",
-                title: "xterm.js Integration",
-                desc: "An embedded native-feeling PTY terminal. Run hüma interactively, execute scripts, and view diagnostics directly from the bottom panel.",
+                title: dict.IDE_Page.features.terminal.title,
+                desc: dict.IDE_Page.features.terminal.desc,
               },
               {
                 icon: "deployed_code",
-                title: "Tauri Native Core",
-                desc: "Built in Rust using Tauri. Lightweight, fast, and secure. Native file system access and system dialogs without the heavy Chromium overhead.",
+                title: dict.IDE_Page.features.tauri.title,
+                desc: dict.IDE_Page.features.tauri.desc,
               },
             ].map((f) => (
               <div
@@ -129,8 +136,18 @@ export default function IDEPage() {
       <footer className="bg-[#0E0E0E] border-t border-[#5A413A]/20">
         <div className="flex justify-between items-center px-12 py-12 max-w-[1440px] mx-auto">
           <p className="text-xs text-on-surface-variant/60 uppercase tracking-widest font-mono">
-             v0.2.0 • hüma-ide 
+             {dict.IDE_Page.badge} • hüma-ide 
           </p>
+          <div className="flex gap-8 font-body text-xs uppercase tracking-[0.1em]">
+            <Link href={GITHUB_URL} target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">{dict.Footer.github}</Link>
+            <Link href={`${GITHUB_URL}/issues`} target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">{dict.Footer.issues}</Link>
+            <Link href={`${GITHUB_URL}/releases`} target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">{dict.Footer.releases}</Link>
+            <Link href={`${GITHUB_URL}/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">{dict.Footer.license_link}</Link>
+          </div>
         </div>
       </footer>
     </>

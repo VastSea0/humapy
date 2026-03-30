@@ -1,0 +1,210 @@
+{
+  "Hero": {
+    "badge": "v0.3.1-duraklı kinetik arşiv",
+    "headline": "Düşündüğün Gibi Kodla.",
+    "subheadline": "Kendi Ana Dilinde.",
+    "description": "Hüma, yerel Türkçe sözdizimine sahip yüksek performanslı bir programlama dilidir. Rust tabanlı çekirdeğiyle, doğal dilin ifade gücünü bir sistem derleyicisinin saf hızıyla birleştirir.",
+    "cta_get_started": "Başla",
+    "cta_docs": "Dokümantasyonu Oku"
+  },
+  "IDE": {
+    "filename": "merhaba.hb",
+    "terminal_output": "ÇIKTI",
+    "success_message": "Başarılı!"
+  },
+  "Features": {
+    "headline": "Endüstriyel Sınıf Altyapı.",
+    "natural_syntax": {
+      "title": "Doğal Sözdizimi",
+      "description": "Algoritmalarınızı ana dilinizde yazın. Doğrudan makine koduna dönüşen Türkçe yapılarıyla bilişsel yükü azaltın ve sürdürülebilirliği artırın."
+    },
+    "hybrid_execution": {
+      "title": "Hibrit Çalıştırma",
+      "description": "Hızlı prototipleme için yorumlayın veya üretim için derleyin. Hüma, LLVM altyapısı tarafından desteklenen çok aşamalı bir JIT ve AOT hattı kullanır."
+    },
+    "standalone_compilation": {
+      "title": "Bağımsız Derleme",
+      "description": "Sıfır bağımlılık. Hüma projelerinizi optimize edilmiş bellek yönetimiyle Windows, Linux ve macOS için bağımsız ikili dosyalara derleyin."
+    },
+    "standard_library": {
+      "title": "Zengin Standart Kütüphane",
+      "description": "Ağ iletişimi, dosya G/Ç ve veri işleme için sağlam bir modül seti. Hafif kalırken piller dahil olacak şekilde tasarlanmıştır."
+    }
+  },
+  "CTA": {
+    "headline": "Gelişmeye hazır mısın?",
+    "description": "İnsan düşüncesi ile makine kodu arasındaki boşluğu dolduran binlerce geliştiriciye katılın.",
+    "copy_install_command": "Yükleme komutunu kopyala",
+    "available_platforms": "x64 / ARM64 için mevcut"
+  },
+  "Footer": {
+    "copy": "© 2026 Hüma Dil Vakfı. Kinetik Arşiv Sürümü.",
+    "license": "LİSANS: MIT",
+    "build": "DERLEME: STABLE-26.03",
+    "github": "GitHub",
+    "discord": "Discord",
+    "releases": "Sürümler",
+    "issues": "Sorunlar",
+    "license_link": "Lisans"
+  },
+  "Nav": {
+    "playground": "Oyun Alanı",
+    "docs": "Belgeler",
+    "community": "Topluluk",
+    "github": "GitHub"
+  },
+  "Playground": {
+    "badge": "v0.3.1-duraklı kinetik galeri",
+    "headline": "Saf Verimlilik.",
+    "subheadline": "Yerel Semantik.",
+    "description": "Hüma dilini keşfedin. Günlük konuşma diline yakın sözdizimi ile programlama artık çok daha erişilebilir ve güçlü.",
+    "console_output": "KONSOL ÇIKTISI",
+    "cta_title": "Kodlamanın En Doğal Yolu.",
+    "cta_desc": "Hüma'nın tüm özelliklerini kullanmak için, CLI aracını bilgisayarınıza kurun ve kendi yazılımınızı geliştirmeye başlayın.",
+    "cta_docs": "Dokümantasyonu Oku",
+    "cta_github": "GitHub'da Görüntüle",
+    "examples": {
+      "hello": {
+        "label": "Hüma'ya Hoş Geldiniz",
+        "description": "Hüma'da değişken atama ve yazdırmanın temel bir örneği. Türkçenin doğal akışını kullanan en basit yapı."
+      },
+      "conditions": {
+        "label": "Karar Mekanizmaları",
+        "description": "ise / yoksa blokları ile akış kontrolü. 'ise' anahtar kelimesi ile koşullu ifadeler oluşturabilirsiniz."
+      },
+      "loops": {
+        "label": "Yinelemeli İşlemler",
+        "description": "'olduğu sürece' yapısı, klasik while döngüsünün doğrudan karşılığıdır."
+      },
+      "functions": {
+        "label": "Fonksiyon Tanımlama",
+        "description": "Fonksiyonlar 'olsun' ve 'alsın' yapısı ile tanımlanır ve 'döndür' ile değer döndürür."
+      },
+      "classes": {
+        "label": "Nesne Yönelimli Programlama",
+        "description": "Sınıflar ve nesne yapılarını kullanarak verilerinizi ve davranışlarınızı (fonksiyonlar) gruplandırın."
+      },
+      "lists": {
+        "label": "Liste Yönetimi",
+        "description": "Hüma'nın dinamik liste yapısıyla öğe ekleyin, çıkarın ve uzunluğunu kontrol edin."
+      }
+    }
+  },
+  "Sidebar": {
+    "title": "Dokümantasyon",
+    "core": "Çekirdek",
+    "language": "Dil Yapısı",
+    "ecosystem": "Ekosistem",
+    "items": {
+      "getting_started": "Başlarken",
+      "introduction": "Giriş",
+      "syntax": "Temel Sözdizimi",
+      "functions": "Fonksiyonlar ve Sınıflar",
+      "lists": "Listeler ve Hatalar",
+      "stdlib": "Standart Kütüphane",
+      "compiler": "Derleyici İç Yapısı",
+      "ide": "Hüma IDE"
+    }
+  },
+  "Community": {
+    "badge": "Açık Kaynak · MIT Lisansı",
+    "headline": "Hüma'yı İnşa Edin.",
+    "subheadline": "Birlikte.",
+    "description": "Hüma topluluk odaklı bir dildir. Açılan her sorun, birleşen her PR ve başlayan her tartışma Hüma'nın ne olacağını şekillendirir. GitHub'da bize katılın.",
+    "get_involved": "Katılın",
+    "contributing": "Katkıda Bulunma",
+    "contributing_desc": "Hüma Rust ile yazılmıştır. Kurulmuş bir cargo'ya ihtiyacınız olacak. İşte sıfırdan birleşmiş bir PR'a giden yol:",
+    "star_headline": "Depoya yıldız verin.",
+    "star_desc": "Her yıldız Hüma'nın daha fazla geliştiriciye ulaşmasına yardımcı olur. İki saniyenizi alır ve bağımsız bir dil projesi için her şey demektir.",
+    "star_button": "GitHub'da Yıldız Ver",
+    "fork_button": "Çatalla ve Katkıda Bulun",
+    "channels": {
+      "repo": {
+        "title": "GitHub Deposu",
+        "description": "Kaynak koduna göz atın, sorunlar açın ve çekme isteklerinde bulunun. Tüm geliştirme şeffaf bir şekilde gerçekleşir.",
+        "label": "GitHub'da Görüntüle"
+      },
+      "bugs": {
+        "title": "Hata Raporları",
+        "description": "Yorumlayıcıda veya derleyicide bir hata mı buldunuz? GitHub'da tekrarlanabilir bir örnekle ayrıntılı bir sorun açın.",
+        "label": "Hata Bildir"
+      },
+      "features": {
+        "title": "Özellik İstekleri",
+        "description": "Yeni bir anahtar kelime, stdlib modülü veya araç zinciri özelliği için bir fikriniz mi var? Bir tartışma başlatın ve birlikte inşa edelim.",
+        "label": "Tartışma Başlat"
+      },
+      "changelog": {
+        "title": "Değişim Günlüğü",
+        "description": "Hüma'nın ilk sürümünden bu yana her sürüm güncellemesini, köklü değişikliği ve yeni özelliği görün.",
+        "label": "Değişim Günlüğünü Görüntüle"
+      }
+    }
+  },
+  "IDE_Page": {
+    "badge": "v0.2.0 Masaüstü Önizleme",
+    "headline": "Resmi",
+    "subheadline": "Hüma IDE.",
+    "description": "Tauri ve React tarafından desteklenen yerel, çok platformlu bir masaüstü uygulaması. Monaco ve entegre xterm.js terminali ile sıfır gecikmeli düzenlemeyi deneyimleyin.",
+    "cta_download": "Son Sürümü İndir",
+    "cta_docs": "Dokümantasyonu Oku",
+    "features_headline": "Eksiksiz Bir Geliştirici İş Akışı",
+    "features": {
+      "monaco": {
+        "title": "Monaco Editör",
+        "desc": "VS Code ile aynı çekirdek tarafından desteklenir. Tam semantik vurgulama, minimap desteği ve çoklu imleçle düzenleme özelliklerini kutudan çıktığı haliyle edinin."
+      },
+      "terminal": {
+        "title": "xterm.js Entegrasyonu",
+        "desc": "Yerleşik, yerel hissi veren bir PTY terminali. Hüma'yı etkileşimli olarak çalıştırın, betikleri yürütün ve tanılamaları doğrudan alt panelden görüntüleyin."
+      },
+      "tauri": {
+        "title": "Tauri Yerel Çekirdek",
+        "desc": "Tauri kullanılarak Rust'ta inşa edildi. Hafif, hızlı ve güvenli. Ağır Chromium yükü olmadan yerel dosya sistemi erişimi ve sistem iletişim kutuları."
+      }
+    }
+  },
+  "Docs": {
+    "getting_started": {
+      "title": "Başlarken",
+      "description": "Hüma'yı kurun ve dakikalar içinde ilk programınızı yazın. Tam başlangıç kılavuzu.",
+      "hero_title": "Başlarken",
+      "hero_desc": "Hüma'ya hoş geldiniz — hassasiyet ve kinetik hız için tasarlanmış yüksek performanslı bir dil. Bu kılavuz, ortamınızı kurmanıza ve ilk Hüma programınızı yazmanıza yardımcı olacaktır.",
+      "installation": {
+        "title": "Kurulum",
+        "desc": "Hüma araç zinciri tek bir statik ikili dosya olarak dağıtılır. Mimarini otomatik olarak algılamak ve huma-cli'yi kurmak için kabuk betiğimizi kullanın.",
+        "arch_title": "Mimari Desteği",
+        "arch_desc": "Hüma şu anda x86_64 ve ARM64 mimarilerini yerel olarak desteklemektedir. Eski sistemler için lütfen kaynaktan derleme dokümantasyonuna bakın."
+      },
+      "quick_start": {
+        "title": "Hızlı Başlangıç",
+        "desc": "Sürümü kontrol ederek kurulumunuzu doğrulayın. Hüma derleyicisi anında yanıt vermeli ve sıfır gecikmeli geliştirici araçlarına olan bağlılığımızı yansıtmalıdır."
+      },
+      "first_program": {
+        "title": "İlk Program",
+        "desc": "Hüma sözdizimi açıklayıcı ancak katı olacak şekilde tasarlanmıştır. Aşağıda temel anahtar kelimelerimizi gösteren klasik bir koşullu blok verilmiştir: olsun (atama), ise (eğer) ve yoksa (değilse).",
+        "suffix_title": "Ek Sistemi",
+        "suffix_desc": "Hüma, ayırıcı olarak kesme işareti (') ile Türkçe dilbilgisi eklerini kullanır. Sözcük analizcisi 'yı, 'i ve 'nı gibi ekleri otomatik olarak temizler — bunlar dilbilgisi süsüdür, kod değildir."
+      },
+      "next_steps": {
+        "title": "Sonraki Adımlar",
+        "syntax": { "title": "Temel Sözdizimi", "desc": "Değişkenler, koşullar ve döngüler" },
+        "functions": { "title": "Fonksiyonlar ve Sınıflar", "desc": "Yeniden kullanılabilir mantık ve nesneler tanımlayın" },
+        "lists": { "title": "Listeler ve Hatalar", "desc": "Koleksiyonlar ve hata yönetimi" },
+        "stdlib": { "title": "Standart Kütüphane", "desc": "Yerleşik modüller referansı" }
+      },
+      "toc": {
+        "title": "Bu sayfada",
+        "installation": "Kurulum",
+        "quick_start": "Hızlı Başlangıç",
+        "first_program": "İlk Program",
+        "next_steps": "Sonraki Adımlar"
+      },
+      "resources": {
+        "title": "Yararlı Kaynaklar",
+        "discord": "Discord Topluluğu",
+        "issue": "Sorun bildir"
+      }
+    }
+  }
+}

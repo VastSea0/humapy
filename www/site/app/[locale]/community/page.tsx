@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { getDictionary } from "@/dictionaries/dictionaries";
 
 export const metadata: Metadata = {
   title: "Community",
@@ -10,106 +11,107 @@ export const metadata: Metadata = {
 
 const GITHUB = "https://github.com/VastSea0/huma-lang";
 
-const channels = [
-  {
-    icon: "code",
-    title: "GitHub Repository",
-    description:
-      "Browse the source code, open issues, and contribute pull requests. All development happens in the open.",
-    href: GITHUB,
-    label: "View on GitHub",
-    accent: "text-tertiary",
-    border: "border-tertiary/20",
-    bg: "bg-tertiary/5",
-  },
-  {
-    icon: "bug_report",
-    title: "Bug Reports",
-    description:
-      "Found a bug in the interpreter or compiler? Open a detailed issue on GitHub with a reproducible example.",
-    href: `${GITHUB}/issues/new?template=bug_report.md`,
-    label: "Report a Bug",
-    accent: "text-primary",
-    border: "border-primary/20",
-    bg: "bg-primary/5",
-  },
-  {
-    icon: "lightbulb",
-    title: "Feature Requests",
-    description:
-      "Have an idea for a new keyword, stdlib module, or toolchain feature? Open a discussion and let's build it together.",
-    href: `${GITHUB}/discussions`,
-    label: "Start a Discussion",
-    accent: "text-secondary",
-    border: "border-secondary/20",
-    bg: "bg-secondary/5",
-  },
-  {
-    icon: "history_edu",
-    title: "Changelog",
-    description:
-      "See every version update, breaking change, and new feature since the initial release of Hüma.",
-    href: `${GITHUB}/blob/main/CHANGELOG.md`,
-    label: "View Changelog",
-    accent: "text-tertiary",
-    border: "border-tertiary/20",
-    bg: "bg-tertiary/5",
-  },
-];
+export default async function CommunityPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const dict = await getDictionary(locale as "en" | "tr");
 
-const contributing = [
-  {
-    step: "01",
-    title: "Fork & Clone",
-    code: `git clone https://github.com/VastSea0/huma-lang\ncd huma-lang`,
-  },
-  {
-    step: "02",
-    title: "Build from Source",
-    code: `cargo build --release\n./target/release/huma --version`,
-  },
-  {
-    step: "03",
-    title: "Run Tests",
-    code: `cargo test\n# or run a specific .huma file:\n./target/release/huma calistir tests/basic.huma`,
-  },
-  {
-    step: "04",
-    title: "Open a Pull Request",
-    code: `git checkout -b feat/my-feature\ngit commit -m "feat: add my feature"\ngit push origin feat/my-feature`,
-  },
-];
+  const channels = [
+    {
+      icon: "code",
+      title: dict.Community.channels.repo.title,
+      description: dict.Community.channels.repo.description,
+      href: GITHUB,
+      label: dict.Community.channels.repo.label,
+      accent: "text-tertiary",
+      border: "border-tertiary/20",
+      bg: "bg-tertiary/5",
+    },
+    {
+      icon: "bug_report",
+      title: dict.Community.channels.bugs.title,
+      description: dict.Community.channels.bugs.description,
+      href: `${GITHUB}/issues/new?template=bug_report.md`,
+      label: dict.Community.channels.bugs.label,
+      accent: "text-primary",
+      border: "border-primary/20",
+      bg: "bg-primary/5",
+    },
+    {
+      icon: "lightbulb",
+      title: dict.Community.channels.features.title,
+      description: dict.Community.channels.features.description,
+      href: `${GITHUB}/discussions`,
+      label: dict.Community.channels.features.label,
+      accent: "text-secondary",
+      border: "border-secondary/20",
+      bg: "bg-secondary/5",
+    },
+    {
+      icon: "history_edu",
+      title: dict.Community.channels.changelog.title,
+      description: dict.Community.channels.changelog.description,
+      href: `${GITHUB}/blob/main/CHANGELOG.md`,
+      label: dict.Community.channels.changelog.label,
+      accent: "text-tertiary",
+      border: "border-tertiary/20",
+      bg: "bg-tertiary/5",
+    },
+  ];
 
-export default function CommunityPage() {
+  const contributing = [
+    {
+      step: "01",
+      title: locale === "tr" ? "Çatalla ve Klonla" : "Fork & Clone",
+      code: `git clone https://github.com/VastSea0/huma-lang\ncd huma-lang`,
+    },
+    {
+      step: "02",
+      title: locale === "tr" ? "Kaynaktan Derle" : "Build from Source",
+      code: `cargo build --release\n./target/release/huma --version`,
+    },
+    {
+      step: "03",
+      title: locale === "tr" ? "Testleri Çalıştır" : "Run Tests",
+      code: `cargo test\n# veya belirli bir .huma dosyası çalıştırın:\n./target/release/huma calistir tests/basic.huma`,
+    },
+    {
+      step: "04",
+      title: locale === "tr" ? "Çekme İsteği Açın" : "Open a Pull Request",
+      code: `git checkout -b feat/my-feature\ngit commit -m "feat: add my feature"\ngit push origin feat/my-feature`,
+    },
+  ];
+
   return (
     <>
-      <Navbar />
+      <Navbar dict={dict} locale={locale} />
       <main className="pt-32 pb-24 max-w-[1440px] mx-auto px-8 md:px-12">
         {/* Hero */}
         <div className="mb-20">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high border border-outline-variant/20 mb-8">
             <span className="w-2 h-2 rounded-full bg-tertiary animate-pulse" />
             <span className="font-mono text-[10px] tracking-widest uppercase text-tertiary">
-              Open Source · MIT License
+              {dict.Community.badge}
             </span>
           </div>
           <h1 className="text-[clamp(2.5rem,6vw,4rem)] font-black leading-tight tracking-tighter text-on-surface mb-6">
-            Build Hüma.{" "}
+            {dict.Community.headline}{" "}
             <span className="bg-gradient-to-r from-primary to-primary-container bg-clip-text text-transparent">
-              Together.
+              {dict.Community.subheadline}
             </span>
           </h1>
           <p className="text-lg text-on-surface-variant max-w-2xl leading-relaxed">
-            Hüma is a community-driven language. Every issue opened, every PR
-            merged, and every discussion started shapes what Hüma becomes. Join
-            us on GitHub.
+            {dict.Community.description}
           </p>
         </div>
 
         {/* Channel cards */}
         <section className="mb-24">
           <h2 className="text-2xl font-black tracking-tight mb-2">
-            Get Involved
+            {dict.Community.get_involved}
           </h2>
           <div className="w-10 h-1 bg-primary mb-10" />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -144,13 +146,11 @@ export default function CommunityPage() {
         {/* Contributing guide */}
         <section className="mb-24">
           <h2 className="text-2xl font-black tracking-tight mb-2">
-            Contributing
+            {dict.Community.contributing}
           </h2>
           <div className="w-10 h-1 bg-primary mb-10" />
           <p className="text-on-surface-variant mb-10 max-w-2xl leading-relaxed">
-            Hüma is written in Rust. You&apos;ll need{" "}
-            <code className="text-primary font-mono text-sm">cargo</code>{" "}
-            installed. Here&apos;s how to get from zero to a merged PR:
+            {dict.Community.contributing_desc}
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -182,11 +182,10 @@ export default function CommunityPage() {
 
             <div className="z-10">
               <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">
-                Star the repo.
+                {dict.Community.star_headline}
               </h2>
               <p className="text-on-surface-variant max-w-sm leading-relaxed">
-                Every star helps Hüma reach more developers. It takes two
-                seconds and means everything for an indie language project.
+                {dict.Community.star_desc}
               </p>
             </div>
 
@@ -198,7 +197,7 @@ export default function CommunityPage() {
                 className="flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded-sm font-bold text-sm active:scale-95 transition-all hover:bg-primary-fixed"
               >
                 <span className="material-symbols-outlined text-base">star</span>
-                Star on GitHub
+                {dict.Community.star_button}
               </a>
               <a
                 href={`${GITHUB}/fork`}
@@ -209,7 +208,7 @@ export default function CommunityPage() {
                 <span className="material-symbols-outlined text-base">
                   fork_right
                 </span>
-                Fork & Contribute
+                {dict.Community.fork_button}
               </a>
             </div>
           </div>
@@ -220,25 +219,17 @@ export default function CommunityPage() {
       <footer className="bg-[#0E0E0E] border-t border-[#5A413A]/20">
         <div className="flex flex-col md:flex-row justify-between items-center px-12 py-12 gap-6 max-w-[1440px] mx-auto">
           <p className="font-body text-xs uppercase tracking-[0.1em] text-on-surface-variant/60">
-            © 2026 Hüma Language Foundation. Kinetic Archive Edition.
+            {dict.Footer.copy}
           </p>
           <div className="flex gap-8 font-body text-xs uppercase tracking-[0.1em]">
-            {[
-              { label: "GitHub", href: GITHUB },
-              { label: "Issues", href: `${GITHUB}/issues` },
-              { label: "Releases", href: `${GITHUB}/releases` },
-              { label: "License", href: `${GITHUB}/blob/main/LICENSE` },
-            ].map((l) => (
-              <a
-                key={l.label}
-                href={l.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-on-surface-variant/60 hover:text-primary transition-colors"
-              >
-                {l.label}
-              </a>
-            ))}
+            <Link href={GITHUB} target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">{dict.Footer.github}</Link>
+            <Link href={`${GITHUB}/issues`} target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">{dict.Footer.issues}</Link>
+            <Link href={`${GITHUB}/releases`} target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">{dict.Footer.releases}</Link>
+            <Link href={`${GITHUB}/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">{dict.Footer.license_link}</Link>
           </div>
         </div>
       </footer>
