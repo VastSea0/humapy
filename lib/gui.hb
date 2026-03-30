@@ -27,6 +27,22 @@ renkli_yazı_ekle fonksiyon olsun metin, r, g, b alsın {
     renkli_yazı(metin, r, g, b)
 }
 
+kalın_yazı_ekle fonksiyon olsun metin alsın {
+    kalın_yazı(metin)
+}
+
+eğik_yazı_ekle fonksiyon olsun metin alsın {
+    eğik_yazı(metin)
+}
+
+renkli_buton_ekle fonksiyon olsun metin, r, g, b alsın {
+    renkli_buton(metin, r, g, b)'i döndür
+}
+
+tema_degistir fonksiyon olsun tema alsın {
+    tema_ayarla(tema)
+}
+
 metin_kutusu_ekle fonksiyon olsun metin alsın {
     girdi_alanı(metin)'i döndür
 }

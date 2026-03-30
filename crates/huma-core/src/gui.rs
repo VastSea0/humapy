@@ -118,6 +118,68 @@ pub fn kayit_et(globals: &mut std::collections::HashMap<String, Deger>) {
         Deger::Bos
     }));
 
+    globals.insert("kalın_yazı".to_string(), Deger::DahiliFonksiyon(|args| {
+        if let Some(metin) = args.first() {
+            CURRENT_UI.with(|c| {
+                if let Some(ui_ptr) = *c.borrow() {
+                    let ui = unsafe { &mut *ui_ptr };
+                    ui.label(egui::RichText::new(metin.to_string()).strong());
+                }
+            });
+        }
+        Deger::Bos
+    }));
+
+    globals.insert("eğik_yazı".to_string(), Deger::DahiliFonksiyon(|args| {
+        if let Some(metin) = args.first() {
+            CURRENT_UI.with(|c| {
+                if let Some(ui_ptr) = *c.borrow() {
+                    let ui = unsafe { &mut *ui_ptr };
+                    ui.label(egui::RichText::new(metin.to_string()).italics());
+                }
+            });
+        }
+        Deger::Bos
+    }));
+
+    globals.insert("renkli_buton".to_string(), Deger::DahiliFonksiyon(|args| {
+        if args.len() >= 4 {
+            if let (Deger::Metin(metin), Deger::Sayi(r), Deger::Sayi(g), Deger::Sayi(b)) = (&args[0], &args[1], &args[2], &args[3]) {
+                let mut clicked = false;
+                CURRENT_UI.with(|c| {
+                    if let Some(ui_ptr) = *c.borrow() {
+                        let ui = unsafe { &mut *ui_ptr };
+                        let btn = egui::Button::new(
+                            egui::RichText::new(metin.clone())
+                                .color(egui::Color32::from_rgb(*r as u8, *g as u8, *b as u8))
+                        );
+                        if ui.add(btn).clicked() {
+                            clicked = true;
+                        }
+                    }
+                });
+                return Deger::Sayi(if clicked { 1.0 } else { 0.0 });
+            }
+        }
+        Deger::Sayi(0.0)
+    }));
+
+    globals.insert("tema_ayarla".to_string(), Deger::DahiliFonksiyon(|args| {
+        if let Some(Deger::Metin(tema)) = args.first() {
+            CURRENT_UI.with(|c| {
+                if let Some(ui_ptr) = *c.borrow() {
+                    let ui = unsafe { &mut *ui_ptr };
+                    if tema == "koyu" {
+                        ui.ctx().set_visuals(egui::Visuals::dark());
+                    } else if tema == "açık" {
+                        ui.ctx().set_visuals(egui::Visuals::light());
+                    }
+                }
+            });
+        }
+        Deger::Bos
+    }));
+
     globals.insert("girdi_alanı".to_string(), Deger::DahiliFonksiyon(|args| {
         if let Some(Deger::Metin(mut text)) = args.first().cloned() {
             CURRENT_UI.with(|c| {

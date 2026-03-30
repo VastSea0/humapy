@@ -43,13 +43,22 @@ sekme1_icerik fonksiyon olsun {
 // ===================
 
 buton_islemleri fonksiyon olsun {
-    buton_ekle("Sayacı Artır") ise {
+    renkli_buton_ekle("Sayacı Artır", 50, 200, 50) ise {
         sayaç = sayaç + 1
     }
-    buton_ekle("Sıfırla") ise {
+    renkli_buton_ekle("Sıfırla", 255, 100, 100) ise {
         sayaç = 0
     }
-    yazı_ekle(" => Sayaç Değeri: " + sayaç)
+    kalın_yazı_ekle(" => Sayaç Değeri: " + sayaç)
+}
+
+tema_ayarlari fonksiyon olsun {
+    buton_ekle("Koyu Tema 🌙") ise {
+        tema_degistir("koyu")
+    }
+    buton_ekle("Açık Tema ☀️") ise {
+        tema_degistir("açık")
+    }
 }
 
 sekme2_icerik fonksiyon olsun {
@@ -58,13 +67,19 @@ sekme2_icerik fonksiyon olsun {
     
     yan_yana_diz(buton_islemleri)
     
+    boşluk_bırak(8.0)
+    yazı_ekle("Görünüm Ayarları:")
+    yan_yana_diz(tema_ayarlari)
+    
+    boşluk_bırak(5.0)
+    ayraç_çiz()
     boşluk_bırak(5.0)
     
     onay_verdi_mi = onay_kutusu_ekle(onay_verdi_mi, "Geliştirici İstatistiklerine İzin Ver")
     
     onay_verdi_mi == 1 ise {
         boşluk_bırak(5.0)
-        renkli_yazı_ekle("Teşekkürler, anonim veriler toplanıyor.", 0, 200, 100)
+        eğik_yazı_ekle("Teşekkürler, anonim veriler arkaplanda toplanıyor.")
     }
     
     boşluk_bırak(10.0)
