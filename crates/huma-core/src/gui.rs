@@ -11,6 +11,8 @@ thread_local! {
 
 struct GuiRequest {
     baslik: String,
+    genislik: f32,
+    yukseklik: f32,
     cizim_fks: Deger,
 }
 
@@ -46,12 +48,14 @@ impl eframe::App for HumaGuiApp {
 
 pub fn kayit_et(globals: &mut std::collections::HashMap<String, Deger>) {
     globals.insert("pencere_başlat".to_string(), Deger::DahiliFonksiyon(|args| {
-        if args.len() < 2 { return Deger::Bos; }
+        if args.len() < 4 { return Deger::Bos; }
         let baslik = args[0].to_string();
-        let cizim_fks = args[1].clone();
+        let genislik = if let Deger::Sayi(n) = args[1] { n as f32 } else { 800.0 };
+        let yukseklik = if let Deger::Sayi(n) = args[2] { n as f32 } else { 600.0 };
+        let cizim_fks = args[3].clone();
 
         GUI_REQUEST.with(|r| {
-            *r.borrow_mut() = Some(GuiRequest { baslik, cizim_fks });
+            *r.borrow_mut() = Some(GuiRequest { baslik, genislik, yukseklik, cizim_fks });
         });
         
         Deger::Bos
@@ -81,6 +85,35 @@ pub fn kayit_et(globals: &mut std::collections::HashMap<String, Deger>) {
                     ui.label(metin.to_string());
                 }
             });
+        }
+        Deger::Bos
+    }));
+
+    globals.insert("başlık_yazısı".to_string(), Deger::DahiliFonksiyon(|args| {
+        if let Some(metin) = args.first() {
+            CURRENT_UI.with(|c| {
+                if let Some(ui_ptr) = *c.borrow() {
+                    let ui = unsafe { &mut *ui_ptr };
+                    ui.heading(metin.to_string());
+                }
+            });
+        }
+        Deger::Bos
+    }));
+
+    globals.insert("renkli_yazı".to_string(), Deger::DahiliFonksiyon(|args| {
+        if args.len() >= 4 {
+            if let (Deger::Metin(metin), Deger::Sayi(r), Deger::Sayi(g), Deger::Sayi(b)) = (&args[0], &args[1], &args[2], &args[3]) {
+                CURRENT_UI.with(|c| {
+                    if let Some(ui_ptr) = *c.borrow() {
+                        let ui = unsafe { &mut *ui_ptr };
+                        ui.label(
+                            egui::RichText::new(metin.clone())
+                                .color(egui::Color32::from_rgb(*r as u8, *g as u8, *b as u8))
+                        );
+                    }
+                });
+            }
         }
         Deger::Bos
     }));
@@ -190,6 +223,167 @@ pub fn kayit_et(globals: &mut std::collections::HashMap<String, Deger>) {
         }
         Deger::Bos
     }));
+
+    // Gelişmiş GUI Bileşenleri (Sürüm 0.2.0)
+
+    globals.insert("sekme".to_string(), Deger::DahiliFonksiyon(|args| {
+        if args.len() >= 2 {
+            if let (Deger::Sayi(secili_mi), Deger::Metin(metin)) = (&args[0], &args[1]) {
+                let is_selected = *secili_mi != 0.0;
+                let mut clicked = false;
+                CURRENT_UI.with(|c| {
+                    if let Some(ui_ptr) = *c.borrow() {
+                        let ui = unsafe { &mut *ui_ptr };
+                        if ui.selectable_label(is_selected, metin).clicked() {
+                            clicked = true;
+                        }
+                    }
+                });
+                return Deger::Sayi(if clicked { 1.0 } else { 0.0 });
+            }
+        }
+        Deger::Sayi(0.0)
+    }));
+
+    globals.insert("yüzen_pencere".to_string(), Deger::DahiliFonksiyon(|args| {
+        if args.len() >= 3 {
+            if let (Deger::Metin(baslik), Deger::Sayi(acik_mi), fks) = (&args[0], &args[1], &args[2]) {
+                let mut is_open = *acik_mi != 0.0;
+                CURRENT_UI.with(|c| {
+                    let ui_ptr_opt = *c.borrow();
+                    if let Some(ui_ptr) = ui_ptr_opt {
+                        let outer_ui = unsafe { &mut *ui_ptr };
+                        let ctx = outer_ui.ctx().clone();
+                        
+                        egui::Window::new(baslik)
+                            .open(&mut is_open)
+                            .show(&ctx, |ui| {
+                                let inner_ui_ptr = ui as *mut egui::Ui;
+                                *c.borrow_mut() = Some(inner_ui_ptr);
+                                
+                                CURRENT_INTERP.with(|i| {
+                                    let interp_ptr_opt = *i.borrow();
+                                    if let Some(interp_ptr) = interp_ptr_opt {
+                                        let interp = unsafe { &mut *interp_ptr };
+                                        interp.fonksiyon_cagrisi(fks.clone(), vec![]);
+                                    }
+                                });
+                            });
+                        // Restore outer
+                        *c.borrow_mut() = Some(ui_ptr);
+                    }
+                });
+                return Deger::Sayi(if is_open { 1.0 } else { 0.0 });
+            }
+        }
+        Deger::Sayi(1.0)
+    }));
+
+    globals.insert("menü_çubuğu".to_string(), Deger::DahiliFonksiyon(|args| {
+        if let Some(fks) = args.first() {
+            CURRENT_UI.with(|c| {
+                let ui_ptr_opt = *c.borrow();
+                if let Some(ui_ptr) = ui_ptr_opt {
+                    let outer_ui = unsafe { &mut *ui_ptr };
+                    egui::menu::bar(outer_ui, |ui| {
+                        let inner_ui_ptr = ui as *mut egui::Ui;
+                        *c.borrow_mut() = Some(inner_ui_ptr);
+                        
+                        CURRENT_INTERP.with(|i| {
+                            let interp_ptr_opt = *i.borrow();
+                            if let Some(interp_ptr) = interp_ptr_opt {
+                                let interp = unsafe { &mut *interp_ptr };
+                                interp.fonksiyon_cagrisi(fks.clone(), vec![]);
+                            }
+                        });
+                    });
+                    *c.borrow_mut() = Some(ui_ptr);
+                }
+            });
+        }
+        Deger::Bos
+    }));
+
+    globals.insert("açılır_menü".to_string(), Deger::DahiliFonksiyon(|args| {
+        if args.len() >= 2 {
+            if let (Deger::Metin(baslik), fks) = (&args[0], &args[1]) {
+                CURRENT_UI.with(|c| {
+                    let ui_ptr_opt = *c.borrow();
+                    if let Some(ui_ptr) = ui_ptr_opt {
+                        let outer_ui = unsafe { &mut *ui_ptr };
+                        outer_ui.menu_button(baslik, |ui| {
+                            let inner_ui_ptr = ui as *mut egui::Ui;
+                            *c.borrow_mut() = Some(inner_ui_ptr);
+                            
+                            CURRENT_INTERP.with(|i| {
+                                let interp_ptr_opt = *i.borrow();
+                                if let Some(interp_ptr) = interp_ptr_opt {
+                                    let interp = unsafe { &mut *interp_ptr };
+                                    interp.fonksiyon_cagrisi(fks.clone(), vec![]);
+                                }
+                            });
+                        });
+                        *c.borrow_mut() = Some(ui_ptr);
+                    }
+                });
+            }
+        }
+        Deger::Bos
+    }));
+
+    globals.insert("grup_kutusu".to_string(), Deger::DahiliFonksiyon(|args| {
+        if args.len() >= 2 {
+            if let (Deger::Metin(baslik), fks) = (&args[0], &args[1]) {
+                CURRENT_UI.with(|c| {
+                    let ui_ptr_opt = *c.borrow();
+                    if let Some(ui_ptr) = ui_ptr_opt {
+                        let outer_ui = unsafe { &mut *ui_ptr };
+                        outer_ui.group(|ui| {
+                            ui.label(baslik.clone());
+                            ui.separator();
+                            let inner_ui_ptr = ui as *mut egui::Ui;
+                            *c.borrow_mut() = Some(inner_ui_ptr);
+                            
+                            CURRENT_INTERP.with(|i| {
+                                let interp_ptr_opt = *i.borrow();
+                                if let Some(interp_ptr) = interp_ptr_opt {
+                                    let interp = unsafe { &mut *interp_ptr };
+                                    interp.fonksiyon_cagrisi(fks.clone(), vec![]);
+                                }
+                            });
+                        });
+                        *c.borrow_mut() = Some(ui_ptr);
+                    }
+                });
+            }
+        }
+        Deger::Bos
+    }));
+
+    globals.insert("alt_alta".to_string(), Deger::DahiliFonksiyon(|args| {
+        if let Some(fks) = args.first() {
+            CURRENT_UI.with(|c| {
+                let ui_ptr_opt = *c.borrow();
+                if let Some(ui_ptr) = ui_ptr_opt {
+                    let outer_ui = unsafe { &mut *ui_ptr };
+                    outer_ui.vertical(|ui| {
+                        let inner_ui_ptr = ui as *mut egui::Ui;
+                        *c.borrow_mut() = Some(inner_ui_ptr);
+                        
+                        CURRENT_INTERP.with(|i| {
+                            let interp_ptr_opt = *i.borrow();
+                            if let Some(interp_ptr) = interp_ptr_opt {
+                                let interp = unsafe { &mut *interp_ptr };
+                                interp.fonksiyon_cagrisi(fks.clone(), vec![]);
+                            }
+                        });
+                    });
+                    *c.borrow_mut() = Some(ui_ptr);
+                }
+            });
+        }
+        Deger::Bos
+    }));
 }
 
 pub fn gui_istegi_var_mi() -> bool {
@@ -201,7 +395,7 @@ pub fn gui_calistir(interp: Yorumlayici) {
 
     if let Some(req) = req {
         let options = eframe::NativeOptions {
-            viewport: egui::ViewportBuilder::default().with_inner_size([400.0, 300.0]),
+            viewport: egui::ViewportBuilder::default().with_inner_size([req.genislik, req.yukseklik]),
             ..Default::default()
         };
         let baslik_copy = req.baslik.clone();

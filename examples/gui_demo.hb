@@ -1,10 +1,20 @@
 yükle "gui.hb";
 
+// Sürüm kontrolü
+gui_ver = gui_sürüm_al()
+yaz("Kullanılan GUI Sürümü: " + gui_ver)
+
 // Global durum değişkenleri
+aktif_sekme = 1 olsun
 isim = "Hüma Geliştiricisi" olsun
 yaş = 20 olsun
 onay_verdi_mi = 0 olsun
 sayaç = 0 olsun
+pencere_acik = 0 olsun
+
+// ===================
+// SEKME 1 (Ana Sayfa)
+// ===================
 
 yas_bilgisi fonksiyon olsun {
     yazı_ekle("Seçilen Yaş: " + yaş)
@@ -12,6 +22,25 @@ yas_bilgisi fonksiyon olsun {
         yazı_ekle(" (Yarım asrı devirmişsiniz!)")
     }
 }
+
+sekme1_icerik fonksiyon olsun {
+    büyük_başlık("PROFİL BİLGİLERİ")
+    boşluk_bırak(8.0)
+    
+    isim = metin_kutusu_ekle(isim)
+    renkli_yazı_ekle("Merhaba " + isim + "!", 0, 150, 255)
+    
+    boşluk_bırak(5.0)
+    ayraç_çiz()
+    boşluk_bırak(5.0)
+    
+    yaş = kaydırıcı_ekle(yaş, 0, 100)
+    yan_yana_diz(yas_bilgisi)
+}
+
+// ===================
+// SEKME 2 (Ayarlar)
+// ===================
 
 buton_islemleri fonksiyon olsun {
     buton_ekle("Sayacı Artır") ise {
@@ -23,39 +52,103 @@ buton_islemleri fonksiyon olsun {
     yazı_ekle(" => Sayaç Değeri: " + sayaç)
 }
 
-çizim_fks fonksiyon olsun {
-    yazı_ekle("=== HÜMA KAPSAMLI ARAYÜZ DEMOSU ===")
+sekme2_icerik fonksiyon olsun {
+    büyük_başlık("UYGULAMA AYARLARI")
     boşluk_bırak(8.0)
-    
-    isim = metin_kutusu_ekle(isim)
-    yazı_ekle("Merhaba " + isim + "!")
-    
-    boşluk_bırak(5.0)
-    ayraç_çiz()
-    boşluk_bırak(5.0)
-    
-    yaş = kaydırıcı_ekle(yaş, 0, 100)
-    yan_yana_diz(yas_bilgisi)
-    
-    boşluk_bırak(5.0)
-    ayraç_çiz()
-    boşluk_bırak(5.0)
     
     yan_yana_diz(buton_islemleri)
     
     boşluk_bırak(5.0)
-    ayraç_çiz()
-    boşluk_bırak(5.0)
     
-    onay_verdi_mi = onay_kutusu_ekle(onay_verdi_mi, "Tüm lisans şartlarını okudum ve kabul ediyorum.")
+    onay_verdi_mi = onay_kutusu_ekle(onay_verdi_mi, "Geliştirici İstatistiklerine İzin Ver")
     
     onay_verdi_mi == 1 ise {
         boşluk_bırak(5.0)
-        yazı_ekle("Teşekkürler, şartları kabul ettiniz. İşlem devam edebilir.")
-    } yoksa {
-        boşluk_bırak(5.0)
-        yazı_ekle("Lütfen devam etmek için şartları kabul edin!")
+        renkli_yazı_ekle("Teşekkürler, anonim veriler toplanıyor.", 0, 200, 100)
+    }
+    
+    boşluk_bırak(10.0)
+    buton_ekle("Yüzen Pencereyi Aç") ise {
+        pencere_acik = 1
     }
 }
 
-pencere_oluştur("Hüma Zengin GUI Testi", çizim_fks)
+// ===================
+// YÜZEN PENCERE
+// ===================
+
+pencere_icerigi fonksiyon olsun {
+    büyük_başlık("Dikkat!")
+    renkli_yazı_ekle("Ben bir yüzen (floating) pencereyim!", 255, 100, 100)
+    yazı_ekle("Mevcut Sayaç: " + sayaç)
+    
+    buton_ekle("Beni Kapat") ise {
+        pencere_acik = 0
+    }
+}
+
+// ===================
+// ÜST MENÜ VE ÇERÇEVE
+// ===================
+
+dosya_menusu fonksiyon olsun {
+    buton_ekle("Kaydet") ise {
+        yaz("Kaydet'e tıklandı.")
+    }
+    buton_ekle("Ayarlar") ise {
+        aktif_sekme = 2
+    }
+}
+
+duzen_menusu fonksiyon olsun {
+    buton_ekle("Geri Al")
+    buton_ekle("Yeniden Yap")
+}
+
+hakkinda_menusu fonksiyon olsun {
+    yazı_ekle("Hüma v0.3.1 GUI v" + gui_ver)
+}
+
+ust_menu fonksiyon olsun {
+    açılır_menü_ekle("Dosya", dosya_menusu)
+    açılır_menü_ekle("Düzen", duzen_menusu)
+    açılır_menü_ekle("Hakkında", hakkinda_menusu)
+}
+
+sekme_cubugu_fks fonksiyon olsun {
+    sekme_ekle(aktif_sekme == 1, "Profil") == 1 ise {
+        aktif_sekme = 1
+    }
+    sekme_ekle(aktif_sekme == 2, "Ayarlar") == 1 ise {
+        aktif_sekme = 2
+    }
+}
+
+// ===================
+// ANA ÇİZİM DÖNGÜSÜ
+// ===================
+
+çizim_fks fonksiyon olsun {
+    menü_çubuğu_ekle(ust_menu)
+    boşluk_bırak(5.0)
+    
+    yan_yana_diz(sekme_cubugu_fks)
+    
+    ayraç_çiz()
+    boşluk_bırak(8.0)
+    
+    aktif_sekme == 1 ise {
+        grup_kutusu_ekle("Profil Özellikleri", sekme1_icerik)
+    }
+    
+    aktif_sekme == 2 ise {
+        grup_kutusu_ekle("Sistem Ayarları", sekme2_icerik)
+    }
+    
+    // Yüzen Pencere Durumu
+    pencere_acik == 1 ise {
+        pencere_acik = yüzen_pencere_ekle("Uyarı Ekranı", pencere_acik, pencere_icerigi)
+    }
+}
+
+pencere_oluştur("Hüma Zengin GUI v2.5", 600.0, 500.0, çizim_fks)
