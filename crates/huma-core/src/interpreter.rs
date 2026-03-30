@@ -618,8 +618,8 @@ impl Yorumlayici {
                 let mut l = self.ifade_hesapla(*sol);
                 let mut r = self.ifade_hesapla(*sag);
                 
-                // Tip zorlama (Coercion)
-                if matches!(operator, Token::Arti | Token::Eksi | Token::Carpi | Token::Bolnu | Token::Mod | Token::Kucuktur | Token::Buyuktur | Token::KucukEsit | Token::BuyukEsit) {
+                // Tip zorlama (Coercion) - Arti hariç diğer sayısal işlemlerde zorla
+                if matches!(operator, Token::Eksi | Token::Carpi | Token::Bolnu | Token::Mod | Token::Kucuktur | Token::Buyuktur | Token::KucukEsit | Token::BuyukEsit) {
                     if let Deger::Metin(ref s) = l { if let Ok(n) = s.parse::<f64>() { l = Deger::Sayi(n); } }
                     if let Deger::Metin(ref s) = r { if let Ok(n) = s.parse::<f64>() { r = Deger::Sayi(n); } }
                 }
@@ -642,13 +642,12 @@ impl Yorumlayici {
                             Token::BuyukEsit => Deger::Sayi(if a >= b { 1.0 } else { 0.0 }),
                             _ => Deger::Bos
                         },
-                        (Deger::Metin(a), b) => match operator {
-                            Token::Arti => Deger::Metin(format!("{}{}", a, b)),
-                            Token::Kucuktur => Deger::Sayi(if a < b.to_string() { 1.0 } else { 0.0 }),
-                            Token::Buyuktur => Deger::Sayi(if a > b.to_string() { 1.0 } else { 0.0 }),
+                        (l_val, r_val) => match operator {
+                            Token::Arti => Deger::Metin(format!("{}{}", l_val, r_val)),
+                            Token::Kucuktur => Deger::Sayi(if l_val.to_string() < r_val.to_string() { 1.0 } else { 0.0 }),
+                            Token::Buyuktur => Deger::Sayi(if l_val.to_string() > r_val.to_string() { 1.0 } else { 0.0 }),
                             _ => Deger::Bos
-                        },
-                        _ => Deger::Bos
+                        }
                     }
                 }
             }
