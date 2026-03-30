@@ -280,6 +280,9 @@ impl Yorumlayici {
         let cli_args: Vec<Deger> = std::env::args().map(|s| Deger::Metin(s)).collect();
         globals.insert("argümanlar".to_string(), Deger::Liste(Rc::new(RefCell::new(cli_args))));
 
+        // ── GUI Fonksiyonları ─────────────────────────────────────────────────
+        crate::gui::kayit_et(&mut globals);
+
         Self { 
             global_degiskenler: globals, 
             yerel_scopes: Vec::new(), 
@@ -287,6 +290,46 @@ impl Yorumlayici {
             yuklenen_dosyalar: HashSet::new(), 
             arama_yolları: vec![".".to_string(), "./lib".to_string()],
             output_buffer: None,
+        }
+    }
+
+    pub fn fonksiyon_cagrisi(&mut self, f: Deger, args: Vec<Deger>) -> Deger {
+        self.fonksiyon_cagrisi_detayli(f, args, None)
+    }
+
+    pub fn fonksiyon_cagrisi_detayli(&mut self, f: Deger, args: Vec<Deger>, nesne: Option<Deger>) -> Deger {
+        match f {
+            Deger::Sinif { ad, alan_baslangic, .. } => {
+                let alanlar = Rc::new(RefCell::new(HashMap::new()));
+                for (alan_ad, alan_ifade) in alan_baslangic {
+                    let val = self.ifade_hesapla(alan_ifade);
+                    alanlar.borrow_mut().insert(alan_ad, val);
+                }
+                Deger::Nesne { sinif_adi: ad, alanlar }
+            },
+            Deger::Fonksiyon { parametreler, govde } => {
+                let mut yerel = HashMap::new();
+                if let Some(ins) = nesne { yerel.insert("kendisi".to_string(), ins); }
+                for (i, p) in parametreler.iter().enumerate() {
+                    if i < args.len() {
+                        yerel.insert(p.clone(), args[i].clone());
+                    }
+                }
+                self.yerel_scopes.push(yerel);
+                let eski = self.donus_degeri.take();
+                for k in govde { 
+                    self.komut_calistir(k); 
+                    if self.donus_degeri.is_some() { break; } 
+                }
+                let res = self.donus_degeri.take().unwrap_or(Deger::Bos);
+                self.yerel_scopes.pop(); 
+                self.donus_degeri = eski; 
+                res
+            }
+            Deger::DahiliFonksiyon(df) => {
+                df(args)
+            }
+            _ => Deger::Bos
         }
     }
 
@@ -555,53 +598,21 @@ impl Yorumlayici {
                 }
             }
             Ifade::Cagri { fonksiyon, argumanlar } => {
-                let mut f_to_call = None;
                 let mut method_instance = None;
-                if let Ifade::NesneErisim { nesne, ozellik } = *fonksiyon.clone() {
+                let f = if let Ifade::NesneErisim { nesne, ozellik } = *fonksiyon.clone() {
                     let instance = self.ifade_hesapla(*nesne);
                     if let Deger::Nesne { ref sinif_adi, .. } = instance {
                         if let Some(Deger::Sinif { metotlar, .. }) = self.global_degiskenler.get(sinif_adi) {
                             if let Some((ps, bd)) = metotlar.get(&ozellik) {
-                                f_to_call = Some(Deger::Fonksiyon { parametreler: ps.clone(), govde: bd.clone() });
                                 method_instance = Some(instance.clone());
-                            }
-                        }
-                    }
-                }
-                if f_to_call.is_none() { f_to_call = Some(self.ifade_hesapla(*fonksiyon)); }
-                if let Some(f) = f_to_call {
-                    match f {
-                        Deger::Sinif { ad, alan_baslangic, .. } => {
-                            let alanlar = Rc::new(RefCell::new(HashMap::new()));
-                            // Başlangıç alanlarını hesapla ve ata
-                            for (alan_ad, alan_ifade) in alan_baslangic {
-                                let val = self.ifade_hesapla(alan_ifade);
-                                alanlar.borrow_mut().insert(alan_ad, val);
-                            }
-                            Deger::Nesne { sinif_adi: ad, alanlar }
-                        },
-                        Deger::Fonksiyon { parametreler, govde } => {
-                            let mut yerel = HashMap::new();
-                            if let Some(ins) = method_instance { yerel.insert("kendisi".to_string(), ins); }
-                            for (i, p) in parametreler.iter().enumerate() {
-                                if i < argumanlar.len() {
-                                    let v = self.ifade_hesapla(argumanlar[i].clone());
-                                    yerel.insert(p.clone(), v);
-                                }
-                            }
-                            self.yerel_scopes.push(yerel);
-                            let eski = self.donus_degeri.take();
-                            for k in govde { self.komut_calistir(k); if self.donus_degeri.is_some() { break; } }
-                            let res = self.donus_degeri.take().unwrap_or(Deger::Bos);
-                            self.yerel_scopes.pop(); self.donus_degeri = eski; res
-                        }
-                        Deger::DahiliFonksiyon(df) => {
-                            let args = argumanlar.into_iter().map(|a| self.ifade_hesapla(a)).collect();
-                            df(args)
-                        }
-                        _ => Deger::Bos
-                    }
-                } else { Deger::Bos }
+                                Deger::Fonksiyon { parametreler: ps.clone(), govde: bd.clone() }
+                            } else { self.ifade_hesapla(*fonksiyon) }
+                        } else { self.ifade_hesapla(*fonksiyon) }
+                    } else { self.ifade_hesapla(*fonksiyon) }
+                } else { self.ifade_hesapla(*fonksiyon) };
+
+                let args = argumanlar.into_iter().map(|a| self.ifade_hesapla(a)).collect();
+                self.fonksiyon_cagrisi_detayli(f, args, method_instance)
             }
             Ifade::IkiliIslem { sol, operator, sag } => {
                 let mut l = self.ifade_hesapla(*sol);

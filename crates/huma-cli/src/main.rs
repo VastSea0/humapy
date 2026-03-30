@@ -42,7 +42,7 @@ struct Cli {
     command: Option<Commands>,
 
     /// Directly run a .hb source file (shortcut for `huma run <dosya>`)
-    #[arg(value_name = "DOSYA", conflicts_with = "command")]
+    #[arg(value_name = "DOSYA")]
     file: Option<String>,
 
     /// Output diagnostics in JSON (machine-readable) format

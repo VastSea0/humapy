@@ -210,6 +210,11 @@ fn dosya_calistir(yol: &str) {
 
     let mut yorumlayici = Yorumlayici::new();
     calistir(&icerik, &mut yorumlayici);
+
+    // GUI isteği var mı kontrol et
+    if crate::gui::gui_istegi_var_mi() {
+        crate::gui::gui_calistir(yorumlayici);
+    }
 }
 
 fn repl_baslat() {

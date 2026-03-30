@@ -13,8 +13,15 @@ pub fn run_file(path: &str) -> Result<()> {
     let source = std::fs::read_to_string(path)
         .with_context(|| format!("'{}' dosyası okunamadı", path))?;
 
-    let mut interp = Yorumlayici::new();
+    let interp = Yorumlayici::new();
+    let mut interp = interp;
     execute_source(&source, &mut interp);
+
+    // GUI isteği var mı kontrol et
+    if huma_core::gui::gui_istegi_var_mi() {
+        huma_core::gui::gui_calistir(interp);
+    }
+
     Ok(())
 }
 
