@@ -9,4 +9,4 @@ pub mod compiler;
 pub mod vm;
 pub mod builtin_files;
 
-// No need for unfinished exports
+pub mod cli;

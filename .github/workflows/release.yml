@@ -68,36 +68,6 @@ jobs:
         working-directory: ide
         run: npm install
 
-      # Build Huma CLI directly
-      - name: Build Huma Compiler (Linux / Windows)
-        if: matrix.platform != 'macos-latest'
-        run: cargo build --release --bin huma
-
-      - name: Build Huma Compiler (macOS Universal)
-        if: matrix.platform == 'macos-latest'
-        run: |
-          cargo build --release --bin huma --target aarch64-apple-darwin
-          cargo build --release --bin huma --target x86_64-apple-darwin
-          lipo -create -output target/release/huma target/aarch64-apple-darwin/release/huma target/x86_64-apple-darwin/release/huma
-
-      - name: Prepare CLI Binaries for Upload
-        shell: bash
-        run: |
-          mkdir -p release_binaries
-          if [ "${{ matrix.platform }}" = "windows-latest" ]; then
-            cp target/release/huma.exe release_binaries/huma-windows-amd64.exe
-          elif [ "${{ matrix.platform }}" = "macos-latest" ]; then
-            cp target/release/huma release_binaries/huma-macos-universal
-          else
-            cp target/release/huma release_binaries/huma-linux-amd64
-          fi
-
-      - name: Upload CLI Binaries to Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: release_binaries/*
-          tag_name: ${{ github.ref_name }}
-
       - name: Build and Release Tauri App
         uses: tauri-apps/tauri-action@v0
         env:

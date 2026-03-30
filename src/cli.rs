@@ -1,33 +1,32 @@
-mod token;
-mod lexer;
-mod ast;
-mod parser;
-mod value;
-mod interpreter;
-mod bytecode;
-mod compiler;
-mod vm;
-mod builtin_files;
+use crate::lexer;
+use crate::ast;
+use crate::parser;
+use crate::value;
+use crate::interpreter;
+use crate::bytecode;
+use crate::compiler;
+use crate::vm;
+use crate::builtin_files;
 
-use lexer::Lexer;
-use parser::Parser;
-use interpreter::Yorumlayici;
-use bytecode::{OpCode, Constant};
-use compiler::Derleyici;
-use vm::VM;
+use crate::lexer::Lexer;
+use crate::parser::Parser;
+use crate::interpreter::Yorumlayici;
+use crate::bytecode::{OpCode, Constant};
+use crate::compiler::Derleyici;
+use crate::vm::VM;
 use std::io::{self, Write};
 use std::fs;
 use std::env;
 use std::rc::Rc;
 use std::cell::RefCell;
 
-fn main() {
+pub fn run_cli(args: Vec<String>) {
     let args: Vec<String> = env::args().collect();
 
     if args.len() > 1 {
         match args[1].as_str() {
             "--ide" => {
-                ide_baslat();
+                println!("Note: IDE is now built-in. Run without arguments or with --ide directly to launch it.");
             }
             "--repl" | "-r" => {
                 repl_baslat();
@@ -61,124 +60,7 @@ fn main() {
     }
 }
 
-use std::net::TcpListener;
-use std::io::Read; // Write is already imported globally
-use serde_json::{Value, json};
 
-fn ide_baslat() {
-    let listener = TcpListener::bind("127.0.0.1:3737").expect("Port 3737 zaten kullanımda! Başka bir IDE veya sunucu açık olabilir.");
-    let html_content = include_str!("../ide/public/index.html");
-
-    println!("🐦 Hüma Modern IDE (Tamamen Gömmülü Web Sürümü) başlatılıyor...");
-    println!("Tarayıcınızda açılıyor: http://localhost:3737\n(Kapatmak için CTRL+C yapın)");
-
-    // İşletim sistemine göre tarayıcıda URL'yi aç
-    #[cfg(target_os = "linux")]
-    let _ = std::process::Command::new("xdg-open").arg("http://localhost:3737").status();
-    #[cfg(target_os = "windows")]
-    let _ = std::process::Command::new("cmd").args(["/C", "start", "http://localhost:3737"]).status();
-    #[cfg(target_os = "macos")]
-    let _ = std::process::Command::new("open").arg("http://localhost:3737").status();
-
-    // İstekleri dinle
-    for stream in listener.incoming() {
-        if let Ok(mut stream) = stream {
-            let mut buffer = vec![0; 1024 * 1024]; 
-            let bytes_read = stream.read(&mut buffer).unwrap_or(0);
-            if bytes_read == 0 { continue; }
-            
-            let request = String::from_utf8_lossy(&buffer[..bytes_read]);
-            
-            if request.starts_with("GET / ") || request.starts_with("GET /index.html") {
-                let response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nConnection: close\r\n\r\n{}", html_content);
-                let _ = stream.write_all(response.as_bytes());
-            } else if request.starts_with("GET /api/libs") {
-                let libs: Vec<Value> = builtin_files::get_lib_files().iter().map(|(ad, icerik)| {
-                    json!({ "name": ad, "content": icerik })
-                }).collect();
-                let body = json!(libs).to_string();
-                let resp = format!("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}", body.len(), body);
-                let _ = stream.write_all(resp.as_bytes());
-            } else if request.starts_with("GET /api/examples") {
-                let examples: Vec<Value> = builtin_files::get_example_files().iter().map(|(ad, icerik)| {
-                    json!({ "name": ad, "content": icerik })
-                }).collect();
-                let body = json!(examples).to_string();
-                let resp = format!("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}", body.len(), body);
-                let _ = stream.write_all(resp.as_bytes());
-            } else if request.starts_with("POST /api/save") {
-                let mut body_str = "";
-                if let Some(body_idx) = request.find("\r\n\r\n") {
-                    body_str = &request[(body_idx + 4)..].trim_matches(char::from(0));
-                }
-                
-                let mut ok = false;
-                let mut path = String::new();
-                let mut err = String::new();
-
-                if let Ok(json_val) = serde_json::from_str::<Value>(body_str) {
-                    let filename = json_val.get("filename").and_then(|v| v.as_str()).unwrap_or("adsiz.hb");
-                    let content = json_val.get("content").and_then(|v| v.as_str()).unwrap_or("");
-                    
-                    let mut file_path = filename.to_string();
-                    if !file_path.ends_with(".hb") { file_path.push_str(".hb"); }
-                    
-                    if let Ok(_) = fs::write(&file_path, content) {
-                        ok = true;
-                        path = file_path;
-                    } else {
-                        err = "Dosya yazılamadı".to_string();
-                    }
-                }
-
-                let resp_body = json!({ "ok": ok, "path": path, "error": err }).to_string();
-                let resp = format!("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}", resp_body.len(), resp_body);
-                let _ = stream.write_all(resp.as_bytes());
-
-            } else if request.starts_with("POST /api/run") {
-                let start_time = std::time::Instant::now();
-                let mut body_str = "";
-                if let Some(body_idx) = request.find("\r\n\r\n") {
-                    body_str = &request[(body_idx + 4)..].trim_matches(char::from(0));
-                }
-                
-                let mut output_str = String::new();
-                let mut error_str = String::new();
-                
-                if let Ok(json_val) = serde_json::from_str::<Value>(body_str) {
-                    if let Some(code) = json_val.get("code").and_then(|v| v.as_str()) {
-                        let output_capture = Rc::new(RefCell::new(String::new()));
-                        let mut interp = Yorumlayici::new().with_output_buffer(output_capture.clone());
-                        let lexer = Lexer::new(code);
-                        let mut parser = Parser::new(lexer);
-                        let program = parser.parse_program();
-                        
-                        interp.yorumla(program);
-                        output_str = output_capture.borrow().to_string();
-                    } else {
-                        error_str = "Hata: İstekte 'code' alanı bulunamadı".to_string();
-                    }
-                } else {
-                    error_str = format!("Hata: Geçersiz JSON.\n{}", body_str);
-                }
-
-                let elapsed_ms = start_time.elapsed().as_millis() as u64;
-                let resp_json = json!({
-                    "output": output_str,
-                    "error": error_str,
-                    "elapsed": elapsed_ms
-                });
-                
-                let resp_body = resp_json.to_string();
-                let http_resp = format!("HTTP/1.1 200 OK\r\nContent-Type: application/json; charset=utf-8\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}", resp_body.len(), resp_body);
-                let _ = stream.write_all(http_resp.as_bytes());
-            } else {
-                let resp = "HTTP/1.1 404 NOT FOUND\r\nConnection: close\r\n\r\n";
-                let _ = stream.write_all(resp.as_bytes());
-            }
-        }
-    }
-}
 
 fn ikili_dosya_olustur(girdi: &str, cikti: &str) {
     let icerik = fs::read_to_string(girdi).expect("Dosya okunamadı");
@@ -254,7 +136,7 @@ impl std::fmt::Display for Deger {{
         }}
     }}
 }}
-fn main() {{
+pub fn run_cli(args: Vec<String>) {{
     let inst = {};
     let cons = {};
     let mut stack: Vec<Deger> = Vec::new();

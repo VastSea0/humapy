@@ -5,18 +5,9 @@ description = "A high-performance, safe, and intuitive programming language with
 authors = ["VastSea0 <vastseaoffical0@outlook.com>"]
 license = "MIT"
 edition = "2024"
-default-run = "huma"
 [lib]
 name = "huma"
 path = "src/lib.rs"
-
-[[bin]]
-name = "huma"
-path = "src/main.rs"
-
-[[bin]]
-name = "ide"
-path = "src/bin/ide.rs"
 
 [[bin]]
 name = "debug_parse"

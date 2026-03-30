@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "huma-ide",
+  "productName": "huma",
   "version": "0.2.0",
   "identifier": "com.vastsea.humaide",
   "build": {
