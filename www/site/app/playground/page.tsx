@@ -2,301 +2,246 @@
 
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
-import { useState } from "react";
 
-const EXAMPLES: { label: string; code: string }[] = [
+const GITHUB_URL = "https://github.com/VastSea0/huma-lang";
+
+const EXAMPLES = [
   {
-    label: "Merhaba Dünya",
-    code: `// Merhaba Dünya — Hello World
-isim = "Dünya" olsun
-"Merhaba, " + isim'i yazdır;`,
+    id: "hello",
+    label: "Welcome to Hüma",
+    description: "A basic example of variable assignment and printing in Hüma. The simplest structure that utilizes the natural flow of the Turkish language.",
+    code: `// Define variable and print
+isim = "World" olsun
+"Hello, " + isim'i yazdır;`,
+    output: "Hello, World",
   },
   {
-    label: "Koşullar",
-    code: `// Koşullu mantık — Conditionals
-puan = 85 olsun
+    id: "conditions",
+    label: "Decision Mechanisms",
+    description: "Flow control with ise / yoksa blocks. You can build conditional statements with the 'ise' keyword.",
+    code: `grade = 85 olsun
 
-puan > 50 ise {
-    "Başarılı!"'yı yazdır;
+grade > 50 ise {
+    "You successfully passed the exam!"'i yazdır;
 } yoksa {
-    "Başarısız!"'ı yazdır;
+    "Unfortunately, you failed."'u yazdır;
 }`,
+    output: "You successfully passed the exam!",
   },
   {
-    label: "Döngü",
-    code: `// While döngüsü — Loop
-sayaç = 0 olsun
+    id: "loops",
+    label: "Iterative Operations",
+    description: "The 'olduğu sürece' structure is the direct equivalent of the classic while loop.",
+    code: `counter = 1 olsun
 
-sayaç < 5 olduğu sürece {
-    "Sıra: " + sayaç'ı yazdır;
-    sayaç = sayaç + 1 olsun
+counter <= 3 olduğu sürece {
+    "Step: " + counter'ı yazdır;
+    counter = counter + 1 olsun
 }`,
+    output: "Step: 1\nStep: 2\nStep: 3",
   },
   {
-    label: "Fonksiyon",
-    code: `// Fonksiyon tanımlama — Function
-topla fonksiyon olsun a, b alsın {
+    id: "functions",
+    label: "Function Definition",
+    description: "Functions are defined with the 'olsun' and 'alsın' structure, and return values with 'döndür'.",
+    code: `add fonksiyon olsun a, b alsın {
     a + b'yi döndür
 }
 
-sonuç = topla(10, 32)
-"Toplam: " + sonuç'u yazdır;`,
+result = add(15, 20)
+"Total: " + result'u yazdır;`,
+    output: "Total: 35",
   },
   {
-    label: "Sınıf",
-    code: `// Sınıf ve nesne — Class
-araç sınıf olsun {
-    hız = 0 olsun
+    id: "classes",
+    label: "Object-Oriented Programming",
+    description: "Group your data and behaviors (functions) using classes and object structures.",
+    code: `animal sınıf olsun {
+    name = "" olsun
+    sound = "Meow" olsun
 
-    hızlan fonksiyon olsun miktar alsın {
-        kendisi'nin hız = kendisi'nin hız + miktar olsun
+    speak fonksiyon olsun {
+        kendisi'nin name + " says: " + kendisi'nin sound'u yazdır
     }
 }
 
-araba = araç() olsun
-araba.hızlan(60)
-"Hız: " + araba.hız'ı yazdır;`,
+kitty = animal() olsun
+kitty.name = "Cat" olsun
+kitty.speak()`,
+    output: "Cat says: Meow",
   },
   {
-    label: "Hata Yönetimi",
-    code: `// Hata yönetimi — Error handling
-dene {
-    sonuç = 10 / 0
-} hata var ise {
-    "Sıfıra bölünme hatası!"'nı yazdır
-}`,
+    id: "lists",
+    label: "List Management",
+    description: "Add elements, remove them, and check length with Hüma's dynamic list structure.",
+    code: `array = [1, 2, 3] olsun
+array'e [4]'ü ekle;
+
+"Element count: " + array'in uzunluğu'nu yazdır;
+"Full list: " + array'i yazdır;`,
+    output: "Element count: 4\nFull list: [1, 2, 3, 4]",
   },
 ];
 
-// Simulated interpreter — maps known snippets to outputs
-function simulate(code: string): string {
-  const lines = code.trim().split("\n").filter((l) => !l.trim().startsWith("//") && l.trim() !== "");
-  const output: string[] = [];
-
-  // Very simple pattern matching for demo output
-  if (code.includes("Merhaba") && code.includes("Dünya")) {
-    output.push("Merhaba, Dünya");
-  }
-  if (code.includes("puan") && code.includes("Başarılı")) {
-    output.push("Başarılı!");
-  }
-  if (code.includes("sayaç < 5")) {
-    for (let i = 0; i < 5; i++) output.push(`Sıra: ${i}`);
-  }
-  if (code.includes("topla") && code.includes("10, 32")) {
-    output.push("Toplam: 42");
-  }
-  if (code.includes("hızlan") && code.includes("60")) {
-    output.push("Hız: 60");
-  }
-  if (code.includes("10 / 0")) {
-    output.push("Sıfıra bölünme hatası!");
-  }
-
-  if (output.length === 0) {
-    // Generic: extract anything after yazdır
-    lines.forEach((line) => {
-      const m = line.match(/"([^"]+)"'?\w*\s+yazdır/);
-      if (m) output.push(m[1]);
+function CodeBlock({ code, label }: { code: string; label: string }) {
+  const highlight = (text: string) => {
+    return text.split("\n").map((line, i) => {
+      const parts = line.split(/(\/\/.*|"[^"]*"|\d+|\b(?:olsun|ise|yoksa|olduğu sürece|fonksiyon|sınıf|alsın|döndür|yükle|dene|hata var ise|ve|veya|değil|kendisi|yazdır)\b)/g);
+      return (
+        <div key={i} className="min-h-[1.5rem] flex gap-4">
+          <span className="w-4 shrink-0 text-on-surface-variant/20 select-none text-[10px] text-right pt-0.5">
+            {i + 1}
+          </span>
+          <span className="whitespace-pre">
+            {parts.map((part, j) => {
+              if (part.startsWith("//")) return <span key={j} className="text-on-surface-variant/40 italic">{part}</span>;
+              if (part.startsWith('"')) return <span key={j} className="text-secondary">{part}</span>;
+              if (/^\d+$/.test(part)) return <span key={j} className="text-primary">{part}</span>;
+              if (/\b(olsun|ise|yoksa|olduğu sürece|fonksiyon|sınıf|alsın|döndür|yükle|dene|hata var ise|ve|veya|değil|kendisi|yazdır)\b/.test(part)) {
+                return <span key={j} className="text-primary-container">{part}</span>;
+              }
+              return <span key={j} className="text-tertiary">{part}</span>;
+            })}
+          </span>
+        </div>
+      );
     });
-  }
-
-  return output.length > 0
-    ? output.join("\n")
-    : "// Program çalıştı — no visible output.";
-}
-
-export default function PlaygroundPage() {
-  const [selected, setSelected] = useState(0);
-  const [code, setCode] = useState(EXAMPLES[0].code);
-  const [output, setOutput] = useState<string | null>(null);
-  const [running, setRunning] = useState(false);
-
-  const selectExample = (i: number) => {
-    setSelected(i);
-    setCode(EXAMPLES[i].code);
-    setOutput(null);
-  };
-
-  const run = () => {
-    setRunning(true);
-    setOutput(null);
-    setTimeout(() => {
-      setOutput(simulate(code));
-      setRunning(false);
-    }, 600);
   };
 
   return (
+    <div className="glass-card code-glow border border-outline-variant/10 rounded-lg overflow-hidden relative">
+      <div className="px-4 py-2 border-b border-outline-variant/10 bg-surface-container-lowest/50 flex items-center justify-between">
+        <div className="flex gap-1.5">
+          <div className="w-2 h-2 rounded-full bg-red-500/30" />
+          <div className="w-2 h-2 rounded-full bg-yellow-500/30" />
+          <div className="w-2 h-2 rounded-full bg-green-500/30" />
+        </div>
+        <span className="text-[10px] font-mono text-on-surface-variant/40 tracking-wider lowercase">{label}.hb</span>
+        <div className="w-10" />
+      </div>
+      <div className="p-6 font-mono text-sm leading-relaxed overflow-x-auto text-on-surface">
+        {highlight(code)}
+      </div>
+    </div>
+  );
+}
+
+export default function ExamplesPage() {
+  return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-20 bg-surface">
-        {/* Header */}
-        <div className="border-b border-outline-variant/10 bg-surface-container-lowest">
-          <div className="max-w-[1440px] mx-auto px-8 py-4 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-tertiary animate-pulse" />
-                <span className="font-mono text-xs text-on-surface-variant/60 uppercase tracking-widest">
-                  Hüma Playground — v1.0.4
-                </span>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Link
-                href="/docs"
-                className="text-xs text-on-surface-variant hover:text-primary transition-colors font-medium flex items-center gap-1"
-              >
-                <span className="material-symbols-outlined text-sm">menu_book</span>
-                Docs
-              </Link>
-              <a
-                href="https://github.com/VastSea0/huma-lang"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-on-surface-variant hover:text-primary transition-colors font-medium flex items-center gap-1"
-              >
-                <span className="material-symbols-outlined text-sm">open_in_new</span>
-                GitHub
-              </a>
-            </div>
+      <main className="min-h-screen bg-surface pb-24 pt-32">
+        {/* Header Section */}
+        <div className="max-w-[1440px] mx-auto px-8 md:px-12 mb-24">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high border border-outline-variant/20 mb-8">
+            <span className="w-2 h-2 rounded-full bg-tertiary" />
+            <span className="font-mono text-[10px] tracking-widest uppercase text-tertiary">
+              v0.3.1-stable kinetic gallery
+            </span>
           </div>
+          <h1 className="text-[clamp(2.5rem,8vw,4rem)] font-black leading-[0.9] tracking-tighter text-on-surface mb-8">
+            Pure Efficiency.<br />
+            <span className="bg-gradient-to-r from-primary to-primary-container bg-clip-text text-transparent">
+              Native Semantics.
+            </span>
+          </h1>
+          <p className="text-lg md:text-xl text-on-surface-variant max-w-2xl leading-relaxed">
+            Discover the Hüma language. Programming is now much more accessible and powerful with its syntax close to daily spoken language.
+          </p>
         </div>
 
-        <div className="max-w-[1440px] mx-auto flex flex-col lg:flex-row h-[calc(100vh-8rem)]">
-          {/* Left: examples sidebar */}
-          <aside className="lg:w-52 shrink-0 border-r border-outline-variant/10 bg-surface-container-lowest py-4 px-3 overflow-y-auto">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50 px-2 mb-3">
-              Examples
-            </p>
-            <ul className="space-y-1">
-              {EXAMPLES.map((ex, i) => (
-                <li key={ex.label}>
-                  <button
-                    onClick={() => selectExample(i)}
-                    className={`w-full text-left px-3 py-2 rounded-sm text-sm font-medium transition-all hover:translate-x-0.5 ${
-                      selected === i
-                        ? "bg-surface-container-high text-primary"
-                        : "text-on-surface-variant hover:bg-surface-container-low"
-                    }`}
-                  >
-                    {ex.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-8 px-2">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50 mb-3">
-                Note
-              </p>
-              <p className="text-xs text-on-surface-variant/60 leading-relaxed">
-                This is a browser simulation. For full execution, install the Hüma CLI.
-              </p>
-              <a
-                href="https://raw.githubusercontent.com/VastSea0/huma-lang/main/install.sh"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 mt-3 text-xs text-primary hover:underline"
-              >
-                <span className="material-symbols-outlined text-sm">download</span>
-                Install Hüma
-              </a>
-            </div>
-          </aside>
-
-          {/* Center: editor */}
-          <div className="flex-1 flex flex-col min-w-0 border-r border-outline-variant/10">
-            {/* Editor toolbar */}
-            <div className="flex items-center justify-between px-4 py-2.5 border-b border-outline-variant/10 bg-surface-container-low">
-              <div className="flex items-center gap-3">
-                <div className="flex gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-red-500/40" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/40" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-green-500/40" />
-                </div>
-                <span className="font-mono text-[10px] text-on-surface-variant/40 tracking-wider">
-                  {EXAMPLES[selected].label.toLowerCase().replace(/\s+/g, "_")}.huma
-                </span>
-              </div>
-              <button
-                onClick={run}
-                disabled={running}
-                id="run-button"
-                className="flex items-center gap-2 bg-primary text-on-primary px-4 py-1.5 rounded-sm text-xs font-bold active:scale-95 transition-all hover:bg-primary-fixed disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                <span className="material-symbols-outlined text-sm">
-                  {running ? "hourglass_empty" : "play_arrow"}
-                </span>
-                {running ? "Çalışıyor…" : "Çalıştır"}
-              </button>
-            </div>
-
-            {/* Code textarea */}
-            <textarea
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              spellCheck={false}
-              className="flex-1 w-full bg-surface-container-lowest text-on-surface font-mono text-sm leading-relaxed p-6 resize-none focus:outline-none focus:ring-0 border-none"
-              style={{ caretColor: "#ffb4a2" }}
-              aria-label="Hüma code editor"
-            />
-          </div>
-
-          {/* Right: output */}
-          <div className="lg:w-80 shrink-0 flex flex-col bg-[#0e0e0e]">
-            <div className="flex items-center justify-between px-4 py-2.5 border-b border-outline-variant/10">
-              <div className="flex items-center gap-2 text-on-surface-variant/50">
-                <span className="material-symbols-outlined text-sm">terminal</span>
-                <span className="text-[10px] font-bold uppercase tracking-widest">ÇIKTI</span>
-              </div>
-              {output !== null && (
-                <button
-                  onClick={() => setOutput(null)}
-                  className="text-on-surface-variant/30 hover:text-primary transition-colors"
-                  aria-label="Clear output"
-                >
-                  <span className="material-symbols-outlined text-sm">close</span>
-                </button>
-              )}
-            </div>
-
-            <div className="flex-1 p-4 font-mono text-sm overflow-y-auto">
-              {output === null && !running && (
-                <p className="text-on-surface-variant/30 text-xs leading-relaxed">
-                  &gt; Press <span className="text-primary">Çalıştır</span> to run your program…
-                </p>
-              )}
-
-              {running && (
-                <div className="flex items-center gap-2 text-tertiary text-xs">
-                  <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>
-                  Yorumlayıcı çalışıyor…
-                </div>
-              )}
-
-              {output !== null && !running && (
+        {/* Examples List */}
+        <section className="max-w-[1440px] mx-auto px-8 md:px-12">
+          <div className="space-y-32">
+            {EXAMPLES.map((ex) => (
+              <div key={ex.id} className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
                 <div>
-                  <div className="text-on-surface-variant/40 text-xs mb-3">
-                    &gt; huma calistir {EXAMPLES[selected].label.toLowerCase().replace(/\s+/g, "_")}.huma
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high border border-outline-variant/20 mb-6">
+                    <span className="font-mono text-[10px] tracking-widest uppercase text-on-surface-variant/60">
+                      Module: {ex.id}
+                    </span>
                   </div>
-                  <pre className="text-primary whitespace-pre-wrap leading-relaxed">
-                    {output}
-                  </pre>
-                  <div className="text-on-surface-variant/30 text-xs mt-4 pt-4 border-t border-outline-variant/10">
-                    Process exited with code 0
+                  <h3 className="text-4xl font-black tracking-tight text-on-surface mb-6">
+                    {ex.label}
+                  </h3>
+                  <p className="text-lg text-on-surface-variant leading-relaxed font-medium mb-10">
+                    {ex.description}
+                  </p>
+                  
+                  <div className="bg-[#0E0E0E] rounded-xl p-6 border border-outline-variant/10 font-mono text-xs relative overflow-hidden group">
+                    <div className="flex items-center gap-2 text-on-surface-variant/50 mb-4 pb-4 border-b border-outline-variant/10">
+                      <span className="material-symbols-outlined text-[14px]">terminal</span>
+                      <span>CONSOLE OUTPUT</span>
+                    </div>
+                    <pre className="text-primary font-bold text-sm whitespace-pre-wrap leading-relaxed relative z-10 transition-transform group-hover:translate-x-1">
+                      {ex.output}
+                    </pre>
                   </div>
                 </div>
-              )}
-            </div>
+                
+                <div className="relative">
+                  <div className="absolute -inset-8 bg-primary/5 blur-[80px] rounded-full" />
+                  <CodeBlock code={ex.code} label={ex.id} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
 
-            {/* Bottom hint */}
-            <div className="px-4 py-3 border-t border-outline-variant/10 text-[10px] text-on-surface-variant/30 font-mono">
-              Ctrl+Enter · Run &nbsp;&nbsp;|&nbsp;&nbsp; Browser simulation
+        {/* Call to action */}
+        <section className="mt-48 px-8">
+          <div className="max-w-[1440px] mx-auto bg-surface-container-lowest rounded-xl p-12 md:p-24 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-12">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 blur-[150px] -mr-48 -mt-48" />
+            <div className="z-10 max-w-xl">
+              <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6 leading-none">
+                The Most Natural Way to Code.
+              </h2>
+              <p className="text-on-surface-variant text-lg">
+                To use all the features of Hüma, install the CLI tool on your computer and start developing your own software.
+              </p>
+            </div>
+            <div className="z-10 flex flex-wrap gap-4 w-full md:w-auto">
+              <Link href="/docs">
+                <button className="bg-gradient-to-br from-primary to-primary-container text-on-primary px-8 py-4 font-bold rounded-sm shadow-xl active:scale-95 transition-all">
+                  Read Documentation
+                </button>
+              </Link>
+              <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
+                <button className="px-8 py-4 font-bold rounded-sm border border-outline/20 text-on-surface hover:bg-surface-bright transition-all">
+                  View on GitHub
+                </button>
+              </a>
             </div>
           </div>
-        </div>
+        </section>
       </main>
+
+      {/* Footer Section */}
+      <footer className="bg-[#0E0E0E] border-t border-[#5A413A]/20">
+        <div className="flex flex-col md:flex-row justify-between items-center px-12 py-12 gap-6 max-w-[1440px] mx-auto">
+          <div className="flex flex-col items-center md:items-start gap-4">
+            <div className="font-body text-xs uppercase tracking-[0.1em] text-on-surface-variant/60 text-center md:text-left">
+              © 2026 Hüma Language Foundation. Kinetic Archive Edition.
+            </div>
+            <div className="flex gap-4 font-mono text-[10px] text-primary/60">
+              <span>LICENSE: MIT</span>
+              <span>BUILD: STABLE-26.03</span>
+            </div>
+          </div>
+          <div className="flex flex-wrap justify-center gap-8 font-body text-xs uppercase tracking-[0.1em]">
+            <Link href={GITHUB_URL} target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">GitHub</Link>
+            <Link href={`${GITHUB_URL}/discussions`} target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">Discord</Link>
+            <Link href={`${GITHUB_URL}/releases`} target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">Releases</Link>
+            <Link href={`${GITHUB_URL}/issues`} target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">Issues</Link>
+            <Link href={`${GITHUB_URL}/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer"
+              className="text-on-surface-variant/60 hover:text-primary transition-colors">License</Link>
+          </div>
+        </div>
+      </footer>
     </>
   );
 }
