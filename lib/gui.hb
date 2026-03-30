@@ -96,3 +96,15 @@ açılır_menü_ekle fonksiyon olsun başlık, fks alsın {
 grup_kutusu_ekle fonksiyon olsun başlık, fks alsın {
     grup_kutusu(başlık, fks)
 }
+
+grid_ekle fonksiyon olsun id, fks alsın {
+    grid_oluştur(id, fks)
+}
+
+yeni_satır_ekle fonksiyon olsun {
+    satır_bitir()
+}
+
+kaydırılabilir_liste_ekle fonksiyon olsun id, fks alsın {
+    kaydırılabilir_alan(id, fks)
+}

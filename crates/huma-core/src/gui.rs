@@ -446,6 +446,73 @@ pub fn kayit_et(globals: &mut std::collections::HashMap<String, Deger>) {
         }
         Deger::Bos
     }));
+
+    globals.insert("grid_oluştur".to_string(), Deger::DahiliFonksiyon(|args| {
+        if args.len() >= 2 {
+            if let (Deger::Metin(id), fks) = (&args[0], &args[1]) {
+                CURRENT_UI.with(|c| {
+                    let ui_ptr_opt = *c.borrow();
+                    if let Some(ui_ptr) = ui_ptr_opt {
+                        let outer_ui = unsafe { &mut *ui_ptr };
+                        egui::Grid::new(id).striped(true).show(outer_ui, |ui| {
+                            let inner_ui_ptr = ui as *mut egui::Ui;
+                            *c.borrow_mut() = Some(inner_ui_ptr);
+                            
+                            CURRENT_INTERP.with(|i| {
+                                let interp_ptr_opt = *i.borrow();
+                                if let Some(interp_ptr) = interp_ptr_opt {
+                                    let interp = unsafe { &mut *interp_ptr };
+                                    interp.fonksiyon_cagrisi(fks.clone(), vec![]);
+                                }
+                            });
+                        });
+                        *c.borrow_mut() = Some(ui_ptr);
+                    }
+                });
+            }
+        }
+        Deger::Bos
+    }));
+
+    globals.insert("satır_bitir".to_string(), Deger::DahiliFonksiyon(|_args| {
+        CURRENT_UI.with(|c| {
+            if let Some(ui_ptr) = *c.borrow() {
+                let ui = unsafe { &mut *ui_ptr };
+                ui.end_row();
+            }
+        });
+        Deger::Bos
+    }));
+
+    globals.insert("kaydırılabilir_alan".to_string(), Deger::DahiliFonksiyon(|args| {
+        if args.len() >= 2 {
+            if let (Deger::Metin(id), fks) = (&args[0], &args[1]) {
+                CURRENT_UI.with(|c| {
+                    let ui_ptr_opt = *c.borrow();
+                    if let Some(ui_ptr) = ui_ptr_opt {
+                        let outer_ui = unsafe { &mut *ui_ptr };
+                        egui::ScrollArea::vertical()
+                            .id_source(id)
+                            .auto_shrink([false, false])
+                            .show(outer_ui, |ui| {
+                                let inner_ui_ptr = ui as *mut egui::Ui;
+                                *c.borrow_mut() = Some(inner_ui_ptr);
+                                
+                                CURRENT_INTERP.with(|i| {
+                                    let interp_ptr_opt = *i.borrow();
+                                    if let Some(interp_ptr) = interp_ptr_opt {
+                                        let interp = unsafe { &mut *interp_ptr };
+                                        interp.fonksiyon_cagrisi(fks.clone(), vec![]);
+                                    }
+                                });
+                            });
+                        *c.borrow_mut() = Some(ui_ptr);
+                    }
+                });
+            }
+        }
+        Deger::Bos
+    }));
 }
 
 pub fn gui_istegi_var_mi() -> bool {

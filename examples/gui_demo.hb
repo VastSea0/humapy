@@ -89,7 +89,52 @@ sekme2_icerik fonksiyon olsun {
 }
 
 // ===================
+// SEKME 3 (Tablo ve Veriler)
+// ===================
+
+tablo_verileri fonksiyon olsun {
+    kalın_yazı_ekle("ID")
+    kalın_yazı_ekle("Öğe Adı")
+    kalın_yazı_ekle("Durum")
+    yeni_satır_ekle()
+    
+    yazı_ekle("1")
+    yazı_ekle("Hüma Derleyicisi")
+    renkli_yazı_ekle("Aktif", 50, 200, 50)
+    yeni_satır_ekle()
+    
+    yazı_ekle("2")
+    yazı_ekle("Gelişmiş GUI")
+    renkli_yazı_ekle("Tamamlanıyor", 255, 150, 0)
+    yeni_satır_ekle()
+    
+    yazı_ekle("3")
+    yazı_ekle("Ağ Kartları")
+    renkli_yazı_ekle("Beklemede", 150, 150, 150)
+    yeni_satır_ekle()
+    
+    yazı_ekle("4")
+    yazı_ekle("Paket Yöneticisi")
+    renkli_yazı_ekle("Beklemede", 150, 150, 150)
+    yeni_satır_ekle()
+}
+
+tablo_sarma fonksiyon olsun {
+    grid_ekle("demo_grid_1", tablo_verileri)
+}
+
+sekme3_icerik fonksiyon olsun {
+    büyük_başlık("GRID (Izgara) Layout Görünümü")
+    boşluk_bırak(8.0)
+    
+    yazı_ekle("egui native grid altyapısı ScrollBox ile birlikte:")
+    boşluk_bırak(5.0)
+    kaydırılabilir_liste_ekle("kaydirilan_tablo", tablo_sarma)
+}
+
+// ===================
 // YÜZEN PENCERE
+
 // ===================
 
 pencere_icerigi fonksiyon olsun {
@@ -137,6 +182,9 @@ sekme_cubugu_fks fonksiyon olsun {
     sekme_ekle(aktif_sekme == 2, "Ayarlar") == 1 ise {
         aktif_sekme = 2
     }
+    sekme_ekle(aktif_sekme == 3, "Grid Mimarisi") == 1 ise {
+        aktif_sekme = 3
+    }
 }
 
 // ===================
@@ -158,6 +206,10 @@ sekme_cubugu_fks fonksiyon olsun {
     
     aktif_sekme == 2 ise {
         grup_kutusu_ekle("Sistem Ayarları", sekme2_icerik)
+    }
+    
+    aktif_sekme == 3 ise {
+        grup_kutusu_ekle("Veri Tablosu", sekme3_icerik)
     }
     
     // Yüzen Pencere Durumu
