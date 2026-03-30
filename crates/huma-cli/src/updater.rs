@@ -10,7 +10,7 @@ use tracing::{info, warn};
 
 /// The GitHub repository coordinates used by `self_update`.
 const REPO_OWNER: &str = "VastSea0";
-const REPO_NAME: &str = "humapy";
+const REPO_NAME: &str = "huma-lang";
 const BIN_NAME: &str = "huma";
 
 /// Check whether a newer release exists without performing the actual update.

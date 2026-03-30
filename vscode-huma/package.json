@@ -3,7 +3,7 @@
   "displayName": "Hüma Language Support",
   "description": "Syntax highlighting and language support for Hüma programming language",
   "version": "0.1.0",
-  "publisher": "humapy",
+  "publisher": "huma-lang",
   "engines": {
     "vscode": "^1.80.0"
   },

@@ -22,8 +22,8 @@ Hüma is a high-performance, safe, and intuitive programming language that combi
 You need [Rust](https://www.rust-lang.org/) installed on your system.
 
 ```bash
-git clone https://github.com/VastSea0/humapy.git
-cd humapy
+git clone https://github.com/VastSea0/huma-lang.git
+cd huma-lang
 cargo build --release
 ```
 
@@ -38,7 +38,7 @@ The compiled binary will be located at `target/release/huma`.
 Try code directly in the terminal:
 
 ```bash
-cargo run
+huma repl
 ```
 
 ### 2. Run a Script (Interpreter)
@@ -47,9 +47,9 @@ Run a `.hb` file using the tree-walking interpreter:
 
 ```bash
 # General usage
-cargo run -- script.hb
+huma run script.hb
 # Example
-cargo run -- examples/fibonacci.hb
+huma run examples/fibonacci.hb
 ```
 
 ### 3. Bytecode Mode (Performance)
@@ -58,9 +58,9 @@ Compile to bytecode and execute via the VM:
 
 ```bash
 # Compile to bytecode (.hbc)
-cargo run -- --derle script.hb output.hbc
+huma build script.hb -o output.hbc
 # Execute bytecode
-cargo run -- --yürüt output.hbc
+huma exec output.hbc
 ```
 
 ---

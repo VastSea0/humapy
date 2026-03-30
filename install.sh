@@ -24,23 +24,23 @@ error()   { printf "${RED}[error]${RESET} %s\n" "$1" >&2; exit 1; }
 # ── Detect OS & Arch ────────────────────────────────────────────────────────
 detect_os() {
   case "$(uname -s)" in
-    Linux*)  echo "linux" ;;
-    Darwin*) echo "macos" ;;
+    Linux*)  echo "unknown-linux-gnu" ;;
+    Darwin*) echo "apple-darwin" ;;
     *)       error "Unsupported OS: $(uname -s). Please build from source." ;;
   esac
 }
 
 detect_arch() {
   case "$(uname -m)" in
-    x86_64|amd64)  echo "amd64" ;;
-    aarch64|arm64) echo "arm64" ;;
+    x86_64|amd64)  echo "x86_64" ;;
+    aarch64|arm64) echo "aarch64" ;;
     *)             error "Unsupported architecture: $(uname -m)." ;;
   esac
 }
 
 OS=$(detect_os)
 ARCH=$(detect_arch)
-ASSET_NAME="huma-${OS}-${ARCH}"
+ASSET_NAME="huma-${ARCH}-${OS}.tar.gz"
 
 # ── Check dependencies ───────────────────────────────────────────────────────
 need_cmd() {
@@ -49,6 +49,7 @@ need_cmd() {
   fi
 }
 need_cmd curl
+need_cmd tar
 
 # ── Banner ───────────────────────────────────────────────────────────────────
 printf "\n"
@@ -69,8 +70,9 @@ DOWNLOAD_URL="${GITHUB_BASE}/${ASSET_NAME}"
 
 info "Downloading from: ${DOWNLOAD_URL}"
 
-TMP_FILE=$(mktemp)
-cleanup() { rm -f "$TMP_FILE"; }
+TMP_DIR=$(mktemp -d)
+TMP_FILE="$TMP_DIR/$ASSET_NAME"
+cleanup() { rm -rf "$TMP_DIR"; }
 trap cleanup EXIT
 
 HTTP_CODE=$(curl -fsSL -w "%{http_code}" -o "$TMP_FILE" "$DOWNLOAD_URL" 2>&1) || true
@@ -85,14 +87,14 @@ data = json.load(sys.stdin)
 assets = data.get('assets', [])
 for a in assets:
     name = a.get('name','')
-    if '${OS}' in name and '${ARCH}' in name:
+    if '${OS}' in name and '${ARCH}' in name and name.endswith('.tar.gz'):
         print(a['browser_download_url'])
         break
 " 2>/dev/null)
   fi
 
   if [ -z "$DOWNLOAD_URL" ]; then
-    error "Could not find a binary for ${OS}/${ARCH}. Visit https://github.com/${REPO}/releases to download manually."
+    error "Could not find a binary for ${ARCH}-${OS}. Visit https://github.com/${REPO}/releases to download manually."
   fi
 
   info "Found asset: ${DOWNLOAD_URL}"
@@ -100,14 +102,22 @@ for a in assets:
 fi
 
 # ── Install ───────────────────────────────────────────────────────────────────
-chmod +x "$TMP_FILE"
+info "Extracting..."
+tar -xzf "$TMP_FILE" -C "$TMP_DIR"
+EXTRACTED_BIN="$TMP_DIR/huma"
+
+if [ ! -f "$EXTRACTED_BIN" ]; then
+  error "Extracted binary not found!"
+fi
+
+chmod +x "$EXTRACTED_BIN"
 
 # Try to install without sudo first, fall back with sudo
 if [ -w "$INSTALL_DIR" ]; then
-  cp "$TMP_FILE" "${INSTALL_DIR}/${BINARY_NAME}"
+  cp "$EXTRACTED_BIN" "${INSTALL_DIR}/${BINARY_NAME}"
 else
   info "Requesting elevated permissions to install to ${INSTALL_DIR}..."
-  sudo cp "$TMP_FILE" "${INSTALL_DIR}/${BINARY_NAME}"
+  sudo cp "$EXTRACTED_BIN" "${INSTALL_DIR}/${BINARY_NAME}"
 fi
 
 # ── Verify ────────────────────────────────────────────────────────────────────
@@ -117,8 +127,8 @@ if command -v huma > /dev/null 2>&1; then
   huma --version 2>/dev/null || true
   printf "\n"
   info "Quick start:"
-  printf "  ${CYAN}echo 'isim = \"Dünya\" olsun' > merhaba.huma${RESET}\n"
-  printf "  ${CYAN}huma calistir merhaba.huma${RESET}\n"
+  printf "  ${CYAN}echo 'isim = \"Dünya\" olsun' > merhaba.hb${RESET}\n"
+  printf "  ${CYAN}huma run merhaba.hb${RESET}\n"
   printf "\n"
   info "Documentation: https://github.com/${REPO}#readme\n"
 else

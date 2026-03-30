@@ -29,7 +29,7 @@ export default function HomePage() {
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high border border-outline-variant/20 mb-8">
               <span className="w-2 h-2 rounded-full bg-tertiary" />
               <span className="font-mono text-[10px] tracking-widest uppercase text-tertiary">
-                v1.0.4-stable kinetic archive
+                v0.3.0-stable kinetic archive
               </span>
             </div>
 
@@ -74,7 +74,7 @@ export default function HomePage() {
                   <div className="w-2.5 h-2.5 rounded-full bg-green-500/30" />
                 </div>
                 <span className="font-mono text-[10px] text-on-surface-variant/40 tracking-wider">
-                  merhaba.huma
+                  merhaba.hb
                 </span>
                 <div className="w-8" />
               </div>
@@ -135,7 +135,7 @@ export default function HomePage() {
                   <span>ÇIKTI</span>
                 </div>
                 <div className="text-primary">
-                  &gt; huma calistir merhaba.huma
+                  &gt; huma run merhaba.hb
                   <br />
                   <span className="text-on-surface">Başarılı!</span>
                 </div>

@@ -20,8 +20,8 @@ Hüma, modern yazılım geliştirme prensiplerini Türkçe doğal dil yapısıyl
 Hüma'yı derlemek için sisteminizde [Rust](https://www.rust-lang.org/) kurulu olmalıdır.
 
 ```bash
-git clone https://github.com/VastSea0/humapy.git
-cd humapy
+git clone https://github.com/VastSea0/huma-lang.git
+cd huma-lang
 cargo build --release
 ```
 
@@ -36,7 +36,7 @@ Derleme sonrası çalıştırılabilir dosya `target/release/huma` konumunda ola
 Doğrudan komut satırından kod denemek için:
 
 ```bash
-cargo run
+huma repl
 ```
 
 ### 2. Dosya Çalıştırma (Yorumlayıcı)
@@ -44,7 +44,7 @@ cargo run
 Bir `.hb` dosyasını çalıştırmak için:
 
 ```bash
-cargo run -- program.hb
+huma run program.hb
 ```
 
 ### 3. Bytecode Modu (Performans)
@@ -53,9 +53,9 @@ Kodunuzu önce bytecode'a derleyip sonra Sanal Makine üzerinde koşturabilirsin
 
 ```bash
 # Derle
-cargo run -- --derle program.hb cikti.hbc
+huma build program.hb -o cikti.hbc
 # Yürüt
-cargo run -- --yürüt cikti.hbc
+huma exec cikti.hbc
 ```
 
 ---
