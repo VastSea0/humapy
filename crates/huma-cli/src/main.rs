@@ -91,6 +91,9 @@ enum Commands {
     /// Etkileşimli REPL (Okuma-Değerlendirme-Yazdırma Döngüsü)
     Repl,
 
+    /// Masaüstü IDE (Geliştirme Ortamı) uygulamasını başlat
+    Ide,
+
     /// Hüma araç takımını GitHub'dan en son sürüme güncelle
     Update {
         /// Mevcut sürümü kontrol et ancak güncelleme yapma
@@ -128,6 +131,7 @@ fn run(cli: Cli) -> i32 {
         Some(Commands::Exec { file }) => commands::exec_bytecode(&file),
         Some(Commands::Gen { file, output }) => commands::generate_standalone(&file, &output),
         Some(Commands::Repl) => commands::start_repl(),
+        Some(Commands::Ide) => commands::start_ide(),
         Some(Commands::Update { check }) => {
             if check {
                 updater::check_for_update()

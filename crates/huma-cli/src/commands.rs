@@ -100,6 +100,16 @@ pub fn start_repl() -> Result<()> {
     Ok(())
 }
 
+/// Launch the Tauri Desktop IDE.
+pub fn start_ide() -> Result<()> {
+    println!(
+        "\n  {}",
+        "🚀 Hüma IDE başlatılıyor…".bright_cyan().bold()
+    );
+    app_lib::run();
+    Ok(())
+}
+
 /// Helper: lex → parse → interpret.
 fn execute_source(source: &str, interp: &mut Yorumlayici) {
     let lexer = Lexer::new(source);

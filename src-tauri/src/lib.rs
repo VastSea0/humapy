@@ -1,5 +1,5 @@
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use serde_json::{Value, json};
 use huma::interpreter::Yorumlayici;
 use huma::lexer::Lexer;
@@ -90,7 +90,8 @@ async fn run_huma(code: String) -> Result<String, String> {
     
     interp.yorumla(program);
     
-    Ok(output_capture.borrow().to_string())
+    let result = output_capture.borrow().to_string();
+    Ok(result)
 }
 
 #[tauri::command]
