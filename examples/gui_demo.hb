@@ -19,19 +19,19 @@ pencere_acik = 0 olsun
 yas_bilgisi fonksiyon olsun {
     yazı_ekle("Seçilen Yaş: " + yaş)
     yaş > 50 ise {
-        yazı_ekle(" (Yarım asrı devirmişsiniz!)")
+        yazı_ekle(" (Yarım asrı devirmişsiniz!)", "kalın")
     }
 }
 
 sekme1_icerik fonksiyon olsun {
-    büyük_başlık("PROFİL BİLGİLERİ")
+    yazı_ekle("PROFİL BİLGİLERİ", "başlık")
     boşluk_bırak(8.0)
     
     // Genişliği 300px olarak sabitlenmiş metin kutusu
-    isim = boyutlu_metin_kutusu_ekle(isim, 300.0)
+    isim = metin_kutusu_ekle(isim, 300.0)
     
     boşluk_bırak(5.0)
-    renkli_yazı_ekle("Merhaba " + isim + "!", 0, 150, 255)
+    yazı_ekle("Merhaba " + isim + "!", 0, 150, 255)
     
     boşluk_bırak(5.0)
     ayraç_çiz()
@@ -46,15 +46,16 @@ sekme1_icerik fonksiyon olsun {
 // ===================
 
 buton_islemleri fonksiyon olsun {
-    // 150x40px boyutlarında büyük butonlar
-    boyutlu_renkli_buton_ekle("Sayacı Artır", 150.0, 40.0, 50, 200, 50) ise {
+    // Yeşik Büyük Buton: buton_ekle(metin, r, g, b, w, h)
+    buton_ekle("Sayacı Artır", 50, 200, 50, 150.0, 40.0) ise {
         sayaç = sayaç + 1
     }
-    boyutlu_renkli_buton_ekle("Sıfırla", 100.0, 40.0, 255, 100, 100) ise {
+    // Kırmızı Büyük Buton
+    buton_ekle("Sıfırla", 255, 100, 100, 100.0, 40.0) ise {
         sayaç = 0
     }
     boşluk_bırak(10.0)
-    kalın_yazı_ekle("Sayaç: " + sayaç)
+    yazı_ekle("Sayaç: " + sayaç, "kalın")
 }
 
 tema_ayarlari fonksiyon olsun {
@@ -67,7 +68,7 @@ tema_ayarlari fonksiyon olsun {
 }
 
 sekme2_icerik fonksiyon olsun {
-    büyük_başlık("UYGULAMA AYARLARI")
+    yazı_ekle("UYGULAMA AYARLARI", "başlık")
     boşluk_bırak(8.0)
     
     yan_yana_diz(buton_islemleri)
@@ -84,11 +85,11 @@ sekme2_icerik fonksiyon olsun {
     
     onay_verdi_mi == 1 ise {
         boşluk_bırak(5.0)
-        eğik_yazı_ekle("Teşekkürler, anonim veriler arkaplanda toplanıyor.")
+        yazı_ekle("Teşekkürler, anonim veriler arkaplanda toplanıyor.", "eğik")
     }
     
     boşluk_bırak(10.0)
-    buton_ekle("Yüzen Pencereyi Aç") ise {
+    buton_ekle("Yüzen Pencereyi Aç", 200, 40) ise {
         pencere_acik = 1
     }
 }
@@ -98,29 +99,19 @@ sekme2_icerik fonksiyon olsun {
 // ===================
 
 tablo_verileri fonksiyon olsun {
-    kalın_yazı_ekle("ID")
-    kalın_yazı_ekle("Öğe Adı")
-    kalın_yazı_ekle("Durum")
+    yazı_ekle("ID", "kalın")
+    yazı_ekle("Öğe Adı", "kalın")
+    yazı_ekle("Durum", "kalın")
     yeni_satır_ekle()
     
     yazı_ekle("1")
     yazı_ekle("Hüma Derleyicisi")
-    renkli_yazı_ekle("Aktif", 50, 200, 50)
+    yazı_ekle("Aktif", 50, 200, 50)
     yeni_satır_ekle()
     
     yazı_ekle("2")
     yazı_ekle("Gelişmiş GUI")
-    renkli_yazı_ekle("Tamamlanıyor", 255, 150, 0)
-    yeni_satır_ekle()
-    
-    yazı_ekle("3")
-    yazı_ekle("Ağ Kartları")
-    renkli_yazı_ekle("Beklemede", 150, 150, 150)
-    yeni_satır_ekle()
-    
-    yazı_ekle("4")
-    yazı_ekle("Paket Yöneticisi")
-    renkli_yazı_ekle("Beklemede", 150, 150, 150)
+    yazı_ekle("Tamamlanıyor", 255, 150, 0)
     yeni_satır_ekle()
 }
 
@@ -129,7 +120,7 @@ tablo_sarma fonksiyon olsun {
 }
 
 sekme3_icerik fonksiyon olsun {
-    büyük_başlık("GRID (Izgara) Layout Görünümü")
+    yazı_ekle("GRID (Izgara) Layout Görünümü", "başlık")
     boşluk_bırak(8.0)
     
     yazı_ekle("egui native grid altyapısı ScrollBox ile birlikte:")
@@ -139,12 +130,11 @@ sekme3_icerik fonksiyon olsun {
 
 // ===================
 // YÜZEN PENCERE
-
 // ===================
 
 pencere_icerigi fonksiyon olsun {
-    büyük_başlık("Dikkat!")
-    renkli_yazı_ekle("Ben bir yüzen (floating) pencereyim!", 255, 100, 100)
+    yazı_ekle("Dikkat!", "başlık")
+    yazı_ekle("Ben bir yüzen (floating) pencereyim!", 255, 100, 100)
     yazı_ekle("Mevcut Sayaç: " + sayaç)
     
     buton_ekle("Beni Kapat") ise {
@@ -165,19 +155,8 @@ dosya_menusu fonksiyon olsun {
     }
 }
 
-duzen_menusu fonksiyon olsun {
-    buton_ekle("Geri Al")
-    buton_ekle("Yeniden Yap")
-}
-
-hakkinda_menusu fonksiyon olsun {
-    yazı_ekle("Hüma v0.3.1 GUI v" + gui_ver)
-}
-
 ust_menu fonksiyon olsun {
     açılır_menü_ekle("Dosya", dosya_menusu)
-    açılır_menü_ekle("Düzen", duzen_menusu)
-    açılır_menü_ekle("Hakkında", hakkinda_menusu)
 }
 
 sekme_cubugu_fks fonksiyon olsun {
@@ -223,4 +202,4 @@ sekme_cubugu_fks fonksiyon olsun {
     }
 }
 
-pencere_oluştur("Hüma Zengin GUI v2.5", 600.0, 500.0, çizim_fks)
+pencere_oluştur("Hüma Zengin GUI v2.6", 600.0, 500.0, çizim_fks)

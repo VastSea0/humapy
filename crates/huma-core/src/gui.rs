@@ -66,100 +66,45 @@ pub fn kayit_et(globals: &mut std::collections::HashMap<String, Deger>) {
             let res = CURRENT_UI.with(|c| {
                 if let Some(ui_ptr) = *c.borrow() {
                     let ui = unsafe { &mut *ui_ptr };
-                    if ui.button(metin.to_string()).clicked() {
+                    
+                    let mut rich = egui::RichText::new(metin.to_string());
+                    let mut w_h: Option<(f32, f32)> = None;
+
+                    // Argüman analiz sistemi:
+                    // buton(metin) -> [0]
+                    // buton(metin, r, g, b) -> [0..4]
+                    // buton(metin, w, h) -> [0..3]
+                    // buton(metin, r, g, b, w, h) -> [0..6]
+                    
+                    if args.len() == 3 { // Sadece boyut
+                        if let (Deger::Sayi(w), Deger::Sayi(h)) = (&args[1], &args[2]) {
+                            w_h = Some((*w as f32, *h as f32));
+                        }
+                    } else if args.len() >= 4 { // Renk var
+                        if let (Deger::Sayi(r), Deger::Sayi(g), Deger::Sayi(b)) = (&args[1], &args[2], &args[3]) {
+                            rich = rich.color(egui::Color32::from_rgb(*r as u8, *g as u8, *b as u8));
+                        }
+                        if args.len() >= 6 { // Renk + Boyut
+                            if let (Deger::Sayi(w), Deger::Sayi(h)) = (&args[4], &args[5]) {
+                                w_h = Some((*w as f32, *h as f32));
+                            }
+                        }
+                    }
+
+                    let btn = egui::Button::new(rich);
+                    let response = if let Some((w, h)) = w_h {
+                        ui.add_sized([w, h], btn)
+                    } else {
+                        ui.add(btn)
+                    };
+                    
+                    if response.clicked() {
                         return 1.0;
                     }
                 }
                 0.0
             });
             return Deger::Sayi(res);
-        }
-        Deger::Sayi(0.0)
-    }));
-
-    globals.insert("etiket".to_string(), Deger::DahiliFonksiyon(|args| {
-        if let Some(metin) = args.first() {
-            CURRENT_UI.with(|c| {
-                if let Some(ui_ptr) = *c.borrow() {
-                    let ui = unsafe { &mut *ui_ptr };
-                    ui.label(metin.to_string());
-                }
-            });
-        }
-        Deger::Bos
-    }));
-
-    globals.insert("başlık_yazısı".to_string(), Deger::DahiliFonksiyon(|args| {
-        if let Some(metin) = args.first() {
-            CURRENT_UI.with(|c| {
-                if let Some(ui_ptr) = *c.borrow() {
-                    let ui = unsafe { &mut *ui_ptr };
-                    ui.heading(metin.to_string());
-                }
-            });
-        }
-        Deger::Bos
-    }));
-
-    globals.insert("renkli_yazı".to_string(), Deger::DahiliFonksiyon(|args| {
-        if args.len() >= 4 {
-            if let (Deger::Metin(metin), Deger::Sayi(r), Deger::Sayi(g), Deger::Sayi(b)) = (&args[0], &args[1], &args[2], &args[3]) {
-                CURRENT_UI.with(|c| {
-                    if let Some(ui_ptr) = *c.borrow() {
-                        let ui = unsafe { &mut *ui_ptr };
-                        ui.label(
-                            egui::RichText::new(metin.clone())
-                                .color(egui::Color32::from_rgb(*r as u8, *g as u8, *b as u8))
-                        );
-                    }
-                });
-            }
-        }
-        Deger::Bos
-    }));
-
-    globals.insert("kalın_yazı".to_string(), Deger::DahiliFonksiyon(|args| {
-        if let Some(metin) = args.first() {
-            CURRENT_UI.with(|c| {
-                if let Some(ui_ptr) = *c.borrow() {
-                    let ui = unsafe { &mut *ui_ptr };
-                    ui.label(egui::RichText::new(metin.to_string()).strong());
-                }
-            });
-        }
-        Deger::Bos
-    }));
-
-    globals.insert("eğik_yazı".to_string(), Deger::DahiliFonksiyon(|args| {
-        if let Some(metin) = args.first() {
-            CURRENT_UI.with(|c| {
-                if let Some(ui_ptr) = *c.borrow() {
-                    let ui = unsafe { &mut *ui_ptr };
-                    ui.label(egui::RichText::new(metin.to_string()).italics());
-                }
-            });
-        }
-        Deger::Bos
-    }));
-
-    globals.insert("renkli_buton".to_string(), Deger::DahiliFonksiyon(|args| {
-        if args.len() >= 4 {
-            if let (Deger::Metin(metin), Deger::Sayi(r), Deger::Sayi(g), Deger::Sayi(b)) = (&args[0], &args[1], &args[2], &args[3]) {
-                let mut clicked = false;
-                CURRENT_UI.with(|c| {
-                    if let Some(ui_ptr) = *c.borrow() {
-                        let ui = unsafe { &mut *ui_ptr };
-                        let btn = egui::Button::new(
-                            egui::RichText::new(metin.clone())
-                                .color(egui::Color32::from_rgb(*r as u8, *g as u8, *b as u8))
-                        );
-                        if ui.add(btn).clicked() {
-                            clicked = true;
-                        }
-                    }
-                });
-                return Deger::Sayi(if clicked { 1.0 } else { 0.0 });
-            }
         }
         Deger::Sayi(0.0)
     }));
@@ -185,7 +130,17 @@ pub fn kayit_et(globals: &mut std::collections::HashMap<String, Deger>) {
             CURRENT_UI.with(|c| {
                 if let Some(ui_ptr) = *c.borrow() {
                     let ui = unsafe { &mut *ui_ptr };
-                    ui.add(egui::TextEdit::singleline(&mut text));
+                    let edit = egui::TextEdit::singleline(&mut text);
+                    
+                    if args.len() >= 2 {
+                        if let Deger::Sayi(w) = args[1] {
+                            ui.add_sized([w as f32, 20.0], edit);
+                        } else {
+                            ui.add(edit);
+                        }
+                    } else {
+                        ui.add(edit);
+                    };
                 }
             });
             return Deger::Metin(text);
@@ -581,22 +536,45 @@ pub fn kayit_et(globals: &mut std::collections::HashMap<String, Deger>) {
         Deger::Sayi(0.0)
     }));
 
-    globals.insert("boyutlu_girdi_alanı".to_string(), Deger::DahiliFonksiyon(|args| {
-        if args.len() >= 2 {
-            if let (Deger::Metin(mut text), Deger::Sayi(w)) = (args[0].clone(), &args[1]) {
-                CURRENT_UI.with(|c| {
-                    if let Some(ui_ptr) = *c.borrow() {
-                        let ui = unsafe { &mut *ui_ptr };
-                        ui.add_sized([*w as f32, 20.0], egui::TextEdit::singleline(&mut text));
+    globals.insert("etiket".to_string(), Deger::DahiliFonksiyon(|args| {
+        if let Some(metin) = args.first() {
+            CURRENT_UI.with(|c| {
+                if let Some(ui_ptr) = *c.borrow() {
+                    let ui = unsafe { &mut *ui_ptr };
+                    
+                    let mut rich = egui::RichText::new(metin.to_string());
+                    let mut is_heading = false;
+
+                    // etiket(metin)
+                    // etiket(metin, r, g, b)
+                    // etiket(metin, stil_str) -> "kalın", "eğik", "başlık"
+                    
+                    if args.len() >= 2 {
+                        if let Deger::Metin(stil) = &args[1] {
+                            match stil.as_str() {
+                                "kalın" => rich = rich.strong(),
+                                "eğik" => rich = rich.italics(),
+                                "başlık" => is_heading = true,
+                                _ => {}
+                            }
+                        } else if args.len() >= 4 { // Renk
+                            if let (Deger::Sayi(r), Deger::Sayi(g), Deger::Sayi(b)) = (&args[1], &args[2], &args[3]) {
+                                rich = rich.color(egui::Color32::from_rgb(*r as u8, *g as u8, *b as u8));
+                            }
+                        }
                     }
-                });
-                return Deger::Metin(text);
-            }
+
+                    if is_heading {
+                        ui.heading(rich);
+                    } else {
+                        ui.label(rich);
+                    }
+                }
+            });
         }
-        args.first().cloned().unwrap_or(Deger::Metin(String::new()))
+        Deger::Bos
     }));
 }
-
 
 pub fn gui_istegi_var_mi() -> bool {
     GUI_REQUEST.with(|r| r.borrow().is_some())

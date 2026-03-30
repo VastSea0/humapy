@@ -1,7 +1,7 @@
 // Hüma Native GUI Kütüphanesi
 // egui tabanlı yerel arayüz oluşturma araçları
 
-GUI_SÜRÜM = "0.2.0" olsun
+GUI_SÜRÜM = "0.4.0" olsun
 
 gui_sürüm_al fonksiyon olsun {
     GUI_SÜRÜM'ü döndür
@@ -11,40 +11,58 @@ pencere_oluştur fonksiyon olsun başlık, genişlik, yükseklik, çizim_fks als
     pencere_başlat(başlık, genişlik, yükseklik, çizim_fks)
 }
 
-buton_ekle fonksiyon olsun metin alsın {
-    buton(metin)'i döndür
+// Birleşik Buton API'sı
+// Kullanım Boş: buton_ekle("Metin")
+// Kullanım Renkli: buton_ekle("Metin", R, G, B)
+// Kullanım Boyutlu: buton_ekle("Metin", W, H)
+// Kullanım Full: buton_ekle("Metin", R, G, B, W, H)
+buton_ekle fonksiyon olsun metin, p1, p2, p3, p4, p5 alsın {
+    p1 == boş ise {
+        buton(metin)'i döndür
+    } yoksa {
+        p2 == boş ise {
+            buton(metin)'i döndür
+        } yoksa {
+            p3 == boş ise {
+                buton(metin, p1, p2)'i döndür
+            } yoksa {
+                p4 == boş ise {
+                    buton(metin, p1, p2, p3)'i döndür
+                } yoksa {
+                    buton(metin, p1, p2, p3, p4, p5)'i döndür
+                }
+            }
+        }
+    }
 }
 
-yazı_ekle fonksiyon olsun metin alsın {
-    etiket(metin)
+// Birleşik Yazı/Etiket API'sı
+// Kullanım: yazı_ekle("Metin")
+// Kullanım Stil: yazı_ekle("Metin", "kalın") // "kalın", "eğik", "başlık"
+// Kullanım Renkli: yazı_ekle("Metin", R, G, B)
+yazı_ekle fonksiyon olsun metin, p1, p2, p3 alsın {
+    p1 == boş ise {
+        etiket(metin)
+    } yoksa {
+        p2 == boş ise {
+            etiket(metin, p1)
+        } yoksa {
+            etiket(metin, p1, p2, p3)
+        }
+    }
 }
 
-büyük_başlık fonksiyon olsun metin alsın {
-    başlık_yazısı(metin)
-}
-
-renkli_yazı_ekle fonksiyon olsun metin, r, g, b alsın {
-    renkli_yazı(metin, r, g, b)
-}
-
-kalın_yazı_ekle fonksiyon olsun metin alsın {
-    kalın_yazı(metin)
-}
-
-eğik_yazı_ekle fonksiyon olsun metin alsın {
-    eğik_yazı(metin)
-}
-
-renkli_buton_ekle fonksiyon olsun metin, r, g, b alsın {
-    renkli_buton(metin, r, g, b)'i döndür
+// Metin kutusu ekler. İsteğe bağlı genişlik alabilir.
+metin_kutusu_ekle fonksiyon olsun metin, w alsın {
+    w == boş ise {
+        girdi_alanı(metin)'i döndür
+    } yoksa {
+        girdi_alanı(metin, w)'i döndür
+    }
 }
 
 tema_degistir fonksiyon olsun tema alsın {
     tema_ayarla(tema)
-}
-
-metin_kutusu_ekle fonksiyon olsun metin alsın {
-    girdi_alanı(metin)'i döndür
 }
 
 büyük_metin_kutusu_ekle fonksiyon olsun metin alsın {
@@ -74,8 +92,6 @@ ayraç_çiz fonksiyon olsun {
 boşluk_bırak fonksiyon olsun miktar alsın {
     boşluk(miktar)
 }
-
-// -- Sürüm 0.2.0 ile Gelen Gelişmiş Özellikler --
 
 sekme_ekle fonksiyon olsun seçili_mi, metin alsın {
     sekme(seçili_mi, metin)'i döndür
@@ -109,20 +125,6 @@ kaydırılabilir_liste_ekle fonksiyon olsun id, fks alsın {
     kaydırılabilir_alan(id, fks)
 }
 
-// Boyutlandırma ve Düzenleme (Sürüm 0.3.0)
-
 alan_ayır_ekle fonksiyon olsun w, h, fks alsın {
     alan_ayır(w, h, fks)
-}
-
-boyutlu_buton_ekle fonksiyon olsun metin, w, h alsın {
-    boyutlu_buton(metin, w, h)'i döndür
-}
-
-boyutlu_renkli_buton_ekle fonksiyon olsun metin, w, h, r, g, b alsın {
-    boyutlu_renkli_buton(metin, w, h, r, g, b)'i döndür
-}
-
-boyutlu_metin_kutusu_ekle fonksiyon olsun metin, w alsın {
-    boyutlu_girdi_alanı(metin, w)'i döndür
 }
