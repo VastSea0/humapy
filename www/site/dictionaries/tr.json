@@ -103,7 +103,8 @@
       "lists": "Listeler ve Hatalar",
       "stdlib": "Standart Kütüphane",
       "compiler": "Derleyici İç Yapısı",
-      "ide": "Hüma IDE"
+      "ide": "Hüma IDE",
+      "changelog": "Değişim Günlüğü"
     }
   },
   "Community": {
@@ -204,6 +205,53 @@
         "title": "Yararlı Kaynaklar",
         "discord": "Discord Topluluğu",
         "issue": "Sorun bildir"
+      }
+    },
+    "changelog": {
+      "title": "Değişim Günlüğü",
+      "description": "Hüma dili ve araç zinciri resmi güncelleme geçmişidir.",
+      "v0_3_1": {
+        "version": "v0.3.1 (En Yeni)",
+        "date": "30 Mart 2026",
+        "changes": [
+          "Yerel yönlendirme ile tam uluslararasılaştırma (i18n) desteği",
+          "İngilizce ve Türkçe için dinamik dil değiştirici",
+          "Özel sözdizimi temalı entegre dokümantasyon sitesi",
+          "Oyun alanının yüksek performanslı bir statik galeriye dönüştürülmesi",
+          "Çok platformlu sürümler için birleşik CLI geliştirmeleri"
+        ]
+      },
+      "v0_3_0": {
+        "version": "v0.3.0",
+        "date": "20 Mart 2026",
+        "changes": [
+          "Projenin modüler çalışma alanı (workspace) paketlerine dönüştürülmesi",
+          "Endüstriyel sınıf Sanal Makine ve Bytecode altyapısının uygulanması",
+          "IDE'nin yerel bir Tauri/React masaüstü uygulamasına geçirilmesi",
+          "Geliştirici araçları için sistem düzeyinde CLI entegrasyonu",
+          "GitHub Actions CI/CD aracılığıyla otomatik sürüm derlemeleri"
+        ]
+      },
+      "v0_2_0": {
+        "version": "v0.2.0",
+        "date": "Şubat 2026",
+        "changes": [
+          "Dil dilbilgisinin ve yerel Türkçe anahtar kelimelerin tamamen yenilenmesi",
+          "Gömülü IDE içeren sıfır bağımlılıklı taşınabilir ikili dosya",
+          "Yerel metin işleme için NLP çekirdek kütüphanesi (nlp.hb)",
+          "Satır/sütun tanılamalı gelişmiş hata raporlama",
+          "Karmaşık veri yapıları ve OOP desteğinin uygulanması"
+        ]
+      },
+      "v0_1_0": {
+        "version": "v0.1.0",
+        "date": "Ocak 2026",
+        "changes": [
+          "Rust tabanlı dil motorunun ilk kararlı sürümü",
+          "G/Ç, sistem ve matematik için standart kütüphane modülleri",
+          "Birinci aşama Bytecode derleyicisinin uygulanması",
+          "Hızlı geliştirme ve test için etkileşimli REPL"
+        ]
       }
     }
   }

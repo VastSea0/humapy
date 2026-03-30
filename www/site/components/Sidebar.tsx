@@ -49,6 +49,11 @@ export default function Sidebar({ dict, locale }: { dict: any; locale: string })
           label: dict.Sidebar.items.ide,
           icon: "desktop_windows",
         },
+        {
+          href: getPath("/docs/changelog"),
+          label: dict.Sidebar.items.changelog,
+          icon: "history_edu",
+        },
       ],
     },
   ];

@@ -103,7 +103,8 @@
       "lists": "Lists & Error Handling",
       "stdlib": "Standard Library",
       "compiler": "Compiler Internals",
-      "ide": "Hüma IDE"
+      "ide": "Hüma IDE",
+      "changelog": "Changelog"
     }
   },
   "Community": {
@@ -204,6 +205,53 @@
         "title": "Helpful Resources",
         "discord": "Discord Community",
         "issue": "Report an issue"
+      }
+    },
+    "changelog": {
+      "title": "Changelog",
+      "description": "Official update history for the Hüma language and toolchain.",
+      "v0_3_1": {
+        "version": "v0.3.1 (Latest)",
+        "date": "March 30, 2026",
+        "changes": [
+          "Full internationalization (i18n) support with locale routing",
+          "Dynamic language switcher for English and Turkish",
+          "Integrated documentation site with custom syntax theme",
+          "Refactored playground into a high-performance static gallery",
+          "Unified CLI enhancements for cross-platform releases"
+        ]
+      },
+      "v0_3_0": {
+        "version": "v0.3.0",
+        "date": "March 20, 2026",
+        "changes": [
+          "Restructured project into modular workspace crates",
+          "Implemented industrial-grade Virtual Machine and Bytecode infrastructure",
+          "Migrated IDE to a native Tauri/React desktop application",
+          "Added system-level CLI integration for development tools",
+          "Automated release builds via GitHub Actions CI/CD"
+        ]
+      },
+      "v0_2_0": {
+        "version": "v0.2.0",
+        "date": "February 2026",
+        "changes": [
+          "Complete overhaul of language grammar and native Turkish keywords",
+          "Zero-dependency portable binary with embedded IDE",
+          "NLP core library (nlp.hb) for native text processing",
+          "Enhanced error reporting with line/column diagnostics",
+          "Implemented complex data structures and OOP support"
+        ]
+      },
+      "v0_1_0": {
+        "version": "v0.1.0",
+        "date": "January 2026",
+        "changes": [
+          "Initial stable release of the Rust-based language engine",
+          "Standard library modules for I/O, system, and mathematics",
+          "Implementation of the first-stage Bytecode compiler",
+          "Interactive REPL for rapid development and testing"
+        ]
       }
     }
   }
