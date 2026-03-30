@@ -27,7 +27,10 @@ sekme1_icerik fonksiyon olsun {
     büyük_başlık("PROFİL BİLGİLERİ")
     boşluk_bırak(8.0)
     
-    isim = metin_kutusu_ekle(isim)
+    // Genişliği 300px olarak sabitlenmiş metin kutusu
+    isim = boyutlu_metin_kutusu_ekle(isim, 300.0)
+    
+    boşluk_bırak(5.0)
     renkli_yazı_ekle("Merhaba " + isim + "!", 0, 150, 255)
     
     boşluk_bırak(5.0)
@@ -43,13 +46,15 @@ sekme1_icerik fonksiyon olsun {
 // ===================
 
 buton_islemleri fonksiyon olsun {
-    renkli_buton_ekle("Sayacı Artır", 50, 200, 50) ise {
+    // 150x40px boyutlarında büyük butonlar
+    boyutlu_renkli_buton_ekle("Sayacı Artır", 150.0, 40.0, 50, 200, 50) ise {
         sayaç = sayaç + 1
     }
-    renkli_buton_ekle("Sıfırla", 255, 100, 100) ise {
+    boyutlu_renkli_buton_ekle("Sıfırla", 100.0, 40.0, 255, 100, 100) ise {
         sayaç = 0
     }
-    kalın_yazı_ekle(" => Sayaç Değeri: " + sayaç)
+    boşluk_bırak(10.0)
+    kalın_yazı_ekle("Sayaç: " + sayaç)
 }
 
 tema_ayarlari fonksiyon olsun {

@@ -108,3 +108,21 @@ yeni_satır_ekle fonksiyon olsun {
 kaydırılabilir_liste_ekle fonksiyon olsun id, fks alsın {
     kaydırılabilir_alan(id, fks)
 }
+
+// Boyutlandırma ve Düzenleme (Sürüm 0.3.0)
+
+alan_ayır_ekle fonksiyon olsun w, h, fks alsın {
+    alan_ayır(w, h, fks)
+}
+
+boyutlu_buton_ekle fonksiyon olsun metin, w, h alsın {
+    boyutlu_buton(metin, w, h)'i döndür
+}
+
+boyutlu_renkli_buton_ekle fonksiyon olsun metin, w, h, r, g, b alsın {
+    boyutlu_renkli_buton(metin, w, h, r, g, b)'i döndür
+}
+
+boyutlu_metin_kutusu_ekle fonksiyon olsun metin, w alsın {
+    boyutlu_girdi_alanı(metin, w)'i döndür
+}

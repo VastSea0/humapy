@@ -513,7 +513,90 @@ pub fn kayit_et(globals: &mut std::collections::HashMap<String, Deger>) {
         }
         Deger::Bos
     }));
+
+    globals.insert("alan_ayır".to_string(), Deger::DahiliFonksiyon(|args| {
+        if args.len() >= 3 {
+            if let (Deger::Sayi(w), Deger::Sayi(h), fks) = (&args[0], &args[1], &args[2]) {
+                CURRENT_UI.with(|c| {
+                    let ui_ptr_opt = *c.borrow();
+                    if let Some(ui_ptr) = ui_ptr_opt {
+                        let outer_ui = unsafe { &mut *ui_ptr };
+                        outer_ui.allocate_ui(egui::Vec2::new(*w as f32, *h as f32), |ui| {
+                            let inner_ui_ptr = ui as *mut egui::Ui;
+                            *c.borrow_mut() = Some(inner_ui_ptr);
+                            
+                            CURRENT_INTERP.with(|i| {
+                                let interp_ptr_opt = *i.borrow();
+                                if let Some(interp_ptr) = interp_ptr_opt {
+                                    let interp = unsafe { &mut *interp_ptr };
+                                    interp.fonksiyon_cagrisi(fks.clone(), vec![]);
+                                }
+                            });
+                        });
+                        *c.borrow_mut() = Some(ui_ptr);
+                    }
+                });
+            }
+        }
+        Deger::Bos
+    }));
+
+    globals.insert("boyutlu_buton".to_string(), Deger::DahiliFonksiyon(|args| {
+        if args.len() >= 3 {
+            if let (Deger::Metin(metin), Deger::Sayi(w), Deger::Sayi(h)) = (&args[0], &args[1], &args[2]) {
+                let mut clicked = false;
+                CURRENT_UI.with(|c| {
+                    if let Some(ui_ptr) = *c.borrow() {
+                        let ui = unsafe { &mut *ui_ptr };
+                        if ui.add_sized([*w as f32, *h as f32], egui::Button::new(metin)).clicked() {
+                            clicked = true;
+                        }
+                    }
+                });
+                return Deger::Sayi(if clicked { 1.0 } else { 0.0 });
+            }
+        }
+        Deger::Sayi(0.0)
+    }));
+
+    globals.insert("boyutlu_renkli_buton".to_string(), Deger::DahiliFonksiyon(|args| {
+        if args.len() >= 6 {
+            if let (Deger::Metin(metin), Deger::Sayi(w), Deger::Sayi(h), Deger::Sayi(r), Deger::Sayi(g), Deger::Sayi(b)) = (&args[0], &args[1], &args[2], &args[3], &args[4], &args[5]) {
+                let mut clicked = false;
+                CURRENT_UI.with(|c| {
+                    if let Some(ui_ptr) = *c.borrow() {
+                        let ui = unsafe { &mut *ui_ptr };
+                        let btn = egui::Button::new(
+                            egui::RichText::new(metin.clone())
+                                .color(egui::Color32::from_rgb(*r as u8, *g as u8, *b as u8))
+                        );
+                        if ui.add_sized([*w as f32, *h as f32], btn).clicked() {
+                            clicked = true;
+                        }
+                    }
+                });
+                return Deger::Sayi(if clicked { 1.0 } else { 0.0 });
+            }
+        }
+        Deger::Sayi(0.0)
+    }));
+
+    globals.insert("boyutlu_girdi_alanı".to_string(), Deger::DahiliFonksiyon(|args| {
+        if args.len() >= 2 {
+            if let (Deger::Metin(mut text), Deger::Sayi(w)) = (args[0].clone(), &args[1]) {
+                CURRENT_UI.with(|c| {
+                    if let Some(ui_ptr) = *c.borrow() {
+                        let ui = unsafe { &mut *ui_ptr };
+                        ui.add_sized([*w as f32, 20.0], egui::TextEdit::singleline(&mut text));
+                    }
+                });
+                return Deger::Metin(text);
+            }
+        }
+        args.first().cloned().unwrap_or(Deger::Metin(String::new()))
+    }));
 }
+
 
 pub fn gui_istegi_var_mi() -> bool {
     GUI_REQUEST.with(|r| r.borrow().is_some())
