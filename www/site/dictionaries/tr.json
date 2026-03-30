@@ -1,25 +1,25 @@
 {
   "Hero": {
-    "badge": "v0.3.1-duraklı kinetik arşiv",
-    "headline": "Düşündüğün Gibi Kodla.",
+    "badge": "v0.3.1-kararlı sürüm (kinetik arşiv)",
+    "headline": "Aklındaki Gibi Kodla.",
     "subheadline": "Kendi Ana Dilinde.",
-    "description": "Hüma, yerel Türkçe sözdizimine sahip yüksek performanslı bir programlama dilidir. Rust tabanlı çekirdeğiyle, doğal dilin ifade gücünü bir sistem derleyicisinin saf hızıyla birleştirir.",
-    "cta_get_started": "Başla",
-    "cta_docs": "Dokümantasyonu Oku"
+    "description": "Hüma, yerel Türkçe sözdizimine sahip, yüksek performanslı bir programlama dilidir. Rust tabanlı çekirdeğiyle, doğal bir dilin ifade gücünü sistem derleyicisinin hızıyla birleştirir.",
+    "cta_get_started": "Hemen Başla",
+    "cta_docs": "Dokümanları Oku"
   },
   "IDE": {
     "filename": "merhaba.hb",
-    "terminal_output": "ÇIKTI",
+    "terminal_output": "TERMİNAL ÇIKTISI",
     "success_message": "Başarılı!"
   },
   "Features": {
-    "headline": "Endüstriyel Sınıf Altyapı.",
+    "headline": "Endüstriyel Seviye Altyapı.",
     "natural_syntax": {
       "title": "Doğal Sözdizimi",
-      "description": "Algoritmalarınızı ana dilinizde yazın. Doğrudan makine koduna dönüşen Türkçe yapılarıyla bilişsel yükü azaltın ve sürdürülebilirliği artırın."
+      "description": "Algoritmaları kendi dilinizde kurgulayın. Bilişsel yükü azaltan ve doğrudan makine koduna dönüşen yerel Türkçe yapılarıyla verimliliği artırın."
     },
     "hybrid_execution": {
-      "title": "Hibrit Çalıştırma",
+      "title": "Melez Yürütme",
       "description": "Hızlı prototipleme için yorumlayın veya üretim için derleyin. Hüma, LLVM altyapısı tarafından desteklenen çok aşamalı bir JIT ve AOT hattı kullanır."
     },
     "standalone_compilation": {
@@ -28,7 +28,7 @@
     },
     "standard_library": {
       "title": "Zengin Standart Kütüphane",
-      "description": "Ağ iletişimi, dosya G/Ç ve veri işleme için sağlam bir modül seti. Hafif kalırken piller dahil olacak şekilde tasarlanmıştır."
+      "description": "Ağ iletişimi, dosya G/Ç ve veri işleme için sağlam bir modül seti. Gelişmiş özelliklerle donatılmış, hafif bir yapı."
     }
   },
   "CTA": {
@@ -38,7 +38,7 @@
     "available_platforms": "x64 / ARM64 için mevcut"
   },
   "Footer": {
-    "copy": "© 2026 Hüma Dil Vakfı. Kinetik Arşiv Sürümü.",
+    "copy": "© 2026 Hüma Dili Egehan KAHRAMAN",
     "license": "LİSANS: MIT",
     "build": "DERLEME: STABLE-26.03",
     "github": "GitHub",
@@ -54,14 +54,14 @@
     "github": "GitHub"
   },
   "Playground": {
-    "badge": "v0.3.1-duraklı kinetik galeri",
+    "badge": "v0.3.1-kararlı sürüm (kinetik galeri)",
     "headline": "Saf Verimlilik.",
     "subheadline": "Yerel Semantik.",
     "description": "Hüma dilini keşfedin. Günlük konuşma diline yakın sözdizimi ile programlama artık çok daha erişilebilir ve güçlü.",
     "console_output": "KONSOL ÇIKTISI",
-    "cta_title": "Kodlamanın En Doğal Yolu.",
+    "cta_title": "Kod Yazmanın En Doğal Yolu.",
     "cta_desc": "Hüma'nın tüm özelliklerini kullanmak için, CLI aracını bilgisayarınıza kurun ve kendi yazılımınızı geliştirmeye başlayın.",
-    "cta_docs": "Dokümantasyonu Oku",
+    "cta_docs": "Dokümanları Oku",
     "cta_github": "GitHub'da Görüntüle",
     "examples": {
       "hello": {
@@ -97,48 +97,48 @@
     "ecosystem": "Ekosistem",
     "items": {
       "getting_started": "Başlarken",
-      "introduction": "Giriş",
+      "introduction": "Tanıtım",
       "syntax": "Temel Sözdizimi",
       "functions": "Fonksiyonlar ve Sınıflar",
       "lists": "Listeler ve Hatalar",
       "stdlib": "Standart Kütüphane",
       "compiler": "Derleyici İç Yapısı",
       "ide": "Hüma IDE",
-      "changelog": "Değişim Günlüğü"
+      "changelog": "Sürüm Notları"
     }
   },
   "Community": {
     "badge": "Açık Kaynak · MIT Lisansı",
     "headline": "Hüma'yı İnşa Edin.",
     "subheadline": "Birlikte.",
-    "description": "Hüma topluluk odaklı bir dildir. Açılan her sorun, birleşen her PR ve başlayan her tartışma Hüma'nın ne olacağını şekillendirir. GitHub'da bize katılın.",
-    "get_involved": "Katılın",
+    "description": "Hüma topluluk odaklı bir dildir. Açılan her sorun, birleşen her çekme isteği (PR) ve başlatılan her tartışma Hüma'nın geleceğini şekillendirir. GitHub'da bize katılın.",
+    "get_involved": "Topluluğa Katılın",
     "contributing": "Katkıda Bulunma",
-    "contributing_desc": "Hüma Rust ile yazılmıştır. Kurulmuş bir cargo'ya ihtiyacınız olacak. İşte sıfırdan birleşmiş bir PR'a giden yol:",
+    "contributing_desc": "Hüma Rust ile geliştirilmiştir. Başlamak için cargo kurulumuna ihtiyacınız olacak. İşte bir çekme isteği (PR) göndermeye giden yol:",
     "star_headline": "Depoya yıldız verin.",
-    "star_desc": "Her yıldız Hüma'nın daha fazla geliştiriciye ulaşmasına yardımcı olur. İki saniyenizi alır ve bağımsız bir dil projesi için her şey demektir.",
+    "star_desc": "Her yıldız Hüma'nın daha fazla geliştiriciye ulaşmasına yardımcı olur. İki saniyenizi ayırarak açık kaynaklı bir dil projesine destek olabilirsiniz.",
     "star_button": "GitHub'da Yıldız Ver",
     "fork_button": "Çatalla ve Katkıda Bulun",
     "channels": {
       "repo": {
         "title": "GitHub Deposu",
-        "description": "Kaynak koduna göz atın, sorunlar açın ve çekme isteklerinde bulunun. Tüm geliştirme şeffaf bir şekilde gerçekleşir.",
-        "label": "GitHub'da Görüntüle"
+        "description": "Kaynak koduna göz atın, sorunlar açın ve çekme isteklerinde bulunun. Tüm süreç şeffaf bir şekilde ilerler.",
+        "label": "GitHub'da İncele"
       },
       "bugs": {
-        "title": "Hata Raporları",
-        "description": "Yorumlayıcıda veya derleyicide bir hata mı buldunuz? GitHub'da tekrarlanabilir bir örnekle ayrıntılı bir sorun açın.",
+        "title": "Hata Bildirme",
+        "description": "Yorumlayıcıda veya derleyicide bir hata mı buldunuz? GitHub'da tekrarlanabilir bir örnekle ayrıntılı bir sorun kaydı oluşturun.",
         "label": "Hata Bildir"
       },
       "features": {
         "title": "Özellik İstekleri",
-        "description": "Yeni bir anahtar kelime, stdlib modülü veya araç zinciri özelliği için bir fikriniz mi var? Bir tartışma başlatın ve birlikte inşa edelim.",
+        "description": "Yeni bir anahtar kelime, kütüphane modülü veya araç zinciri özelliği için fikriniz mi var? Tartışma başlatın, birlikte geliştirelim.",
         "label": "Tartışma Başlat"
       },
       "changelog": {
-        "title": "Değişim Günlüğü",
-        "description": "Hüma'nın ilk sürümünden bu yana her sürüm güncellemesini, köklü değişikliği ve yeni özelliği görün.",
-        "label": "Değişim Günlüğünü Görüntüle"
+        "title": "Sürüm Geçmişi",
+        "description": "Hüma'nın ilk sürümünden bu yana tüm güncellemeleri ve yeni özellikleri takip edin.",
+        "label": "Geçmişi Görüntüle"
       }
     }
   },
@@ -146,51 +146,51 @@
     "badge": "v0.2.0 Masaüstü Önizleme",
     "headline": "Resmi",
     "subheadline": "Hüma IDE.",
-    "description": "Tauri ve React tarafından desteklenen yerel, çok platformlu bir masaüstü uygulaması. Monaco ve entegre xterm.js terminali ile sıfır gecikmeli düzenlemeyi deneyimleyin.",
+    "description": "Tauri ve React tabanlı, yerel ve çapraz platform destekli bir masaüstü uygulaması. Monaco ve entegre xterm.js terminali ile yüksek verimli bir geliştirme deneyimi.",
     "cta_download": "Son Sürümü İndir",
-    "cta_docs": "Dokümantasyonu Oku",
+    "cta_docs": "Dokümanları Oku",
     "features_headline": "Eksiksiz Bir Geliştirici İş Akışı",
     "features": {
       "monaco": {
         "title": "Monaco Editör",
-        "desc": "VS Code ile aynı çekirdek tarafından desteklenir. Tam semantik vurgulama, minimap desteği ve çoklu imleçle düzenleme özelliklerini kutudan çıktığı haliyle edinin."
+        "desc": "VS Code ile aynı çekirdeği kullanan, tam semantik vurgulama ve gelişmiş düzenleme yeteneklerine sahip modern bir editör."
       },
       "terminal": {
-        "title": "xterm.js Entegrasyonu",
-        "desc": "Yerleşik, yerel hissi veren bir PTY terminali. Hüma'yı etkileşimli olarak çalıştırın, betikleri yürütün ve tanılamaları doğrudan alt panelden görüntüleyin."
+        "title": "Entegre Terminal (xterm.js)",
+        "desc": "Yerleşik bir PTY terminali. Hüma betiklerini doğrudan alt panelden çalıştırın ve sonuçları anlık olarak görün."
       },
       "tauri": {
-        "title": "Tauri Yerel Çekirdek",
-        "desc": "Tauri kullanılarak Rust'ta inşa edildi. Hafif, hızlı ve güvenli. Ağır Chromium yükü olmadan yerel dosya sistemi erişimi ve sistem iletişim kutuları."
+        "title": "Tauri-Rust Çekirdeği",
+        "desc": "Tauri kullanılarak Rust ile inşa edildi. Hafif ve güvenli. Ağır Chromium yükleri yerine sistemin yerel yeteneklerini kullanır."
       }
     }
   },
   "Docs": {
     "getting_started": {
-      "title": "Başlarken",
-      "description": "Hüma'yı kurun ve dakikalar içinde ilk programınızı yazın. Tam başlangıç kılavuzu.",
+      "title": "Hızlı Başlangıç",
+      "description": "Hüma'yı kurun ve dakikalar içinde ilk programınızı yazın. Adım adım kurulum kılavuzu.",
       "hero_title": "Başlarken",
-      "hero_desc": "Hüma'ya hoş geldiniz — hassasiyet ve kinetik hız için tasarlanmış yüksek performanslı bir dil. Bu kılavuz, ortamınızı kurmanıza ve ilk Hüma programınızı yazmanıza yardımcı olacaktır.",
+      "hero_desc": "Hüma'ya hoş geldiniz — hassasiyet ve hız için tasarlanmış yüksek performanslı bir dil. Bu kılavuz, çalışma ortamınızı kurmanıza ve ilk Hüma programınızı yazmanıza yardımcı olacaktır.",
       "installation": {
         "title": "Kurulum",
-        "desc": "Hüma araç zinciri tek bir statik ikili dosya olarak dağıtılır. Mimarini otomatik olarak algılamak ve huma-cli'yi kurmak için kabuk betiğimizi kullanın.",
+        "desc": "Hüma araç zinciri tek bir statik ikili dosya olarak dağıtılır. Mimarini otomatik algılayıp kurmak için kabuk betiğimizi kullanın.",
         "arch_title": "Mimari Desteği",
-        "arch_desc": "Hüma şu anda x86_64 ve ARM64 mimarilerini yerel olarak desteklemektedir. Eski sistemler için lütfen kaynaktan derleme dokümantasyonuna bakın."
+        "arch_desc": "Hüma şu anda x86_64 ve ARM64 mimarilerini yerel olarak desteklemektedir. Eski sistemler için lütfen kaynaktan derleme rehberine bakın."
       },
       "quick_start": {
-        "title": "Hızlı Başlangıç",
-        "desc": "Sürümü kontrol ederek kurulumunuzu doğrulayın. Hüma derleyicisi anında yanıt vermeli ve sıfır gecikmeli geliştirici araçlarına olan bağlılığımızı yansıtmalıdır."
+        "title": "Hızlı Kontrol",
+        "desc": "Sürümü kontrol ederek kurulumu doğrulayın. Hüma derleyicisi anında yanıt veren sıfır gecikmeli bir yapıya sahiptir."
       },
       "first_program": {
         "title": "İlk Program",
-        "desc": "Hüma sözdizimi açıklayıcı ancak katı olacak şekilde tasarlanmıştır. Aşağıda temel anahtar kelimelerimizi gösteren klasik bir koşullu blok verilmiştir: olsun (atama), ise (eğer) ve yoksa (değilse).",
-        "suffix_title": "Ek Sistemi",
-        "suffix_desc": "Hüma, ayırıcı olarak kesme işareti (') ile Türkçe dilbilgisi eklerini kullanır. Sözcük analizcisi 'yı, 'i ve 'nı gibi ekleri otomatik olarak temizler — bunlar dilbilgisi süsüdür, kod değildir."
+        "desc": "Hüma sözdizimi açıklayıcıdır. Aşağıda temel anahtar kelimelerimizi gösteren bir örnek yer almaktadır: 'olsun' (atama), 'ise' (eğer) ve 'yoksa' (değilse).",
+        "suffix_title": "Ek Yapısı",
+        "suffix_desc": "Hüma, Türkçe dilbilgisi eklerini (Kesme işareti (') ile ayrılmış) destekler. 'ya, 'yı, 'i gibi ekler kodun okunuşunu doğal kılar; derleme aşamasında otomatik temizlenir."
       },
       "next_steps": {
         "title": "Sonraki Adımlar",
         "syntax": { "title": "Temel Sözdizimi", "desc": "Değişkenler, koşullar ve döngüler" },
-        "functions": { "title": "Fonksiyonlar ve Sınıflar", "desc": "Yeniden kullanılabilir mantık ve nesneler tanımlayın" },
+        "functions": { "title": "Fonksiyonlar ve Sınıflar", "desc": "Yeni nesne ve mantık yapıları tanımlayın" },
         "lists": { "title": "Listeler ve Hatalar", "desc": "Koleksiyonlar ve hata yönetimi" },
         "stdlib": { "title": "Standart Kütüphane", "desc": "Yerleşik modüller referansı" }
       },
@@ -202,55 +202,55 @@
         "next_steps": "Sonraki Adımlar"
       },
       "resources": {
-        "title": "Yararlı Kaynaklar",
+        "title": "Ek Kaynaklar",
         "discord": "Discord Topluluğu",
-        "issue": "Sorun bildir"
+        "issue": "Sorun Bildir"
       }
     },
     "changelog": {
-      "title": "Değişim Günlüğü",
-      "description": "Hüma dili ve araç zinciri resmi güncelleme geçmişidir.",
+      "title": "Sürüm Notları",
+      "description": "Hüma dili ve araç zinciri resmi güncelleme geçmişi.",
       "v0_3_1": {
-        "version": "v0.3.1 (En Yeni)",
+        "version": "v0.3.1 (En Yeni Sürüm)",
         "date": "30 Mart 2026",
         "changes": [
-          "Yerel yönlendirme ile tam uluslararasılaştırma (i18n) desteği",
-          "İngilizce ve Türkçe için dinamik dil değiştirici",
-          "Özel sözdizimi temalı entegre dokümantasyon sitesi",
-          "Oyun alanının yüksek performanslı bir statik galeriye dönüştürülmesi",
-          "Çok platformlu sürümler için birleşik CLI geliştirmeleri"
+          "Yerel yönlendirme ile tam uluslararasılaştırma (i18n) desteği eklendi.",
+          "İngilizce ve Türkçe dilleri için dinamik geçiş anahtarı uygulandı.",
+          "Özel sözdizimi temalı, yeni dokümantasyon sitesi yayına alındı.",
+          "Oyun alanı (Playground), yüksek performanslı statik galeriye dönüştürüldü.",
+          "Çok platformlu derlemeler için birleşik CLI geliştirmeleri yapıldı."
         ]
       },
       "v0_3_0": {
         "version": "v0.3.0",
         "date": "20 Mart 2026",
         "changes": [
-          "Projenin modüler çalışma alanı (workspace) paketlerine dönüştürülmesi",
-          "Endüstriyel sınıf Sanal Makine ve Bytecode altyapısının uygulanması",
-          "IDE'nin yerel bir Tauri/React masaüstü uygulamasına geçirilmesi",
-          "Geliştirici araçları için sistem düzeyinde CLI entegrasyonu",
-          "GitHub Actions CI/CD aracılığıyla otomatik sürüm derlemeleri"
+          "Proje, modüler çalışma alanı (workspace) paketlerine bölündü.",
+          "Endüstriyel seviye Sanal Makine (VM) ve Bytecode altyapısı uygulandı.",
+          "IDE, yerel bir Tauri/React masaüstü uygulamasına dönüştürüldü.",
+          "Geliştirici araçları için sistem düzeyinde CLI entegrasyonu eklendi.",
+          "GitHub Actions aracılığıyla otomatik sürüm derleme süreçleri kuruldu."
         ]
       },
       "v0_2_0": {
         "version": "v0.2.0",
         "date": "Şubat 2026",
         "changes": [
-          "Dil dilbilgisinin ve yerel Türkçe anahtar kelimelerin tamamen yenilenmesi",
-          "Gömülü IDE içeren sıfır bağımlılıklı taşınabilir ikili dosya",
-          "Yerel metin işleme için NLP çekirdek kütüphanesi (nlp.hb)",
-          "Satır/sütun tanılamalı gelişmiş hata raporlama",
-          "Karmaşık veri yapıları ve OOP desteğinin uygulanması"
+          "Dil dilbilgisi ve yerel Türkçe anahtar kelimeler tamamen yenilendi.",
+          "Gömülü IDE içeren, bağımlılıksız taşınabilir ikili dosya yapısına geçildi.",
+          "Yerel metin işleme için NLP çekirdek kütüphanesi (nlp.hb) eklendi.",
+          "Satır ve sütun bazlı gelişmiş hata tanılama sistemi uygulandı.",
+          "Karmaşık veri yapıları ve Nesne Yönelimli Programlama (OOP) desteği geldi."
         ]
       },
       "v0_1_0": {
         "version": "v0.1.0",
         "date": "Ocak 2026",
         "changes": [
-          "Rust tabanlı dil motorunun ilk kararlı sürümü",
-          "G/Ç, sistem ve matematik için standart kütüphane modülleri",
-          "Birinci aşama Bytecode derleyicisinin uygulanması",
-          "Hızlı geliştirme ve test için etkileşimli REPL"
+          "Rust tabanlı dil motorunun ilk kararlı sürümü yayınlandı.",
+          "G/Ç, sistem ve matematik işlemleri için temel modüller eklendi.",
+          "Birinci aşama Bytecode derleyicisi hayata geçirildi.",
+          "Etkileşimli REPL kabuğu kullanıma sunuldu."
         ]
       }
     }
