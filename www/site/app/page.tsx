@@ -29,7 +29,7 @@ export default function HomePage() {
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high border border-outline-variant/20 mb-8">
               <span className="w-2 h-2 rounded-full bg-tertiary" />
               <span className="font-mono text-[10px] tracking-widest uppercase text-tertiary">
-                v0.3.0-stable kinetic archive
+                v0.3.1-stable kinetic archive
               </span>
             </div>
 
