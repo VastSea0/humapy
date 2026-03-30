@@ -1,12 +1,10 @@
-pub mod token;
-pub mod lexer;
-pub mod ast;
-pub mod parser;
-pub mod value;
-pub mod interpreter;
-pub mod bytecode;
-pub mod compiler;
-pub mod vm;
-pub mod builtin_files;
+//! # Hüma — "shim" library crate
+//!
+//! This crate exists solely for backward compatibility with `src-tauri` which
+//! depends on `huma`.  All real logic lives in [`huma_core`].
+//!
+//! Over time, downstream consumers should migrate to `huma-core` directly.
 
-pub mod cli;
+// Re-export every public module from huma-core so that
+// `huma::lexer`, `huma::interpreter`, etc. keep working.
+pub use huma_core::*;
