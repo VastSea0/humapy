@@ -48,3 +48,47 @@ impl std::fmt::Display for Deger {
         }
     }
 }
+
+impl Deger {
+    pub fn to_json(&self) -> serde_json::Value {
+        match self {
+            Deger::Sayi(n) => serde_json::Value::Number(serde_json::Number::from_f64(*n).unwrap_or(serde_json::Number::from(0))),
+            Deger::Metin(s) => serde_json::Value::String(s.clone()),
+            Deger::Liste(l) => {
+                let l_borrow = l.borrow();
+                let v: Vec<serde_json::Value> = l_borrow.iter().map(|d| d.to_json()).collect();
+                serde_json::Value::Array(v)
+            }
+            Deger::Bos => serde_json::Value::Null,
+            Deger::Nesne { alanlar, .. } => {
+                let mut map = serde_json::Map::new();
+                for (k, v) in alanlar.borrow().iter() {
+                    map.insert(k.clone(), v.to_json());
+                }
+                serde_json::Value::Object(map)
+            }
+            _ => serde_json::Value::Null,
+        }
+    }
+
+    pub fn from_json(v: &serde_json::Value) -> Deger {
+        match v {
+            serde_json::Value::Number(n) => Deger::Sayi(n.as_f64().unwrap_or(0.0)),
+            serde_json::Value::String(s) => Deger::Metin(s.clone()),
+            serde_json::Value::Array(a) => {
+                let v: Vec<Deger> = a.iter().map(|item| Deger::from_json(item)).collect();
+                Deger::Liste(Rc::new(RefCell::new(v)))
+            }
+            serde_json::Value::Bool(b) => Deger::Sayi(if *b { 1.0 } else { 0.0 }),
+            serde_json::Value::Object(o) => {
+                let mut map = HashMap::new();
+                for (k, v) in o.iter() {
+                    map.insert(k.clone(), Deger::from_json(v));
+                }
+                Deger::Nesne { sinif_adi: "Sözlük".to_string(), alanlar: Rc::new(RefCell::new(map)) }
+            }
+            _ => Deger::Bos,
+        }
+    }
+}
+

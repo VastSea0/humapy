@@ -14,4 +14,6 @@ thiserror = "2"
 eframe = "0.27"
 once_cell = "1.19"
 ureq = "2"
+tiny_http = "0.12"
+
 

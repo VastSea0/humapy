@@ -10,8 +10,23 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use std::thread;
 use std::time::Duration;
 use crate::builtin_files;
+use std::sync::Mutex;
+use once_cell::sync::Lazy;
+use std::io::Read;
+
+static SUNUCULAR: Lazy<Mutex<HashMap<u64, tiny_http::Server>>> = Lazy::new(|| Mutex::new(HashMap::new()));
+static ISTEKLER: Lazy<Mutex<HashMap<u64, tiny_http::Request>>> = Lazy::new(|| Mutex::new(HashMap::new()));
+static NEXT_ID: Lazy<Mutex<u64>> = Lazy::new(|| Mutex::new(1));
+
+fn get_id() -> u64 {
+    let mut id = NEXT_ID.lock().unwrap();
+    let old = *id;
+    *id += 1;
+    old
+}
 
 pub struct Yorumlayici {
+
     pub global_degiskenler: HashMap<String, Deger>,
     pub yerel_scopes: Vec<HashMap<String, Deger>>,
     pub donus_degeri: Option<Deger>,
@@ -91,7 +106,63 @@ impl Yorumlayici {
             }
             Deger::Bos
         }));
+            // dahili_sunucu_baslat(port)
+        globals.insert("dahili_sunucu_baslat".to_string(), Deger::DahiliFonksiyon(|args| {
+            let port = match args.first() { Some(Deger::Sayi(n)) => *n as u16, _ => 8080 };
+            match tiny_http::Server::http(format!("0.0.0.0:{}", port)) {
+                Ok(server) => {
+                    let id = get_id();
+                    SUNUCULAR.lock().unwrap().insert(id, server);
+                    Deger::Sayi(id as f64)
+                }
+                Err(_) => Deger::Bos
+            }
+        }));
+        // dahili_sunucu_bekle(id)
+        globals.insert("dahili_sunucu_bekle".to_string(), Deger::DahiliFonksiyon(|args| {
+            let id = match args.first() { Some(Deger::Sayi(n)) => *n as u64, _ => return Deger::Bos };
+            if let Some(server) = SUNUCULAR.lock().unwrap().get(&id) {
+                if let Ok(istek) = server.recv() {
+                    let mut govde = String::new();
+                    let mut b = istek.as_reader();
+                    let _ = b.read_to_string(&mut govde);
+                    
+                    let i_id = get_id();
+                    let url = istek.url().to_string();
+                    let metot = istek.method().to_string();
+                    
+                    ISTEKLER.lock().unwrap().insert(i_id, istek);
+                    
+                    let mut fields = HashMap::new();
+                    fields.insert("id".to_string(), Deger::Sayi(i_id as f64));
+                    fields.insert("url".to_string(), Deger::Metin(url));
+                    fields.insert("metot".to_string(), Deger::Metin(metot));
+                    fields.insert("gövde".to_string(), Deger::Metin(govde));
+                    
+                    return Deger::Nesne { sinif_adi: "İstek".to_string(), alanlar: Rc::new(RefCell::new(fields)) };
+                }
+            }
+            Deger::Bos
+        }));
+        // dahili_sunucu_yanitla(i_id, icerik, durum, tip)
+        globals.insert("dahili_sunucu_yanitla".to_string(), Deger::DahiliFonksiyon(|args| {
+            if args.len() < 2 { return Deger::Sayi(0.0); }
+            let i_id = match &args[0] { Deger::Sayi(n) => *n as u64, _ => return Deger::Sayi(0.0) };
+            let icerik = match &args[1] { Deger::Metin(s) => s.clone(), _ => String::new() };
+            let durum = match args.get(2) { Some(Deger::Sayi(n)) => *n as u16, _ => 200 };
+            let tip = match args.get(3) { Some(Deger::Metin(s)) => s.as_str(), _ => "text/html; charset=utf-8" };
+            
+            if let Some(istek) = ISTEKLER.lock().unwrap().remove(&i_id) {
+                let response = tiny_http::Response::from_string(icerik)
+                    .with_status_code(durum)
+                    .with_header(tiny_http::Header::from_bytes(&b"Content-Type"[..], tip.as_bytes()).unwrap());
+                let _ = istek.respond(response);
+                return Deger::Sayi(1.0);
+            }
+            Deger::Sayi(0.0)
+        }));
         // dahili_istek(metot, url, [gövde])
+
         globals.insert("dahili_istek".to_string(), Deger::DahiliFonksiyon(|args| {
             if args.len() < 2 { return Deger::Bos; }
             let metot = match &args[0] { Deger::Metin(s) => s.to_uppercase(), _ => "GET".to_string() };
@@ -131,7 +202,25 @@ impl Yorumlayici {
             }
             Deger::Sayi(0.0)
         }));
+        // JSON Fonksiyonları
+        globals.insert("nesneden_metine".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(d) = args.first() {
+                if let Ok(s) = serde_json::to_string_pretty(&d.to_json()) {
+                    return Deger::Metin(s);
+                }
+            }
+            Deger::Metin("null".to_string())
+        }));
+        globals.insert("metinden_nesneye".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Metin(s)) = args.first() {
+                if let Ok(v) = serde_json::from_str::<serde_json::Value>(s) {
+                    return Deger::from_json(&v);
+                }
+            }
+            Deger::Bos
+        }));
         globals.insert("tipi".to_string(), Deger::DahiliFonksiyon(|args| {
+
             match args.first() {
                 Some(Deger::Sayi(_)) => Deger::Metin("Sayı".to_string()),
                 Some(Deger::Metin(_)) => Deger::Metin("Metin".to_string()),
@@ -275,11 +364,15 @@ impl Yorumlayici {
                     (Deger::Liste(l), aranan) => {
                         return Deger::Sayi(if l.borrow().contains(aranan) { 1.0 } else { 0.0 });
                     }
+                    (Deger::Nesne { alanlar, .. }, Deger::Metin(anahtar)) => {
+                        return Deger::Sayi(if alanlar.borrow().contains_key(anahtar) { 1.0 } else { 0.0 });
+                    }
                     _ => {}
                 }
             }
-            Deger::Bos
+            Deger::Sayi(0.0)
         }));
+
 
         // hızlı_içeriyor(liste, eleman) → O(1) arama (HashSet kullanarak)
         // NOT: Bu fonksiyon ilk çağrıda listeyi bir küme gibi önbelleğe alırsa daha da hızlanır,
