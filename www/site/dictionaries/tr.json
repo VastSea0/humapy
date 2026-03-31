@@ -1,6 +1,6 @@
 {
   "Hero": {
-    "badge": "v0.3.1-kararlı sürüm (kinetik arşiv)",
+    "badge": "v0.4.0-kararlı sürüm (kinetik arşiv)",
     "headline": "Aklındaki Gibi Kodla.",
     "subheadline": "Kendi Ana Dilinde.",
     "description": "Hüma, yerel Türkçe sözdizimine sahip, yüksek performanslı bir programlama dilidir. Rust tabanlı çekirdeğiyle, doğal bir dilin ifade gücünü sistem derleyicisinin hızıyla birleştirir.",
@@ -54,7 +54,7 @@
     "github": "GitHub"
   },
   "Playground": {
-    "badge": "v0.3.1-kararlı sürüm (kinetik galeri)",
+    "badge": "v0.4.0",
     "headline": "Saf Verimlilik.",
     "subheadline": "Yerel Semantik.",
     "description": "Hüma dilini keşfedin. Günlük konuşma diline yakın sözdizimi ile programlama artık çok daha erişilebilir ve güçlü.",

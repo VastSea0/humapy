@@ -1,6 +1,6 @@
 {
   "Hero": {
-    "badge": "v0.3.1-stable kinetic archive",
+    "badge": "v0.4.0-stable release (kinetic archive)",
     "headline": "Code as You Think.",
     "subheadline": "In Your Native Language.",
     "description": "Hüma is a high-performance programming language featuring native Turkish syntax. Built with a Rust-backed core, it combines the expressiveness of natural language with the raw speed of a systems compiler.",
