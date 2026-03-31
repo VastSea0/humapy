@@ -108,7 +108,7 @@
       "gui": "Graphical User Interface (GUI)",
       "ag_istekleri": "Network Requests (HTTP)",
       "package_manager": "Package Manager",
-
+      "huma_sunucu": "Hüma Sunucu (HTTP)",
       "my_first_package": "My First Package"
     }
   },
@@ -220,6 +220,8 @@
         "date": "March 31, 2026",
         "changes": [
           "Native Graphical User Interface (GUI) library (gui.hb) launched based on egui.",
+          "Launched the 'Hüma Kütüphaneleri' community sharing platform.",
+          "Added high-performance web server support with the new 'huma_sunucu' core module.",
           "Advanced Package Manager (huma paket) and GitHub integration added.",
           "huma.lock lockfile system implemented for reproducible builds.",
           "SemVer compatible version control and package metadata (huma.json) introduced.",

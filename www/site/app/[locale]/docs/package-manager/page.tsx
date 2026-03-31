@@ -104,6 +104,37 @@ export default async function PackageManagerPage({
             </div>
           </div>
 
+          {/* Hüma Kütüphaneleri Platformu */}
+          <div className="scroll-mt-24" id="platform">
+            <h2 className="text-2xl font-bold text-on-surface mb-4">
+               {locale === "tr" ? "Hüma Kütüphaneleri Platformu" : "Hüma Libraries Platform"}
+            </h2>
+            <p className="text-on-surface-variant mb-6">
+               {locale === "tr"
+                  ? "Topluluk tarafından geliştirilen paketleri keşfetmek, paylaşmak ve yönetmek için yeni bir merkez oluşturduk. Tüm kütüphaneler güvenlik ve kalite standartları için kısa bir onay sürecinden geçer."
+                  : "We've created a new hub to discover, share, and manage community-developed packages. All libraries go through a short approval process for security and quality standards."}
+            </p>
+            <div className="bg-primary/10 border border-primary/20 rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+              <div>
+                <h3 className="text-lg font-bold text-primary mb-2">
+                  {locale === "tr" ? "Resmi Paylaşım Platformu" : "Official Sharing Platform"}
+                </h3>
+                <p className="text-sm text-on-surface-variant max-w-sm">
+                  {locale === "tr" 
+                    ? "Yüzlerce hazır kütüphaneye göz atın ve kendi çözümünüzü toplulukla paylaşın." 
+                    : "Browse hundreds of ready-to-use libraries and share your own solutions with the community."}
+                </p>
+              </div>
+              <Link 
+                href="http://localhost:3000" 
+                target="_blank"
+                className="bg-primary text-on-primary px-6 py-3 rounded-lg font-bold text-sm hover:brightness-110 transition-all shrink-0"
+              >
+                {locale === "tr" ? "Kütüphaneleri Keşfet" : "Explore Libraries"}
+              </Link>
+            </div>
+          </div>
+
           <div className="scroll-mt-24" id="vcs">
             <h2 className="text-2xl font-bold text-on-surface mb-4">Sürüm Kontrolü ve Kilit Dosyaları</h2>
             <p className="text-on-surface-variant mb-4">
@@ -131,16 +162,26 @@ export default async function PackageManagerPage({
 
         {/* Community Packages */}
         <section className="mt-20">
-          <h2 className="text-2xl font-bold text-on-surface mb-6">
-             {locale === "tr" ? "Topluluk Kütüphaneleri" : "Community Libraries"}
-          </h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-on-surface">
+              {locale === "tr" ? "Gömülü ve Topluluk Paketleri" : "Built-in and Community Packages"}
+            </h2>
+            <span className="text-[10px] font-bold text-primary px-3 py-1 bg-primary/10 rounded-full">
+              {locale === "tr" ? "HIZLI KURULUM" : "QUICK INSTALL"}
+            </span>
+          </div>
+          <p className="text-on-surface-variant mb-8 text-sm italic">
+            {locale === "tr"
+              ? "Aşağıdaki kütüphaneler sistem tarafından tanınır ve doğrudan isimle kurulabilir:"
+              : "The following libraries are recognized by the system and can be installed directly by name:"}
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-surface-container-low rounded-lg p-6 border border-outline-variant/10">
-              <h3 className="font-bold text-primary mb-2">nlp_temel</h3>
+              <h3 className="font-bold text-primary mb-2">huma_sunucu</h3>
               <p className="text-xs text-on-surface-variant mb-4">
-                {locale === "tr" ? "Doğal dil işleme için temel araç seti (Kök bulma, Tokenizer)." : "Basic toolkit for natural language processing (Stemming, Tokenization)."}
+                {locale === "tr" ? "Hüma ile modern ve hızlı web sunucuları geliştirmek için temel modül." : "Core module for developing modern and fast web servers with Hüma."}
               </p>
-              <code className="text-[10px] text-tertiary font-mono">huma paket kur nlp_temel</code>
+              <code className="text-[10px] text-tertiary font-mono">huma paket kur huma_sunucu</code>
             </div>
             <div className="bg-surface-container-low rounded-lg p-6 border border-outline-variant/10">
               <h3 className="font-bold text-primary mb-2">ag_istekleri</h3>
@@ -148,6 +189,13 @@ export default async function PackageManagerPage({
                  {locale === "tr" ? "HTTP istekleri yapmak için modern bir yardımcı kütüphane." : "A modern helper library for making HTTP requests."}
               </p>
               <code className="text-[10px] text-tertiary font-mono">huma paket kur ag_istekleri</code>
+            </div>
+            <div className="bg-surface-container-low rounded-lg p-6 border border-outline-variant/10">
+              <h3 className="font-bold text-primary mb-2">nlp_temel</h3>
+              <p className="text-xs text-on-surface-variant mb-4">
+                {locale === "tr" ? "Doğal dil işleme için temel araç seti (Kök bulma, Tokenizer)." : "Basic toolkit for natural language processing (Stemming, Tokenization)."}
+              </p>
+              <code className="text-[10px] text-tertiary font-mono">huma paket kur nlp_temel</code>
             </div>
           </div>
         </section>
@@ -199,6 +247,11 @@ export default async function PackageManagerPage({
           <li>
             <a href="#guncelle" className="text-on-surface-variant/60 hover:text-on-surface transition-all">
                {locale === "tr" ? "Güncelleme" : "Update"}
+            </a>
+          </li>
+          <li>
+            <a href="#platform" className="text-on-surface-variant/60 hover:text-on-surface transition-all">
+               {locale === "tr" ? "Kütüphaneler Platformu" : "Libraries Platform"}
             </a>
           </li>
           <li>

@@ -108,7 +108,7 @@
       "gui": "Görsel Arayüz (GUI)",
       "ag_istekleri": "Ağ İstekleri (HTTP)",
       "package_manager": "Paket Yöneticisi",
-
+      "huma_sunucu": "Hüma Sunucu (HTTP)",
       "my_first_package": "İlk Paketini Oluştur"
     }
   },
@@ -220,6 +220,8 @@
         "date": "31 Mart 2026",
         "changes": [
           "egui tabanlı yerel Görsel Arayüz (GUI) kütüphanesi (gui.hb) yayına alındı.",
+          "Hüma Kütüphaneleri (Hüma Libraries) topluluk paylaşım platformu başlatıldı.",
+          "Yeni 'huma_sunucu' çekirdek modülü ile yüksek performanslı web sunucusu desteği eklendi.",
           "Gelişmiş Paket Yöneticisi (huma paket) ve GitHub entegrasyonu eklendi.",
           "huma.lock kilit dosyası sistemi ile tekrarlanabilir derlemeler sağlandı.",
           "SemVer uyumlu sürüm kontrolü ve paket meta verileri (huma.json) sistemi kuruldu.",
