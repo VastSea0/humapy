@@ -106,7 +106,8 @@
       "ide": "Hüma IDE",
       "changelog": "Changelog",
       "gui": "Graphical User Interface (GUI)",
-      "package_manager": "Package Manager"
+      "package_manager": "Package Manager",
+      "my_first_package": "My First Package"
     }
   },
   "Community": {

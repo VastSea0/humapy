@@ -60,6 +60,11 @@ export default function Sidebar({ dict, locale }: { dict: any; locale: string })
           icon: "package_2",
         },
         {
+          href: getPath("/docs/my-first-package"),
+          label: dict.Sidebar.items.my_first_package,
+          icon: "star",
+        },
+        {
           href: getPath("/docs/changelog"),
           label: dict.Sidebar.items.changelog,
           icon: "history_edu",

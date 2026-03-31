@@ -106,7 +106,8 @@
       "ide": "Hüma IDE",
       "changelog": "Sürüm Notları",
       "gui": "Görsel Arayüz (GUI)",
-      "package_manager": "Paket Yöneticisi"
+      "package_manager": "Paket Yöneticisi",
+      "my_first_package": "İlk Paketini Oluştur"
     }
   },
   "Community": {
