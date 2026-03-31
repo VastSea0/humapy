@@ -129,7 +129,7 @@ pub fn install_package(input: &str) -> Result<()> {
 
     // Mock local installation for built-in libs
     match input {
-        "nlp_temel" | "ag_istekleri" => {
+        "nlp_temel" | "ag_istekleri" | "huma_sunucu" => {
             let meta = PaketMetadata {
                 ad: input.to_string(),
                 surum: "1.0.0".to_string(),
@@ -140,7 +140,12 @@ pub fn install_package(input: &str) -> Result<()> {
                 bagimliliklar: None,
             };
 
-            save_package(meta, "// Simülasyon içeriği")?;
+            let content = match input {
+                "huma_sunucu" => fs::read_to_string("/home/egehan/development/humapy/huma_modulleri/huma_sunucu/huma_sunucu.hb")?,
+                _ => "// Simülasyon içeriği".to_string(),
+            };
+
+            save_package(meta, &content)?;
         },
         _ => return Err(anyhow!("Paket bulunamadı. Lütfen GitHub linki kullanın.")),
     }

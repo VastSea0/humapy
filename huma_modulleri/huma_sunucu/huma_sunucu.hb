@@ -1,7 +1,7 @@
 // huma_sunucu.hb - Hüma Sunucu Kütüphanesi
 
 Yanıt sınıf olsun {
-    olsun istek_id = 0
+    istek_id = 0 olsun
     
     metin fonksiyon olsun içerik alsın {
         dahili_sunucu_yanitla(kendisi'nin istek_id, içerik, 200, "text/plain")
@@ -21,9 +21,9 @@ Yanıt sınıf olsun {
 }
 
 Sunucu sınıf olsun {
-    olsun port = 8080
-    olsun _get_rotalari = {}
-    olsun _post_rotalari = {}
+    port = 8080 olsun
+    _get_rotalari = metinden_nesneye("{}") olsun
+    _post_rotalari = metinden_nesneye("{}") olsun
 
     kur fonksiyon olsun p alsın {
         kendisi'nin port = p olsun
@@ -32,11 +32,11 @@ Sunucu sınıf olsun {
     }
 
     getir fonksiyon olsun yol, islem alsın {
-        kendisi'nin _get_rotalari[yol] = islem olsun
+        değer_ata(kendisi'nin _get_rotalari, yol, islem)
     }
 
     gönder fonksiyon olsun yol, islem alsın {
-        kendisi'nin _post_rotalari[yol] = islem olsun
+        değer_ata(kendisi'nin _post_rotalari, yol, islem)
     }
 
     baslat fonksiyon olsun {
@@ -48,7 +48,7 @@ Sunucu sınıf olsun {
         
         "Hüma Backend Sunucusu " + (kendisi'nin port) + " portunda aktif!"'ı yazdır
         
-        olduğu sürece (1) {
+        1 olduğu sürece {
             istek = dahili_sunucu_bekle(sid)
             
             istek != boş ise {
@@ -59,8 +59,8 @@ Sunucu sınıf olsun {
                 yanit'ın istek_id = (istek'in id) olsun
                 
                 metot == "GET" ise {
-                    kendisi'nin _get_rotalari'nın içeriyor(url) ise {
-                        islem = kendisi'nin _get_rotalari[url]
+                    içeriyor(kendisi'nin _get_rotalari, url) ise {
+                        islem = değer_al(kendisi'nin _get_rotalari, url)
                         islem(istek, yanit)
                     } yoksa {
                         dahili_sunucu_yanitla((istek'in id), "404 Sayfa Bulunamadı", 404, "text/plain")
@@ -68,8 +68,8 @@ Sunucu sınıf olsun {
                 }
                 
                 metot == "POST" ise {
-                    kendisi'nin _post_rotalari'nın içeriyor(url) ise {
-                        islem = kendisi'nin _post_rotalari[url]
+                    içeriyor(kendisi'nin _post_rotalari, url) ise {
+                        islem = değer_al(kendisi'nin _post_rotalari, url)
                         islem(istek, yanit)
                     } yoksa {
                         dahili_sunucu_yanitla((istek'in id), "404 Sayfa Bulunamadı", 404, "text/plain")
