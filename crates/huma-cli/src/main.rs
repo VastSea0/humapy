@@ -12,6 +12,7 @@
 
 mod commands;
 mod updater;
+mod package_manager;
 
 use clap::{Parser, Subcommand};
 use colored::Colorize;
@@ -101,8 +102,30 @@ enum Commands {
         check: bool,
     },
 
+    /// Paket yöneticisi (kütüphane kurma, silme, güncelleme)
+    Paket {
+        #[command(subcommand)]
+        action: PackageAction,
+    },
+
     /// Sürüm bilgisini göster
     Version,
+}
+
+#[derive(Subcommand)]
+pub enum PackageAction {
+    /// Yeni bir topluluk paketi kurar
+    Kur {
+        /// Paketin adı
+        name: String,
+    },
+    /// Kurulu bir paketi siler
+    Sil {
+        /// Paketin adı
+        name: String,
+    },
+    /// Tüm paketleri günceller
+    Güncelle,
 }
 
 // ─── Main ──────────────────────────────────────────────────────────────────
@@ -139,6 +162,11 @@ fn run(cli: Cli) -> i32 {
                 updater::run_self_update()
             }
         }
+        Some(Commands::Paket { action }) => match action {
+            PackageAction::Kur { name } => package_manager::install_package(&name),
+            PackageAction::Sil { name } => package_manager::remove_package(&name),
+            PackageAction::Güncelle => package_manager::update_packages(),
+        },
         Some(Commands::Version) => {
             println!(
                 "{} {} ({} {})",

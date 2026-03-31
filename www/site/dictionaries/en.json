@@ -104,7 +104,9 @@
       "stdlib": "Standard Library",
       "compiler": "Compiler Internals",
       "ide": "Hüma IDE",
-      "changelog": "Changelog"
+      "changelog": "Changelog",
+      "gui": "Graphical User Interface (GUI)",
+      "package_manager": "Package Manager"
     }
   },
   "Community": {

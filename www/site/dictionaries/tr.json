@@ -104,7 +104,9 @@
       "stdlib": "Standart Kütüphane",
       "compiler": "Derleyici İç Yapısı",
       "ide": "Hüma IDE",
-      "changelog": "Sürüm Notları"
+      "changelog": "Sürüm Notları",
+      "gui": "Görsel Arayüz (GUI)",
+      "package_manager": "Paket Yöneticisi"
     }
   },
   "Community": {

@@ -50,6 +50,16 @@ export default function Sidebar({ dict, locale }: { dict: any; locale: string })
           icon: "desktop_windows",
         },
         {
+          href: getPath("/docs/gui"),
+          label: dict.Sidebar.items.gui,
+          icon: "window",
+        },
+        {
+          href: getPath("/docs/package-manager"),
+          label: dict.Sidebar.items.package_manager,
+          icon: "package_2",
+        },
+        {
           href: getPath("/docs/changelog"),
           label: dict.Sidebar.items.changelog,
           icon: "history_edu",
