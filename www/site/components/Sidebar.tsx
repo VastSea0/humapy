@@ -55,10 +55,17 @@ export default function Sidebar({ dict, locale }: { dict: any; locale: string })
           icon: "window",
         },
         {
+          href: getPath("/docs/ag_istekleri"),
+          label: dict.Sidebar.items.ag_istekleri,
+          icon: "globe_uk",
+        },
+        {
           href: getPath("/docs/package-manager"),
           label: dict.Sidebar.items.package_manager,
           icon: "package_2",
         },
+
+
         {
           href: getPath("/docs/my-first-package"),
           label: dict.Sidebar.items.my_first_package,
