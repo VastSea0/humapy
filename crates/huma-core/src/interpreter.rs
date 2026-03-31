@@ -91,6 +91,40 @@ impl Yorumlayici {
             }
             Deger::Bos
         }));
+        // dahili_istek(metot, url, [gövde])
+        globals.insert("dahili_istek".to_string(), Deger::DahiliFonksiyon(|args| {
+            if args.len() < 2 { return Deger::Bos; }
+            let metot = match &args[0] { Deger::Metin(s) => s.to_uppercase(), _ => "GET".to_string() };
+            let url = match &args[1] { Deger::Metin(s) => s, _ => return Deger::Bos };
+            let govdeli = args.len() >= 3;
+            let govde = if govdeli { match &args[2] { Deger::Metin(s) => s.clone(), _ => String::new() } } else { String::new() };
+            
+            let req = ureq::request(&metot, url);
+            let response = if govdeli && (metot == "POST" || metot == "PUT" || metot == "PATCH") {
+                req.send_string(&govde)
+            } else {
+                req.call()
+            };
+
+            match response {
+                Ok(res) => {
+                    let durum = res.status() as f64;
+                    let icerik = res.into_string().unwrap_or_default();
+                    let alanlar = HashMap::from([
+                        ("durum".to_string(), Deger::Sayi(durum)),
+                        ("içerik".to_string(), Deger::Metin(icerik)),
+                    ]);
+                    Deger::Nesne { sinif_adi: "İstekCevabı".to_string(), alanlar: Rc::new(RefCell::new(alanlar)) }
+                }
+                Err(e) => {
+                    let mut alanlar = HashMap::new();
+                    alanlar.insert("durum".to_string(), Deger::Sayi(0.0));
+                    alanlar.insert("hata".to_string(), Deger::Metin(e.to_string()));
+                    Deger::Nesne { sinif_adi: "İstekHatası".to_string(), alanlar: Rc::new(RefCell::new(alanlar)) }
+                }
+            }
+        }));
+
         globals.insert("dosya_var_mı".to_string(), Deger::DahiliFonksiyon(|args| {
             if let Some(Deger::Metin(yol)) = args.first() {
                 return Deger::Sayi(if Path::new(yol).exists() { 1.0 } else { 0.0 });
@@ -310,7 +344,7 @@ impl Yorumlayici {
             yerel_scopes: Vec::new(), 
             donus_degeri: None, 
             yuklenen_dosyalar: HashSet::new(), 
-            arama_yolları: vec![".".to_string(), "./lib".to_string()],
+            arama_yolları: vec![".".to_string(), "./lib".to_string(), "./huma_modulleri".to_string()],
             output_buffer: None,
         }
     }
@@ -563,8 +597,21 @@ impl Yorumlayici {
         let mut bulundu = None;
         for temel in &self.arama_yolları {
             let tam_yol = format!("{}/{}", temel, dosya_adı);
-            if Path::new(&tam_yol).exists() { bulundu = Some(tam_yol); break; }
+            let path = Path::new(&tam_yol);
+            if path.is_file() { bulundu = Some(tam_yol); break; }
+            
+            // Paket yöneticisi için destek: modul/modul.hb pattern'ini kontrol et
+            let paket_yol = format!("{}/{}/{}.hb", temel, dosya_adı, dosya_adı);
+            if Path::new(&paket_yol).is_file() { bulundu = Some(paket_yol); break; }
+
+            // Uzantı ekleyerek kontrol et
+            if !dosya_adı.ends_with(".hb") {
+                let hb_yol = format!("{}.hb", tam_yol);
+                if Path::new(&hb_yol).is_file() { bulundu = Some(hb_yol); break; }
+            }
         }
+
+
         if let Some(yol) = bulundu {
             if self.yuklenen_dosyalar.contains(&yol) { return; }
             self.yuklenen_dosyalar.insert(yol.clone());
