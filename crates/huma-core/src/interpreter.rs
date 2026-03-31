@@ -354,7 +354,7 @@ impl Yorumlayici {
             Deger::Bos
         }));
 
-        // içeriyor(metin_veya_liste, aranan) → 1 veya 0
+        // içeriyor(metin_veya_liste_veya_nesne, aranan) → 1 veya 0
         globals.insert("içeriyor".to_string(), Deger::DahiliFonksiyon(|args| {
             if args.len() >= 2 {
                 match (&args[0], &args[1]) {
@@ -368,6 +368,27 @@ impl Yorumlayici {
                         return Deger::Sayi(if alanlar.borrow().contains_key(anahtar) { 1.0 } else { 0.0 });
                     }
                     _ => {}
+                }
+            }
+            Deger::Sayi(0.0)
+        }));
+
+        // değer_al(nesne, anahtar) → değer
+        globals.insert("değer_al".to_string(), Deger::DahiliFonksiyon(|args| {
+            if args.len() >= 2 {
+                if let (Deger::Nesne { alanlar, .. }, Deger::Metin(anahtar)) = (&args[0], &args[1]) {
+                    return alanlar.borrow().get(anahtar).cloned().unwrap_or(Deger::Bos);
+                }
+            }
+            Deger::Bos
+        }));
+
+        // değer_ata(nesne, anahtar, değer)
+        globals.insert("değer_ata".to_string(), Deger::DahiliFonksiyon(|args| {
+            if args.len() >= 3 {
+                if let (Deger::Nesne { alanlar, .. }, Deger::Metin(anahtar)) = (&args[0], &args[1]) {
+                    alanlar.borrow_mut().insert(anahtar.clone(), args[2].clone());
+                    return Deger::Sayi(1.0);
                 }
             }
             Deger::Sayi(0.0)
@@ -657,12 +678,18 @@ impl Yorumlayici {
                         Ifade::ListeErisim { liste, indeks } => {
                             let l_val = self.ifade_hesapla((*liste).clone());
                             let i_val = self.ifade_hesapla(*indeks);
-                            if let (Deger::Liste(l), Deger::Sayi(i)) = (l_val, i_val) {
-                                let idx = i as usize;
-                                let mut b = l.borrow_mut();
-                                if idx < b.len() {
-                                    b[idx] = d;
+                            match (l_val, i_val) {
+                                (Deger::Liste(l), Deger::Sayi(i)) => {
+                                    let idx = i as usize;
+                                    let mut b = l.borrow_mut();
+                                    if idx < b.len() {
+                                        b[idx] = d;
+                                    }
                                 }
+                                (Deger::Nesne { alanlar, .. }, Deger::Metin(key)) => {
+                                    alanlar.borrow_mut().insert(key, d);
+                                }
+                                _ => {}
                             }
                         }
                         _ => {}
@@ -735,6 +762,7 @@ impl Yorumlayici {
                 match (l_val, i_val) {
                     (Deger::Liste(l), Deger::Sayi(i)) => l.borrow().get(i as usize).cloned().unwrap_or(Deger::Bos),
                     (Deger::Metin(s), Deger::Sayi(i)) => s.chars().nth(i as usize).map(|c| Deger::Metin(c.to_string())).unwrap_or(Deger::Bos),
+                    (Deger::Nesne { alanlar, .. }, Deger::Metin(key)) => alanlar.borrow().get(&key).cloned().unwrap_or(Deger::Bos),
                     _ => Deger::Bos
                 }
             }
