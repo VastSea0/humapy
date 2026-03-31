@@ -131,9 +131,12 @@ pub enum PackageAction {
         /// Paketin adı
         name: String,
     },
+    /// Projenin yayınlanmaya hazır olup olmadığını kontrol eder
+    Doğrula,
     /// Tüm paketleri günceller
     Güncelle,
 }
+
 
 // ─── Main ──────────────────────────────────────────────────────────────────
 
@@ -175,7 +178,9 @@ fn run(cli: Cli) -> i32 {
             PackageAction::Güncelle => package_manager::update_packages(),
             PackageAction::Yeni { name } => package_manager::create_package(&name),
             PackageAction::Liste => package_manager::list_packages(),
+            PackageAction::Doğrula => package_manager::verify_package(),
         },
+
         Some(Commands::Version) => {
             println!(
                 "{} {} ({} {})",

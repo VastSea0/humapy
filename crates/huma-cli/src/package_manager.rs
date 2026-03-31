@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use semver::{Version, VersionReq};
 use std::collections::HashMap;
 use chrono;
+use sha2::{Sha256, Digest};
 
 /// Hüma Paket Standardı (HPS) Metadata Dosyası
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -23,16 +24,24 @@ pub struct PaketMetadata {
 
 
 /// Hüma Kilit Dosyası (huma.lock)
-/// Yüklenen tüm paketlerin kesin sürümlerini saklar.
+/// Yüklenen tüm paketlerin kesin sürümlerini ve bütünlük özetlerini (hash) saklar.
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct PaketKilit {
-    pub paketler: HashMap<String, String>,
+    pub paketler: HashMap<String, KilitBilgisi>,
     pub guncelleme_zamani: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct KilitBilgisi {
+    pub surum: String,
+    pub hash: String,
 }
 
 const PACKAGE_DIR: &str = "huma_modulleri";
 const LOCK_FILE: &str = "huma.lock";
+const PROJECT_FILE: &str = "huma.json";
 const CURRENT_HUMA_VER: &str = env!("CARGO_PKG_VERSION");
+
 
 /// Kurulu tüm paketleri ve sürümlerini kilit dosyasından listeler
 pub fn list_packages() -> Result<()> {
@@ -45,8 +54,8 @@ pub fn list_packages() -> Result<()> {
     let lock: PaketKilit = serde_json::from_str(&lock_str)?;
 
     println!("{} Kurulu Hüma Paketleri (Kilitlenmiş Sürümler):", "Hüma:".bright_cyan());
-    for (ad, surum) in &lock.paketler {
-        println!("  {} -> {}", ad.bright_green(), surum.bright_white());
+    for (ad, bilgi) in &lock.paketler {
+        println!("  {} -> {} [{}]", ad.bright_green(), bilgi.surum.bright_white(), &bilgi.hash[..8].bright_black());
     }
     
     Ok(())
@@ -104,6 +113,16 @@ pub fn create_package(name: &str) -> Result<()> {
 
 /// Bir paketi kurar ve kilit dosyasına ekler
 pub fn install_package(input: &str) -> Result<()> {
+    // Yerel Proje Kontrolü
+    if !Path::new(PROJECT_FILE).exists() {
+        return Err(anyhow!(
+            "{} Bu dizinde bir Hüma projesi (huma.json) bulunamadı.\n{} Paketleri kurmak için önce bir proje başlatmalısınız: {}", 
+            "Hata:".bright_red(),
+            "İpucu:".bright_yellow(),
+            format!("huma paket yeni <proje_adi>").bold()
+        ));
+    }
+
     if input.starts_with("github.com/") {
         return install_from_github(input);
     }
@@ -158,6 +177,19 @@ fn install_from_github(url: &str) -> Result<()> {
 }
 
 fn save_package(meta: PaketMetadata, content: &str) -> Result<()> {
+    // 1. Proje dosyasını bul ve bağımlılık ekle
+    if Path::new(PROJECT_FILE).exists() {
+        let mut proj_meta: PaketMetadata = serde_json::from_str(&fs::read_to_string(PROJECT_FILE)?)?;
+        if proj_meta.bagimliliklar.is_none() {
+            proj_meta.bagimliliklar = Some(HashMap::new());
+        }
+        if let Some(ref mut deps) = proj_meta.bagimliliklar {
+            deps.insert(meta.ad.clone(), format!("^{}", meta.surum));
+        }
+        fs::write(PROJECT_FILE, serde_json::to_string_pretty(&proj_meta)?)?;
+    }
+
+    // 2. Paketi modül dizinine yaz
     let package_path = format!("{}/{}", PACKAGE_DIR, meta.ad);
     fs::create_dir_all(&package_path)?;
 
@@ -165,21 +197,63 @@ fn save_package(meta: PaketMetadata, content: &str) -> Result<()> {
     fs::write(format!("{}/paket.json", package_path), serde_json::to_string_pretty(&meta)?)?;
 
     // 3. Kilit Dosyasını Güncelle
-    update_lock_file(&meta.ad, &meta.surum)?;
+    let hash = calculate_hash(content, &serde_json::to_string(&meta)?);
+    update_lock_file(&meta.ad, &meta.surum, &hash)?;
 
-    println!("{} {} v{} başarıyla kuruldu.", "Başarılı!".bright_green(), meta.ad.bold(), meta.surum.bright_white());
+    println!("{} {} v{} [hash:{}] başarıyla kuruldu.", 
+        "Başarılı!".bright_green(), 
+        meta.ad.bold(), 
+        meta.surum.bright_white(),
+        &hash[..8]
+    );
     Ok(())
 }
 
-fn update_lock_file(name: &str, version: &str) -> Result<()> {
+fn calculate_hash(content: &str, meta_str: &str) -> String {
+    let mut hasher = Sha256::new();
+    hasher.update(content.as_bytes());
+    hasher.update(meta_str.as_bytes());
+    hex::encode(hasher.finalize())
+}
+
+/// Paketin yayınlanabilirliğini doğrular
+pub fn verify_package() -> Result<()> {
+    if !Path::new(PROJECT_FILE).exists() {
+        return Err(anyhow!("Bu dizinde bir Hüma projesi (huma.json) bulunamadı."));
+    }
+    
+    let meta: PaketMetadata = serde_json::from_str(&fs::read_to_string(PROJECT_FILE)?)?;
+    
+    if meta.ad.is_empty() || meta.surum.is_empty() {
+        return Err(anyhow!("Paket adı veya sürümü eksik."));
+    }
+    
+    // Sürüm geçerli mi kontrol et
+    Version::parse(&meta.surum)?;
+    
+    println!("{} Paket '{}' v{} yayına hazır.", "Doğrulandı:".bright_green(), meta.ad, meta.surum);
+    Ok(())
+}
+
+
+fn update_lock_file(name: &str, version: &str, hash: &str) -> Result<()> {
     let mut lock = if Path::new(LOCK_FILE).exists() {
         let s = fs::read_to_string(LOCK_FILE)?;
-        serde_json::from_str(&s)?
+        // Geriye dönük uyumluluk için Value olarak parse etmeyi dene
+        if let Ok(l) = serde_json::from_str::<PaketKilit>(&s) {
+            l
+        } else {
+            // Eski format ise veya hatalıysa sıfırla (veya hata ver)
+            PaketKilit::default()
+        }
     } else {
         PaketKilit::default()
     };
 
-    lock.paketler.insert(name.to_string(), version.to_string());
+    lock.paketler.insert(name.to_string(), KilitBilgisi {
+        surum: version.to_string(),
+        hash: hash.to_string(),
+    });
     lock.guncelleme_zamani = chrono::Local::now().to_rfc3339();
 
     fs::write(LOCK_FILE, serde_json::to_string_pretty(&lock)?)?;
