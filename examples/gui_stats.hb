@@ -28,24 +28,30 @@ ayarlar_fks fonksiyon olsun {
     hedef_satis = kaydırıcı_ekle(hedef_satis, 100, 5000)
 }
 
+ocak_grafik_fks fonksiyon olsun {
+    buton_ekle("", 0, 200, 255, ocak_satis / 2.0, 20.0)
+}
+
+subat_grafik_fks fonksiyon olsun {
+    buton_ekle("", 255, 150, 0, subat_satis / 2.0, 20.0)
+}
+
+mart_grafik_fks fonksiyon olsun {
+    buton_ekle("", 100, 255, 100, mart_satis / 2.0, 20.0)
+}
+
 grafik_mockup_fks fonksiyon olsun {
     // Sütun grafikleri andıran çubuklar yapıyoruz
     yazı_ekle("Ocak [" + ocak_satis + "]")
-    alan_ayır_ekle(ocak_satis / 2.0, 20.0, fonksiyon olsun {
-        buton_ekle("", 0, 200, 255, ocak_satis / 2.0, 20.0)
-    })
+    alan_ayır_ekle(ocak_satis / 2.0, 20.0, ocak_grafik_fks)
     
     boşluk_bırak(10.0)
     yazı_ekle("Şubat [" + subat_satis + "]")
-    alan_ayır_ekle(subat_satis / 2.0, 20.0, fonksiyon olsun {
-        buton_ekle("", 255, 150, 0, subat_satis / 2.0, 20.0)
-    })
+    alan_ayır_ekle(subat_satis / 2.0, 20.0, subat_grafik_fks)
     
     boşluk_bırak(10.0)
     yazı_ekle("Mart [" + mart_satis + "]")
-    alan_ayır_ekle(mart_satis / 2.0, 20.0, fonksiyon olsun {
-        buton_ekle("", 100, 255, 100, mart_satis / 2.0, 20.0)
-    })
+    alan_ayır_ekle(mart_satis / 2.0, 20.0, mart_grafik_fks)
 }
 
 ana_cizim_fks fonksiyon olsun {
@@ -53,18 +59,19 @@ ana_cizim_fks fonksiyon olsun {
     yazı_ekle("📈 HÜMA FİNANSAL GÖSTERGE PANELİ", "başlık")
     boşluk_bırak(20.0)
     
-    yan_yana_diz(fonksiyon olsun {
+    giriş_ve_grafik_fks fonksiyon olsun {
         grup_kutusu_ekle("Veri Girişi", ayarlar_fks)
         boşluk_bırak(20.0)
         grup_kutusu_ekle("Satış Grafiği (Sütun)", grafik_mockup_fks)
-    })
+    }
+    yan_yana_diz(giriş_ve_grafik_fks)
     
     boşluk_bırak(25.0)
     ayraç_çiz()
     boşluk_bırak(15.0)
     
     yazı_ekle("ÖZET İSTATİSTİKLER", "kalın")
-    grup_kutusu_ekle("Toplamlar ve Hedefler", fonksiyon olsun {
+    ozet_icerik_fks fonksiyon olsun {
         toplam_metni = "Toplam 3 Aylık Satış: " + toplam_satis + " ₺" olsun
         yazı_ekle(toplam_metni, "başlık")
         
@@ -72,7 +79,8 @@ ana_cizim_fks fonksiyon olsun {
         ilerleme = (toplam_satis / hedef_satis) * 100.0 olsun
         ilerleme_metni = "%" + ilerleme olsun
         yazı_ekle(ilerleme_metni, 0, 200, 100)
-    })
+    }
+    grup_kutusu_ekle("Toplamlar ve Hedefler", ozet_icerik_fks)
 }
 
 pencere_oluştur("Hüma Finance Dashboard", 800.0, 600.0, ana_cizim_fks)

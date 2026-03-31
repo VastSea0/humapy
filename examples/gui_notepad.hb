@@ -21,14 +21,15 @@ not_paneli_fks fonksiyon olsun {
     icerik = büyük_metin_kutusu_ekle(icerik)
     
     boşluk_bırak(10.0)
-    yan_yana_diz(fonksiyon olsun {
+    not_butonlar_fks fonksiyon olsun {
         buton_ekle("Notu Kaydet", 0, 200, 100, 200, 25) ise {
             not_ekle_fks()
         }
         buton_ekle("Tümünü Sil", 255, 100, 50, 180, 25) ise {
             kaydedilen_notlar = []
         }
-    })
+    }
+    yan_yana_diz(not_butonlar_fks)
 }
 
 liste_fks fonksiyon olsun {
@@ -46,7 +47,7 @@ ana_cizim_fks fonksiyon olsun {
     yazı_ekle("📝 HÜMA NOT DEFTERİ", "başlık")
     boşluk_bırak(15.0)
     
-    yan_yana_diz(fonksiyon olsun {
+    tema_butonu_fks fonksiyon olsun {
         buton_ekle("Temayı Değiştir (" + tema_modu + ")") ise {
             tema_modu == "koyu" ise {
                 tema_modu = "açık"
@@ -56,7 +57,8 @@ ana_cizim_fks fonksiyon olsun {
                 tema_degistir("koyu")
             }
         }
-    })
+    }
+    yan_yana_diz(tema_butonu_fks)
     
     boşluk_bırak(10.0)
     grup_kutusu_ekle("Yeni Not Oluştur", not_paneli_fks)
