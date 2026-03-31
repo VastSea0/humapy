@@ -103,6 +103,30 @@ export default async function PackageManagerPage({
               huma paket güncelle
             </div>
           </div>
+
+          <div className="scroll-mt-24" id="vcs">
+            <h2 className="text-2xl font-bold text-on-surface mb-4">Sürüm Kontrolü ve Kilit Dosyaları</h2>
+            <p className="text-on-surface-variant mb-4">
+              Hüma, projelerinizde tekrarlanabilir derlemeler sağlamak için <code>huma.lock</code> (kilit dosyası) sistemini kullanır. Bir paket kurulduğunda, o anki tam sürümü kilit dosyasına kaydedilir.
+            </p>
+            <div className="bg-surface-container-lowest rounded-lg border border-outline-variant/10 p-6">
+               <h3 className="text-sm font-bold text-primary mb-3">Güçlü Sürüm Kontrolü Özellikleri:</h3>
+               <ul className="space-y-3 text-sm text-on-surface-variant">
+                  <li className="flex gap-2">
+                     <span className="text-primary font-bold">●</span>
+                     <span><strong>SemVer Desteği:</strong> Paketler semantic versioning (anlamsal sürümleme) standartlarına göre yönetilir.</span>
+                  </li>
+                  <li className="flex gap-2">
+                     <span className="text-primary font-bold">●</span>
+                     <span><strong>Hüma Versiyon Uyumluluğu:</strong> Bir paket kurulmadan önce, Hüma'nın mevcut sürümüyle uyumlu olup olmadığı otomatik olarak kontrol edilir.</span>
+                  </li>
+                  <li className="flex gap-2">
+                     <span className="text-primary font-bold">●</span>
+                     <span><strong>Kilitli Sürümler:</strong> <code>huma.lock</code> dosyası sayesinde ekibinizdeki herkes aynı sürüm kütüphanelerle çalışır.</span>
+                  </li>
+               </ul>
+            </div>
+          </div>
         </section>
 
         {/* Community Packages */}
@@ -175,6 +199,11 @@ export default async function PackageManagerPage({
           <li>
             <a href="#guncelle" className="text-on-surface-variant/60 hover:text-on-surface transition-all">
                {locale === "tr" ? "Güncelleme" : "Update"}
+            </a>
+          </li>
+          <li>
+            <a href="#vcs" className="text-on-surface-variant/60 hover:text-on-surface transition-all">
+               {locale === "tr" ? "Sürüm Kontrolü" : "Version Control"}
             </a>
           </li>
         </ul>

@@ -2926,6 +2926,7 @@ dependencies = [
  "huma-core",
  "indicatif",
  "self_update",
+ "semver",
  "serde",
  "serde_json",
  "tracing",
