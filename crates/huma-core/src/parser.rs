@@ -426,6 +426,7 @@ impl Parser {
                 expr
             }
             Token::AcikKose => self.parse_liste(),
+            Token::Fonksiyon => self.parse_anonim_fonksiyon(),
             _ => { self.next_token(); Ifade::Bos }
         };
 
@@ -490,5 +491,32 @@ impl Parser {
         }
         self.consume(Token::KapaliKose);
         Ifade::Liste(el)
+    }
+
+    fn parse_anonim_fonksiyon(&mut self) -> Ifade {
+        self.consume(Token::Fonksiyon);
+        self.consume(Token::Olsun);
+
+        let mut params = Vec::new();
+        if self.current_token != Token::AcikSuskun {
+            loop {
+                if let Token::Tanimlayici(ref s) = self.current_token {
+                    params.push(s.clone());
+                    self.next_token();
+                } else {
+                    break;
+                }
+                if self.current_token == Token::Virgul {
+                    self.next_token();
+                } else {
+                    break;
+                }
+            }
+            if self.current_token == Token::Alsin { self.next_token(); }
+        }
+
+        self.consume(Token::AcikSuskun);
+        let govde = self.parse_blok();
+        Ifade::FonksiyonIfadesi { parametreler: params, govde }
     }
 }

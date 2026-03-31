@@ -26,3 +26,5 @@ indicatif = "0.17"
 colored = "2"
 ureq = "2.9"
 semver = "1.0"
+chrono = "0.4"
+

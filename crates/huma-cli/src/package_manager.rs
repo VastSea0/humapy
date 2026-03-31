@@ -5,6 +5,7 @@ use colored::Colorize;
 use serde::{Deserialize, Serialize};
 use semver::{Version, VersionReq};
 use std::collections::HashMap;
+use chrono;
 
 /// Hüma Paket Standardı (HPS) Metadata Dosyası
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -68,6 +69,19 @@ pub fn create_package(name: &str) -> Result<()> {
 
     fs::write(dir.join("huma.json"), serde_json::to_string_pretty(&meta)?)?;
     fs::write(dir.join(format!("{}.hb", name)), format!("// {} ana giriş dosyası\n\"{} kütüphanesi aktif.\"'ı yazdır", name, name))?;
+
+    // v0.4.0: Proje oluşturulurken kilit dosyası ve modül klasörü de ilklendirilir
+    let mod_dir = dir.join(PACKAGE_DIR);
+    if !mod_dir.exists() {
+        fs::create_dir_all(&mod_dir)?;
+    }
+    
+    let lock_path = dir.join(LOCK_FILE);
+    let lock = PaketKilit {
+        paketler: HashMap::new(),
+        guncelleme_zamani: chrono::Local::now().to_rfc3339(),
+    };
+    fs::write(lock_path, serde_json::to_string_pretty(&lock)?)?;
 
     println!("{} '{}' projesi oluşturuldu.", "Başarılı!".bright_green(), name.bold());
     Ok(())

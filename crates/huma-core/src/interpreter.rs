@@ -75,6 +75,28 @@ impl Yorumlayici {
             }
             Deger::Sayi(0.0)
         }));
+        globals.insert("sistem".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Metin(komut)) = args.first() {
+                let output = std::process::Command::new("sh")
+                    .arg("-c")
+                    .arg(komut)
+                    .output();
+                match output {
+                    Ok(o) => {
+                        let s = String::from_utf8_lossy(&o.stdout).trim().to_string();
+                        return Deger::Metin(s);
+                    }
+                    Err(_) => return Deger::Bos,
+                }
+            }
+            Deger::Bos
+        }));
+        globals.insert("dosya_var_mı".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Metin(yol)) = args.first() {
+                return Deger::Sayi(if Path::new(yol).exists() { 1.0 } else { 0.0 });
+            }
+            Deger::Sayi(0.0)
+        }));
         globals.insert("tipi".to_string(), Deger::DahiliFonksiyon(|args| {
             match args.first() {
                 Some(Deger::Sayi(_)) => Deger::Metin("Sayı".to_string()),
@@ -597,6 +619,7 @@ impl Yorumlayici {
                     _ => Deger::Sayi(0.0),
                 }
             }
+            Ifade::FonksiyonIfadesi { parametreler, govde } => Deger::Fonksiyon { parametreler, govde },
             Ifade::Cagri { fonksiyon, argumanlar } => {
                 let mut method_instance = None;
                 let f = if let Ifade::NesneErisim { nesne, ozellik } = *fonksiyon.clone() {

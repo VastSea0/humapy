@@ -1,0 +1,1 @@
+// Simülasyon içeriği

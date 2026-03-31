@@ -38,6 +38,11 @@ pub enum Ifade {
     },
     /// liste'nin uzunluğu ifadesi
     Uzunluk(Box<Ifade>),
+    /// Anonim fonksiyon (Closure)
+    FonksiyonIfadesi {
+        parametreler: Vec<String>,
+        govde: Vec<Komut>,
+    },
 }
 
 #[derive(Debug, Clone, PartialEq)]
