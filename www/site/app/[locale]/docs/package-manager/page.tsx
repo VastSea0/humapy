@@ -33,21 +33,37 @@ export default function PackageManagerPage() {
           <div className="scroll-mt-24" id="kur">
             <h2 className="text-2xl font-bold text-on-surface mb-4">Paket Kurma</h2>
             <p className="text-on-surface-variant mb-4">
-              Yeni bir kütüphaneyi projenize eklemek için <code>huma kur</code> komutunu kullanın.
+              Yeni bir kütüphaneyi projenize eklemek için <code>huma paket kur</code> komutunu kullanın. Doğrudan bir isim kullanabilir veya bir GitHub URL'si verebilirsiniz.
             </p>
-            <div className="bg-surface-container-lowest rounded-lg border border-outline-variant/10 p-4 font-mono text-sm text-tertiary">
-              huma kur dizgi_asistani
+            <div className="space-y-2">
+              <div className="bg-surface-container-lowest rounded-lg border border-outline-variant/10 p-4 font-mono text-sm text-tertiary">
+                huma paket kur nlp_temel
+              </div>
+              <div className="bg-surface-container-lowest rounded-lg border border-outline-variant/10 p-4 font-mono text-sm text-tertiary">
+                huma paket kur github.com/kullanici/repo
+              </div>
             </div>
           </div>
 
-          {/* Güncelleme */}
-          <div className="scroll-mt-24" id="guncelle">
-            <h2 className="text-2xl font-bold text-on-surface mb-4">Paketleri Güncelleme</h2>
+          {/* Yeni Paket */}
+          <div className="scroll-mt-24" id="yeni">
+            <h2 className="text-2xl font-bold text-on-surface mb-4">Yeni Paket Oluşturma</h2>
             <p className="text-on-surface-variant mb-4">
-              Tüm yüklü paketleri en son sürümüne güncellemek için:
+              Kendi kütüphanenizi oluşturmak için standart bir şablon üretir:
             </p>
             <div className="bg-surface-container-lowest rounded-lg border border-outline-variant/10 p-4 font-mono text-sm text-tertiary">
-              huma güncelle
+              huma paket yeni benim_kutuphanem
+            </div>
+          </div>
+
+          {/* Listeleme */}
+          <div className="scroll-mt-24" id="liste">
+            <h2 className="text-2xl font-bold text-on-surface mb-4">Paketleri Listeleme</h2>
+            <p className="text-on-surface-variant mb-4">
+              Mevcut projede yüklü olan tüm paketleri görüntülemek için:
+            </p>
+            <div className="bg-surface-container-lowest rounded-lg border border-outline-variant/10 p-4 font-mono text-sm text-tertiary">
+              huma paket liste
             </div>
           </div>
 
@@ -113,10 +129,13 @@ export default function PackageManagerPage() {
             <a href="#kur" className="text-on-surface-variant/60 hover:text-on-surface transition-all">Paket Kurma</a>
           </li>
           <li>
-            <a href="#guncelle" className="text-on-surface-variant/60 hover:text-on-surface transition-all">Güncelleme</a>
+            <a href="#yeni" className="text-on-surface-variant/60 hover:text-on-surface transition-all">Yeni Paket</a>
           </li>
           <li>
-            <a href="#sil" className="text-on-surface-variant/60 hover:text-on-surface transition-all">Paket Silme</a>
+            <a href="#liste" className="text-on-surface-variant/60 hover:text-on-surface transition-all">Paketleri Listeleme</a>
+          </li>
+          <li>
+            <a href="#guncelle" className="text-on-surface-variant/60 hover:text-on-surface transition-all">Güncelleme</a>
           </li>
         </ul>
       </aside>

@@ -24,3 +24,4 @@ self_update = { version = "0.41", features = ["archive-tar", "archive-zip", "com
 app = { path = "../../src-tauri" }
 indicatif = "0.17"
 colored = "2"
+ureq = "2.9"

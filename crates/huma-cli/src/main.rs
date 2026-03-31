@@ -124,6 +124,13 @@ pub enum PackageAction {
         /// Paketin adı
         name: String,
     },
+    /// Mevcut tüm paketleri listeler
+    Liste,
+    /// Yeni bir paket projesi şablonu oluşturur
+    Yeni {
+        /// Paketin adı
+        name: String,
+    },
     /// Tüm paketleri günceller
     Güncelle,
 }
@@ -166,6 +173,8 @@ fn run(cli: Cli) -> i32 {
             PackageAction::Kur { name } => package_manager::install_package(&name),
             PackageAction::Sil { name } => package_manager::remove_package(&name),
             PackageAction::Güncelle => package_manager::update_packages(),
+            PackageAction::Yeni { name } => package_manager::create_package(&name),
+            PackageAction::Liste => package_manager::list_packages(),
         },
         Some(Commands::Version) => {
             println!(
