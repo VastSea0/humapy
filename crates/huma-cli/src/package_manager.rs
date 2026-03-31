@@ -17,7 +17,10 @@ pub struct PaketMetadata {
     pub giris: String,
     /// Bu paket için gereken minimum Hüma versiyonu (isteğe bağlı)
     pub huma_surum: Option<String>,
+    /// Projenin bağımlılıkları (paket adı -> sürüm kısıtlaması)
+    pub bagimliliklar: Option<HashMap<String, String>>,
 }
+
 
 /// Hüma Kilit Dosyası (huma.lock)
 /// Yüklenen tüm paketlerin kesin sürümlerini saklar.
@@ -65,10 +68,15 @@ pub fn create_package(name: &str) -> Result<()> {
         yazar: "Geliştirici".to_string(),
         giris: format!("{}.hb", name),
         huma_surum: Some(format!(">={}", CURRENT_HUMA_VER)),
+        bagimliliklar: Some(HashMap::new()),
     };
 
     fs::write(dir.join("huma.json"), serde_json::to_string_pretty(&meta)?)?;
     fs::write(dir.join(format!("{}.hb", name)), format!("// {} ana giriş dosyası\n\"{} kütüphanesi aktif.\"'ı yazdır", name, name))?;
+
+    // .gitignore oluştur (Hüma standartlarına uygun)
+    let gitignore_content = "huma_modulleri/\ntarget/\n*.hbc\n.DS_Store\n";
+    fs::write(dir.join(".gitignore"), gitignore_content)?;
 
     // v0.4.0: Proje oluşturulurken kilit dosyası ve modül klasörü de ilklendirilir
     let mod_dir = dir.join(PACKAGE_DIR);
@@ -83,9 +91,16 @@ pub fn create_package(name: &str) -> Result<()> {
     };
     fs::write(lock_path, serde_json::to_string_pretty(&lock)?)?;
 
+    // Git ilklendirmesi dene
+    let _ = std::process::Command::new("git")
+        .arg("init")
+        .current_dir(dir)
+        .output();
+
     println!("{} '{}' projesi oluşturuldu.", "Başarılı!".bright_green(), name.bold());
     Ok(())
 }
+
 
 /// Bir paketi kurar ve kilit dosyasına ekler
 pub fn install_package(input: &str) -> Result<()> {
@@ -103,7 +118,9 @@ pub fn install_package(input: &str) -> Result<()> {
                 yazar: "Hüma Takımı".to_string(),
                 giris: format!("{}.hb", input),
                 huma_surum: Some(">=0.3.0".to_string()),
+                bagimliliklar: None,
             };
+
             save_package(meta, "// Simülasyon içeriği")?;
         },
         _ => return Err(anyhow!("Paket bulunamadı. Lütfen GitHub linki kullanın.")),
