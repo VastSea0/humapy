@@ -10,7 +10,7 @@ export default async function ChangelogPage({
   const dict = await getDictionary(locale as "en" | "tr");
   const ch = dict.Docs.changelog;
 
-  const versions = ["v0_3_1", "v0_3_0", "v0_2_0", "v0_1_0"];
+  const versions = ["v0_4_0", "v0_3_1", "v0_3_0", "v0_2_0", "v0_1_0"];
 
   return (
     <main className="flex-1 px-8 md:px-16 py-12 max-w-4xl">

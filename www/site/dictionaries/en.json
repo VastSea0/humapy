@@ -212,7 +212,18 @@
     },
     "changelog": {
       "title": "Changelog",
-      "description": "Official update history for the Hüma language and toolchain.",
+      "description": "Official update history of the Hüma language and toolchain.",
+      "v0_4_0": {
+        "version": "v0.4.0 (Visual and Modular Dawn)",
+        "date": "March 31, 2026",
+        "changes": [
+          "Native Graphical User Interface (GUI) library (gui.hb) launched based on egui.",
+          "Advanced Package Manager (huma paket) and GitHub integration added.",
+          "huma.lock lockfile system implemented for reproducible builds.",
+          "SemVer compatible version control and package metadata (huma.json) introduced.",
+          "Optimized syntax and drawing loops for GUI modules."
+        ]
+      },
       "v0_3_1": {
         "version": "v0.3.1 (Latest)",
         "date": "March 30, 2026",

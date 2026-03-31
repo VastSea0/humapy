@@ -213,6 +213,17 @@
     "changelog": {
       "title": "Sürüm Notları",
       "description": "Hüma dili ve araç zinciri resmi güncelleme geçmişi.",
+      "v0_4_0": {
+        "version": "v0.4.0 (Görsel ve Modüler Şafak)",
+        "date": "31 Mart 2026",
+        "changes": [
+          "egui tabanlı yerel Görsel Arayüz (GUI) kütüphanesi (gui.hb) yayına alındı.",
+          "Gelişmiş Paket Yöneticisi (huma paket) ve GitHub entegrasyonu eklendi.",
+          "huma.lock kilit dosyası sistemi ile tekrarlanabilir derlemeler sağlandı.",
+          "SemVer uyumlu sürüm kontrolü ve paket meta verileri (huma.json) sistemi kuruldu.",
+          "GUI çizim döngülerindeki sözdizimi hataları optimize edildi."
+        ]
+      },
       "v0_3_1": {
         "version": "v0.3.1 (En Yeni Sürüm)",
         "date": "30 Mart 2026",
