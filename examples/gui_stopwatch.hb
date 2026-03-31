@@ -73,7 +73,7 @@ turlar_icerik_fks fonksiyon olsun {
     // Liste elemanlarını yazdırma
     idx = 0 olsun
     uz = tur_listesi'nin uzunluğu olsun
-    döngü idx < uz ise {
+    idx < uz olduğu sürece {
         t_no = "" + (idx + 1) olsun
         t_deger = tur_listesi[idx] olsun
         yazı_ekle(t_no + ". Tur: " + t_deger)

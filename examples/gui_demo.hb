@@ -2,7 +2,7 @@ yükle "gui.hb";
 
 // Sürüm kontrolü
 gui_ver = gui_sürüm_al()
-yaz("Kullanılan GUI Sürümü: " + gui_ver)
+("Kullanılan GUI Sürümü: " + gui_ver)'i yazdır
 
 // Global durum değişkenleri
 aktif_sekme = 1 olsun
@@ -147,9 +147,7 @@ pencere_icerigi fonksiyon olsun {
 // ===================
 
 dosya_menusu fonksiyon olsun {
-    buton_ekle("Kaydet") ise {
-        yaz("Kaydet'e tıklandı.")
-    }
+        "Kaydet'e tıklandı."'nı yazdır
     buton_ekle("Ayarlar") ise {
         aktif_sekme = 2
     }

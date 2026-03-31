@@ -34,7 +34,7 @@ not_paneli_fks fonksiyon olsun {
 liste_fks fonksiyon olsun {
     liz = kaydedilen_notlar'nin uzunluğu olsun
     i = 0 olsun
-    döngü i < liz ise {
+    i < liz olduğu sürece {
         g_not = kaydedilen_notlar[i] olsun
         yazı_ekle(g_not, "belirgin")
         ayraç_çiz()

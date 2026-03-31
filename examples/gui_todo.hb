@@ -11,7 +11,7 @@ akf_idx = 0 olsun
 
 gorev_ekle_fks fonksiyon olsun {
     gorev_metni == "" ise {
-        yaz("Görev metni boş olamaz!")
+        "Görev metni boş olamaz!"'ı yazdır
     } yoksa {
         gorev_listesi[gorev_metni] ekle
         gorev_metni = ""
@@ -31,7 +31,8 @@ yeni_gorev_alanı_fks fonksiyon olsun {
 }
 
 gorev_satiri_fks fonksiyon olsun {
-        yaz("Döngü i: " + i)
+    // Postfix yazdır kullanımı
+    ("Döngü i: " + i)'yi yazdır
     // Global geçici değişkenleri kullanıyoruz
     i_no = "" + (akf_idx + 1) olsun
     yazı_ekle(i_no + ". ", "kalın")
@@ -47,7 +48,7 @@ gorev_satiri_fks fonksiyon olsun {
 kaydirilan_icerik_fks fonksiyon olsun {
     l_uz = gorev_listesi'nin uzunluğu olsun
     i = 0 olsun
-    döngü i < l_uz ise {
+    i < l_uz olduğu sürece {
         akf_idx = i
         akf_gorev = gorev_listesi[i]
         
