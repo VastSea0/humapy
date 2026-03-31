@@ -1,4 +1,4 @@
-# huma_sunucu.hb - Hüma Sunucu Kütüphanesi
+// huma_sunucu.hb - Hüma Sunucu Kütüphanesi
 
 Yanıt sınıf olsun {
     olsun istek_id = 0
@@ -26,17 +26,17 @@ Sunucu sınıf olsun {
     olsun _post_rotalari = {}
 
     kur fonksiyon olsun p alsın {
-        kendisi'nin port = p
-        kendisi'nin _get_rotalari = {}
-        kendisi'nin _post_rotalari = {}
+        kendisi'nin port = p olsun
+        kendisi'nin _get_rotalari = metinden_nesneye("{}") olsun
+        kendisi'nin _post_rotalari = metinden_nesneye("{}") olsun
     }
 
     getir fonksiyon olsun yol, islem alsın {
-        kendisi'nin _get_rotalari[yol] = islem
+        kendisi'nin _get_rotalari[yol] = islem olsun
     }
 
     gönder fonksiyon olsun yol, islem alsın {
-        kendisi'nin _post_rotalari[yol] = islem
+        kendisi'nin _post_rotalari[yol] = islem olsun
     }
 
     baslat fonksiyon olsun {
@@ -52,18 +52,18 @@ Sunucu sınıf olsun {
             istek = dahili_sunucu_bekle(sid)
             
             istek != boş ise {
-                url = istek'in url
-                metot = istek'in metot
+                url = (istek'in url)
+                metot = (istek'in metot)
                 
                 yanit = Yanıt()
-                yanit'ın istek_id = istek'in id
+                yanit'ın istek_id = (istek'in id) olsun
                 
                 metot == "GET" ise {
                     kendisi'nin _get_rotalari'nın içeriyor(url) ise {
                         islem = kendisi'nin _get_rotalari[url]
                         islem(istek, yanit)
                     } yoksa {
-                        dahili_sunucu_yanitla(istek'in id, "404 Sayfa Bulunamadı", 404, "text/plain")
+                        dahili_sunucu_yanitla((istek'in id), "404 Sayfa Bulunamadı", 404, "text/plain")
                     }
                 }
                 
@@ -72,7 +72,7 @@ Sunucu sınıf olsun {
                         islem = kendisi'nin _post_rotalari[url]
                         islem(istek, yanit)
                     } yoksa {
-                        dahili_sunucu_yanitla(istek'in id, "404 Sayfa Bulunamadı", 404, "text/plain")
+                        dahili_sunucu_yanitla((istek'in id), "404 Sayfa Bulunamadı", 404, "text/plain")
                     }
                 }
             }

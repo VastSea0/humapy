@@ -122,12 +122,12 @@ impl Yorumlayici {
         globals.insert("dahili_sunucu_bekle".to_string(), Deger::DahiliFonksiyon(|args| {
             let id = match args.first() { Some(Deger::Sayi(n)) => *n as u64, _ => return Deger::Bos };
             if let Some(server) = SUNUCULAR.lock().unwrap().get(&id) {
-                if let Ok(istek) = server.recv() {
+                if let Ok(mut istek) = server.recv() {
                     let mut govde = String::new();
-                    let mut b = istek.as_reader();
-                    let _ = b.read_to_string(&mut govde);
+                    let _ = istek.as_reader().read_to_string(&mut govde);
                     
                     let i_id = get_id();
+
                     let url = istek.url().to_string();
                     let metot = istek.method().to_string();
                     

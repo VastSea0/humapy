@@ -172,10 +172,11 @@ impl Lexer {
                 return Token::Hata("Beklenmeyen kesme işareti (ek bulunamadı)".to_string());
             }
 
-            // "nin", "nın", "nun", "nün" ekleri → Nin token döndür
-            if matches!(suffix.as_str(), "nin" | "nın" | "nun" | "nün") {
+            // "nin", "nın", "nun", "nün", "in", "ın", "un", "ün" ekleri → Nin token döndür
+            if matches!(suffix.as_str(), "nin" | "nın" | "nun" | "nün" | "in" | "ın" | "un" | "ün") {
                 return Token::Nin;
             }
+
 
             // Bilinen bir Türkçe ek mi?
             if is_turkish_suffix(&suffix) {
