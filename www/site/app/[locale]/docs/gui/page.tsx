@@ -1,10 +1,10 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { getDictionary } from "@/dictionaries/dictionaries";
 
 export const metadata: Metadata = {
   title: "Görsel Arayüz (GUI) Kütüphanesi",
-  description:
-    "Hüma'nın egui tabanlı yerel görsel arayüz API referansı.",
+  description: "Hüma'nın egui tabanlı yerel görsel arayüz API referansı.",
 };
 
 interface StdlibFunction {
@@ -24,106 +24,117 @@ interface StdlibModule {
   colorAccent: string;
 }
 
-const modules: StdlibModule[] = [
+const getModules = (locale: string): StdlibModule[] => [
   {
     id: "gui",
     file: "gui.hb",
     icon: "window",
-    title: "Görsel Arayüz (GUI)",
-    description: "egui tabanlı yerel arayüz oluşturma araçları.",
+    title: locale === "tr" ? "Görsel Arayüz (GUI)" : "Graphical User Interface (GUI)",
+    description: locale === "tr" ? "egui tabanlı yerel arayüz oluşturma araçları." : "egui-based native interface creation tools.",
     colorAccent: "text-primary",
     functions: [
       {
         name: "pencere_oluştur(başlık, w, h, çizim_fks)",
         signature: "pencere_oluştur(başlık: Metin, w: Sayı, h: Sayı, çizim_fks: Fonksiyon)",
-        description: "Yeni bir masaüstü penceresi oluşturur ve çizim döngüsünü başlatır.",
+        description: locale === "tr" ? "Yeni bir masaüstü penceresi oluşturur ve çizim döngüsünü başlatır." : "Creates a new desktop window and starts the drawing loop.",
       },
       {
         name: "buton_ekle(metin, ...)",
         signature: "buton_ekle(metin: Metin, [r, g, b, w, h]) → Mantıksal",
-        description: "Bir buton ekler. Renk (RGB) ve boyut (Genişlik, Yükseklik) parametreleri isteğe bağlıdır. Tıklandığında doğru (1) döner.",
+        description: locale === "tr" ? "Bir buton ekler. Renk (RGB) ve boyut (Genişlik, Yükseklik) parametreleri isteğe bağlıdır. Tıklandığında doğru (1) döner." : "Adds a button. Color (RGB) and size (Width, Height) parameters are optional. Returns true (1) when clicked.",
       },
       {
         name: "yazı_ekle(metin, ...)",
         signature: "yazı_ekle(metin: Metin, [stil | r, g, b])",
-        description: "Metin etiketi ekler. Stil olarak 'başlık', 'kalın' veya 'eğik' alabilir. Renk parametreleri isteğe bağlıdır.",
+        description: locale === "tr" ? "Metin etiketi ekler. Stil olarak 'başlık', 'kalın' veya 'eğik' alabilir. Renk parametreleri isteğe bağlıdır." : "Adds a text label. Can take 'başlık' (title), 'kalın' (bold), or 'eğik' (italic) as a style. Color parameters are optional.",
       },
       {
         name: "metin_kutusu_ekle(değişken, [w])",
         signature: "metin_kutusu_ekle(değişken: Metin, [w: Sayı]) → Metin",
-        description: "Tek satırlık metin giriş alanı ekler. Değişen metni döndürür.",
+        description: locale === "tr" ? "Tek satırlık metin giriş alanı ekler. Değişen metni döndürür." : "Adds a single-line text entry field. Returns the changed text.",
       },
       {
         name: "büyük_metin_kutusu_ekle(değişken)",
         signature: "büyük_metin_kutusu_ekle(değişken: Metin) → Metin",
-        description: "Çok satırlık metin alanı (Text Edit) ekler.",
+        description: locale === "tr" ? "Çok satırlık metin alanı (Text Edit) ekler." : "Adds a multi-line text area (Text Edit).",
       },
       {
         name: "kaydırıcı_ekle(değer, min, max)",
         signature: "kaydırıcı_ekle(değer: Sayı, min: Sayı, max: Sayı) → Sayı",
-        description: "Sayısal bir kaydırıcı (Slider) ekler.",
+        description: locale === "tr" ? "Sayısal bir kaydırıcı (Slider) ekler." : "Adds a numerical slider.",
       },
       {
         name: "onay_kutusu_ekle(durum, metin)",
         signature: "onay_kutusu_ekle(durum: Mantıksal, metin: Metin) → Mantıksal",
-        description: "İşaretlenebilir bir onay kutusu (Checkbox) ekler.",
+        description: locale === "tr" ? "İşaretlenebilir bir onay kutusu (Checkbox) ekler." : "Adds a checkable checkbox.",
       },
       {
         name: "yan_yana_diz(fks)",
         signature: "yan_yana_diz(fks: Fonksiyon)",
-        description: "İçindeki bileşenleri yatay (horizontal) düzende hizalar.",
+        description: locale === "tr" ? "İçindeki bileşenleri yatay (horizontal) düzende hizalar." : "Aligns internal components horizontally.",
       },
       {
         name: "alt_alta_diz(fks)",
         signature: "alt_alta_diz(fks: Fonksiyon)",
-        description: "İçindeki bileşenleri dikey (vertical) düzende hizalar.",
+        description: locale === "tr" ? "İçindeki bileşenleri dikey (vertical) düzende hizalar." : "Aligns internal components vertically.",
       },
       {
         name: "kaydırılabilir_liste_ekle(id, fks)",
         signature: "kaydırılabilir_liste_ekle(id: Metin, fks: Fonksiyon)",
-        description: "İçeriği kaydırılabilir (ScrollArea) bir alan oluşturur.",
+        description: locale === "tr" ? "İçeriği kaydırılabilir (ScrollArea) bir alan oluşturur." : "Creates a scrollable area (ScrollArea).",
       },
       {
         name: "grup_kutusu_ekle(başlık, fks)",
         signature: "grup_kutusu_ekle(başlık: Metin, fks: Fonksiyon)",
-        description: "Başlıklı ve çerçeveli bir grup alanı oluşturur.",
+        description: locale === "tr" ? "Başlıklı ve çerçeveli bir grup alanı oluşturur." : "Creates a grouped area with a title and frame.",
       },
       {
         name: "ayraç_çiz()",
         signature: "ayraç_çiz()",
-        description: "Yatay bir ayırıcı çizgi ekler.",
+        description: locale === "tr" ? "Yatay bir ayırıcı çizgi ekler." : "Adds a horizontal separator line.",
       },
       {
         name: "boşluk_bırak(miktar)",
         signature: "boşluk_bırak(miktar: Sayı)",
-        description: "Bileşenler arasında boşluk bırakır.",
+        description: locale === "tr" ? "Bileşenler arasında boşluk bırakır." : "Adds space between components.",
       },
     ],
   },
 ];
 
-export default function GuiPage() {
+export default async function GuiPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const dict = await getDictionary(locale as "en" | "tr");
+  const modules = getModules(locale);
+
   return (
     <>
       <main className="flex-1 px-8 md:px-16 py-12 max-w-4xl">
         <nav className="flex gap-2 text-[10px] uppercase tracking-widest text-on-surface-variant/60 mb-4">
-          <Link href="/docs" className="hover:text-primary transition-colors">
-            Belgeler
+          <Link href={`/${locale}/docs`} className="hover:text-primary transition-colors">
+            {dict.Nav.docs}
           </Link>
           <span>/</span>
-          <span className="text-on-surface-variant">Ekosistem</span>
+          <span className="text-on-surface-variant">{dict.Sidebar.ecosystem}</span>
           <span>/</span>
-          <span className="text-primary">Görsel Arayüz (GUI)</span>
+          <span className="text-primary">{dict.Sidebar.items.gui}</span>
         </nav>
 
         <h1 className="text-5xl font-extrabold text-on-surface tracking-tighter mb-6">
-          Görsel Arayüz (GUI)
+          {dict.Sidebar.items.gui}
         </h1>
         <p className="text-lg text-on-surface-variant leading-relaxed mb-4">
-          Hüma, modern masaüstü uygulamaları geliştirmek için Rust'ın <code>egui</code> kütüphanesini temel alan yerel bir GUI katmanı sunar.
+          {locale === "tr" 
+             ? "Hüma, modern masaüstü uygulamaları geliştirmek için Rust'ın egui kütüphanesini temel alan yerel bir GUI katmanı sunar."
+             : "Hüma provides a native GUI layer based on Rust's egui library for developing modern desktop applications."
+          }
         </p>
         <div className="bg-surface-container-lowest rounded-lg border border-outline-variant/10 p-4 font-mono text-sm text-tertiary mb-12">
-          yükle &quot;gui.hb&quot;;
+          {locale === "tr" ? "yükle \"gui.hb\";" : "yükle \"gui.hb\";"}
         </div>
 
         {/* Modules */}
@@ -151,7 +162,7 @@ export default function GuiPage() {
 
               {/* Functions */}
               <h3 className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">
-                Fonksiyonlar
+                {locale === "tr" ? "Fonksiyonlar" : "Functions"}
               </h3>
               <div className="space-y-3">
                 {mod.functions.map((fn) => (
@@ -176,7 +187,9 @@ export default function GuiPage() {
 
         {/* Example */}
         <section className="mt-20">
-            <h2 className="text-2xl font-bold text-on-surface mb-6">Örnek Uygulama</h2>
+            <h2 className="text-2xl font-bold text-on-surface mb-6">
+               {locale === "tr" ? "Örnek Uygulama" : "Example Application"}
+            </h2>
             <div className="bg-surface-container-lowest rounded-lg border border-outline-variant/10 p-6">
                 <pre className="font-mono text-sm text-on-surface-variant overflow-x-auto">
 {`yükle "gui.hb";
@@ -202,19 +215,19 @@ pencere_oluştur("Hüma Örnek", 400.0, 300.0, cizim_fks)`}
         {/* Navigation */}
         <div className="flex justify-between mt-16 pt-8 border-t border-outline-variant/10">
           <Link
-            href="/docs/stdlib"
+            href={`/${locale}/docs/stdlib`}
             className="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors"
           >
             <span className="material-symbols-outlined text-base">
               arrow_back
             </span>
-            Standart Kütüphane
+            {dict.Sidebar.items.stdlib}
           </Link>
           <Link
-            href="/docs/package-manager"
+            href={`/${locale}/docs/package-manager`}
             className="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors"
           >
-            Paket Yöneticisi
+            {dict.Sidebar.items.package_manager}
             <span className="material-symbols-outlined text-base">
               arrow_forward
             </span>
