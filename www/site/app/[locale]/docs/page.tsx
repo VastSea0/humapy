@@ -45,6 +45,8 @@ export default async function DocsPage({
           </Link>
           <span>/</span>
           <span className="text-on-surface-variant">{dict.Sidebar.core}</span>
+          <span>/</span>
+          <span className="text-primary">{d.title}</span>
         </nav>
 
         <h1 className="text-5xl font-extrabold text-on-surface tracking-tighter mb-6">
@@ -65,11 +67,14 @@ export default async function DocsPage({
           <p className="mb-6 text-on-surface-variant">
             {d.installation.desc}
           </p>
-          <CodeBlock code={installCode} variant="terminal" />
+          <CodeBlock 
+            code={`$ curl -fsSL https://huma-dili.org/install.sh | bash\n\n[Hüma] ${locale === "tr" ? "Sistem algılanıyor..." : "Detecting system..."} Linux x86_64\n[Hüma] v0.5.0 ${locale === "tr" ? "indiriliyor..." : "downloading..."} [##########] 100%\n[Hüma] ${locale === "tr" ? "Kurulum tamamlandı." : "Installation complete."}\n[Hüma] ${locale === "tr" ? "Yol (PATH) güncellendi." : "PATH updated."}`} 
+            variant="terminal" 
+          />
 
           {/* Info callout */}
-          <div className="bg-surface-container-low border-l-4 border-tertiary p-6 rounded-r-lg mb-8">
-            <div className="flex items-center gap-3 mb-2 text-tertiary">
+          <div className="bg-primary/5 border-l-4 border-primary p-6 rounded-r-lg mb-8">
+            <div className="flex items-center gap-3 mb-2 text-primary">
               <span className="material-symbols-outlined text-lg">info</span>
               <span className="text-xs font-bold uppercase tracking-widest">
                 {d.installation.arch_title}
@@ -92,7 +97,10 @@ export default async function DocsPage({
           <p className="mb-6 text-on-surface-variant">
             {d.quick_start.desc}
           </p>
-          <CodeBlock code={versionCode} variant="terminal" />
+          <CodeBlock 
+            code={`$ huma --${locale === "tr" ? "versiyon" : "version"}\nHüma v0.5.0 (${locale === "tr" ? "Modern Ağ Şafağı" : "Modern Network Dawn"})`} 
+            variant="terminal" 
+          />
         </section>
 
         {/* 03 First Program */}
@@ -106,12 +114,12 @@ export default async function DocsPage({
           <p className="mb-6 text-on-surface-variant">
             {d.first_program.desc}
           </p>
-          <CodeBlock code={firstProgramCode} filename="merhaba.huma" />
+          <CodeBlock code={firstProgramCode} filename="merhaba.hb" />
 
-          {/* Warning callout */}
-          <div className="bg-surface-container-low border-l-4 border-primary-container p-6 rounded-r-lg">
-            <div className="flex items-center gap-3 mb-2 text-primary-container">
-              <span className="material-symbols-outlined text-lg">warning</span>
+          {/* Suffix Callout */}
+          <div className="bg-tertiary/5 border-l-4 border-tertiary p-6 rounded-r-lg">
+            <div className="flex items-center gap-3 mb-2 text-tertiary">
+              <span className="material-symbols-outlined text-lg">auto_fix</span>
               <span className="text-xs font-bold uppercase tracking-widest">
                 {d.first_program.suffix_title}
               </span>
@@ -181,10 +189,10 @@ export default async function DocsPage({
 
       {/* Right TOC */}
       <aside className="hidden xl:block w-64 sticky top-16 h-[calc(100vh-4rem)] py-12 px-8 overflow-y-auto border-l border-outline-variant/10 shrink-0">
-        <h5 className="text-xs font-bold text-on-surface uppercase tracking-[0.2em] mb-6">
+        <h5 className="text-[10px] font-bold text-on-surface uppercase tracking-[0.2em] mb-6 opacity-40">
           {d.toc.title}
         </h5>
-        <ul className="space-y-4 text-xs font-medium">
+        <ul className="space-y-4 text-[11px] font-bold uppercase tracking-widest">
           {[
             { href: "#installation", label: d.toc.installation },
             { href: "#quick-start", label: d.toc.quick_start },
@@ -194,7 +202,7 @@ export default async function DocsPage({
             <li key={item.href}>
               <a
                 href={item.href}
-                className="text-on-surface-variant/60 border-l-2 border-transparent pl-4 hover:text-on-surface hover:border-primary transition-all block"
+                className="text-on-surface-variant/60 hover:text-primary transition-all block"
               >
                 {item.label}
               </a>
@@ -203,17 +211,17 @@ export default async function DocsPage({
         </ul>
 
         <div className="mt-12 pt-12 border-t border-outline-variant/10">
-          <div className="bg-surface-container-high p-4 rounded-lg">
+          <div className="bg-surface-container-high/30 p-4 rounded-lg border border-outline-variant/5">
             <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/40 mb-3">
               {d.resources.title}
             </p>
-            <div className="flex flex-col gap-3 text-[11px] font-bold">
-              <a href="https://github.com/VastSea0/huma-lang/discussions" className="flex items-center gap-2 text-primary hover:underline">
-                <span className="material-symbols-outlined text-sm">chat</span>
+            <div className="flex flex-col gap-3 text-[11px] font-bold uppercase tracking-widest">
+              <a href="https://github.com/VastSea0/huma-lang/discussions" className="flex items-center gap-2 text-primary hover:translate-x-1 transition-transform">
+                <span className="material-symbols-outlined text-[14px]">chat</span>
                 {d.resources.discord}
               </a>
-              <a href="https://github.com/VastSea0/huma-lang/issues" className="flex items-center gap-2 text-primary hover:underline">
-                <span className="material-symbols-outlined text-sm">bug_report</span>
+              <a href="https://github.com/VastSea0/huma-lang/issues" className="flex items-center gap-2 text-primary hover:translate-x-1 transition-transform">
+                <span className="material-symbols-outlined text-[14px]">bug_report</span>
                 {d.resources.issue}
               </a>
             </div>

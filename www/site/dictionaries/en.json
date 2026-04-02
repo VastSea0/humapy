@@ -1,220 +1,228 @@
 {
+  "Nav": {
+    "home": "Home",
+    "docs": "Documentation",
+    "playground": "Playground",
+    "github": "GitHub",
+    "download": "Download"
+  },
   "Hero": {
-    "badge": "v0.5.0-stable release (modern network dawn)",
-    "headline": "Code as You Think.",
-    "subheadline": "In Your Native Language.",
-    "description": "Hüma is a high-performance programming language featuring native Turkish syntax. Built with a Rust-backed core, it combines the expressiveness of natural language with the raw speed of a systems compiler.",
-    "cta_get_started": "Get Started",
-    "cta_docs": "Read Documentation"
-  },
-  "IDE": {
-    "filename": "merhaba.hb",
-    "terminal_output": "OUTPUT",
-    "success_message": "Success!"
-  },
-  "Features": {
-    "headline": "Industrial Grade Infrastructure.",
-    "natural_syntax": {
-      "title": "Natural Syntax",
-      "description": "Write algorithms in your native tongue. Reduce cognitive load and increase maintainability with Turkish semantic structures that translate directly into machine code."
-    },
-    "hybrid_execution": {
-      "title": "Hybrid Execution",
-      "description": "Interpret for rapid prototyping or compile for production. Hüma utilizes a multi-stage JIT and AOT pipeline powered by the LLVM infrastructure."
-    },
-    "standalone_compilation": {
-      "title": "Standalone Compilation",
-      "description": "Zero dependencies. Compile your Hüma projects into standalone binaries for Windows, Linux, and macOS with optimized memory management."
-    },
-    "standard_library": {
-      "title": "Rich Standard Library",
-      "description": "A robust set of modules for networking, file I/O, and data processing. Designed to be batteries-included while staying lightweight."
-    }
-  },
-  "CTA": {
-    "headline": "Ready to evolve?",
-    "description": "Join thousands of developers bridging the gap between human thought and binary execution.",
-    "copy_install_command": "Copy install command",
-    "available_platforms": "Available for x64 / ARM64"
+    "title": "Build the Future of Software with Hüma",
+    "subtitle": "A modern, high-performance programming language powered by Rust and optimized for natural language clarity.",
+    "getStarted": "Get Started",
+    "viewGithub": "View on GitHub"
   },
   "Footer": {
-    "copy": "© 2026 Hüma Language Egehan KAHRAMAN",
-    "license": "LICENSE: MIT",
-    "build": "BUILD: STABLE-02.04",
-    "github": "GitHub",
-    "discord": "Discord",
-    "releases": "Releases",
-    "issues": "Issues",
-    "license_link": "License"
-  },
-  "Nav": {
-    "playground": "Playground",
-    "docs": "Docs",
-    "community": "Community",
-    "github": "GitHub"
-  },
-  "Playground": {
-    "badge": "v0.5.0",
-    "headline": "Pure Efficiency.",
-    "subheadline": "Native Semantics.",
-    "description": "Discover the Hüma language. Programming is now much more accessible and powerful with its syntax close to daily spoken language.",
-    "console_output": "CONSOLE OUTPUT",
-    "cta_title": "The Most Natural Way to Code.",
-    "cta_desc": "To use all the features of Hüma, install the CLI tool on your computer and start developing your own software.",
-    "cta_docs": "Read Documentation",
-    "cta_github": "View on GitHub",
-    "examples": {
-      "hello": {
-        "label": "Welcome to Hüma",
-        "description": "A basic example of variable assignment and printing in Hüma. The simplest structure that utilizes the natural flow of the Turkish language."
-      },
-      "conditions": {
-        "label": "Decision Mechanisms",
-        "description": "Flow control with ise / yoksa blocks. You can build conditional statements with the 'ise' keyword."
-      },
-      "loops": {
-        "label": "Iterative Operations",
-        "description": "The 'olduğu sürece' structure is the direct equivalent of the classic while loop."
-      },
-      "functions": {
-        "label": "Function Definition",
-        "description": "Functions are defined with the 'olsun' and 'alsın' structure, and return values with 'döndür'."
-      },
-      "classes": {
-        "label": "Object-Oriented Programming",
-        "description": "Group your data and behaviors (functions) using classes and object structures."
-      },
-      "lists": {
-        "label": "List Management",
-        "description": "Add elements, remove them, and check length with Hüma's dynamic list structure."
-      }
-    }
+    "rights": "© 2026 Hüma Programming Language. All rights reserved.",
+    "builtWith": "Built with Rust and Love."
   },
   "Sidebar": {
-    "title": "Documentation",
-    "core": "Core",
-    "language": "The Language",
+    "getting_started": "Getting Started",
+    "the_language": "Language Guide",
     "ecosystem": "Ecosystem",
+    "guides": "Guides",
     "items": {
-      "getting_started": "Getting Started",
-      "introduction": "Introduction",
+      "introduction": "Intro & Philosophy",
+      "quick_start": "Quick Start",
       "syntax": "Basic Syntax",
-      "functions": "Functions & Classes",
-      "lists": "Lists & Error Handling",
+      "functions_classes": "Functions & Classes",
+      "lists_errors": "Lists & Errors",
       "stdlib": "Standard Library",
       "compiler": "Compiler Internals",
-      "ide": "Hüma IDE",
-      "changelog": "Changelog",
-      "gui": "Graphical User Interface (GUI)",
       "ag_istekleri": "Network Requests (HTTP)",
+      "huma_sunucu": "Hüma Server (HTTP)",
+      "gui": "Graphical User Interface (GUI)",
       "package_manager": "Package Manager",
-      "huma_sunucu": "Hüma Sunucu (HTTP)",
-      "my_first_package": "My First Package"
-    }
-  },
-  "Community": {
-    "badge": "Open Source · MIT License",
-    "headline": "Build Hüma.",
-    "subheadline": "Together.",
-    "description": "Hüma is a community-driven language. Every issue opened, every PR merged, and every discussion started shapes what Hüma becomes. Join us on GitHub.",
-    "get_involved": "Get Involved",
-    "contributing": "Contributing",
-    "contributing_desc": "Hüma is written in Rust. You'll need cargo installed. Here's how to get from zero to a merged PR:",
-    "star_headline": "Star the repo.",
-    "star_desc": "Every star helps Hüma reach more developers. It takes two seconds and means everything for an indie language project.",
-    "star_button": "Star on GitHub",
-    "fork_button": "Fork & Contribute",
-    "channels": {
-      "repo": {
-        "title": "GitHub Repository",
-        "description": "Browse the source code, open issues, and contribute pull requests. All development happens in the open.",
-        "label": "View on GitHub"
-      },
-      "bugs": {
-        "title": "Bug Reports",
-        "description": "Found a bug in the interpreter or compiler? Open a detailed issue on GitHub with a reproducible example.",
-        "label": "Report a Bug"
-      },
-      "features": {
-        "title": "Feature Requests",
-        "description": "Have an idea for a new keyword, stdlib module, or toolchain feature? Open a discussion and let's build it together.",
-        "label": "Start a Discussion"
-      },
-      "changelog": {
-        "title": "Changelog",
-        "description": "See every version update, breaking change, and new feature since the initial release of Hüma.",
-        "label": "View Changelog"
-      }
-    }
-  },
-  "IDE_Page": {
-    "badge": "v0.2.0 Desktop Preview",
-    "headline": "The Official",
-    "subheadline": "Hüma IDE.",
-    "description": "A native, cross-platform desktop application powered by Tauri and React. Experience zero-latency editing with Monaco and an integrated xterm.js terminal.",
-    "cta_download": "Download Latest Release",
-    "cta_docs": "Read Documentation",
-    "features_headline": "A Complete Developer Workflow",
-    "features": {
-      "monaco": {
-        "title": "Monaco Editor",
-        "desc": "Powered by the same core as VS Code. Get full semantic highlighting, minimap support, and multi-cursor editing out of the box."
-      },
-      "terminal": {
-        "title": "xterm.js Integration",
-        "desc": "An embedded native-feeling PTY terminal. Run hüma interactively, execute scripts, and view diagnostics directly from the bottom panel."
-      },
-      "tauri": {
-        "title": "Tauri Native Core",
-        "desc": "Built in Rust using Tauri. Lightweight, fast, and secure. Native file system access and system dialogs without the heavy Chromium overhead."
-      }
+      "my_first_package": "My First Package",
+      "changelog": "Changelog"
     }
   },
   "Docs": {
-    "getting_started": {
-      "title": "Getting Started",
-      "description": "Install Hüma and write your first program in minutes. Complete getting-started guide.",
-      "hero_title": "Getting Started",
-      "hero_desc": "Welcome to Hüma — a high-performance language designed for precision and kinetic speed. This guide will help you set up your environment and write your first Hüma program.",
-      "installation": {
-        "title": "Installation",
-        "desc": "The Hüma toolchain is distributed as a single static binary. Use our shell script to automatically detect your architecture and install the huma-cli.",
-        "arch_title": "Architecture Support",
-        "arch_desc": "Hüma currently supports x86_64 and ARM64 architectures natively. For legacy systems, please refer to the compilation-from-source documentation."
+    "introduction": {
+      "title": "Intro & Philosophy",
+      "description": "Discover Hüma's design principles and why it's so fast.",
+      "hero_title": "New Wings of Modern Software: Hüma",
+      "hero_desc": "Hüma is not just a programming language; it's an ecosystem designed to maximize Developer Experience (DX). It combines the safety of Rust with the natural suffix system of Turkish.",
+      "philosophy": {
+        "title": "Design Philosophy",
+        "cognitive_ease": {
+          "title": "Cognitive Ease",
+          "desc": "Coding in a natural language structure removes barriers between logical thought and syntax, reducing the margin for error."
+        },
+        "agglutination": {
+          "title": "Suffix System",
+          "desc": "Hüma's unique suffix system increases readability while converting into pure performance at compile time."
+        },
+        "industrial": {
+          "title": "Industrial Strength",
+          "desc": "Unlike loose-typed languages, Hüma provides a robust infrastructure that can be used safely in critical systems."
+        }
       },
+      "why_huma": {
+        "title": "Why Hüma?",
+        "safety": "Safety Built on Top of Rust",
+        "performance": "Low Memory & High Execution Speed",
+        "native": "Native Suffix Support",
+        "modern": "Built-in Package Manager & Web Support"
+      }
+    },
+    "syntax": {
+      "title": "Basic Syntax",
+      "description": "Variables, data types, and Hüma's unique suffix system.",
+      "hero_title": "Syntax & Foundations",
+      "hero_desc": "Hüma's syntax offers logical clarity and flexibility. In this section, we'll examine variable definition, data types, and the heart of the language: the 'Suffix System'.",
+      "variables": {
+        "title": "Variable Definition",
+        "desc": "In Hüma, everything is a value. You can define both local and global variables with the 'olsun' keyword."
+      },
+      "suffix_system": {
+        "title": "Suffix System",
+        "desc": "Hüma supports Turkish's agglutinative structure at the compiler level. All suffixes following the apostrophe (') are automatically stripped by the compiler, achieving both natural language and high performance."
+      },
+      "data_types": {
+        "title": "Data Types",
+        "types": {
+          "sayi": "Number (Integer/Float)",
+          "yazi": "String (UTF-8)",
+          "mantik": "Boolean (1 or 0)",
+          "liste": "List (Array/Vector)",
+          "nesne": "Object (Map/Hash)",
+          "bos": "Null (Nil/Empty)"
+        }
+      }
+    },
+    "functions_classes": {
+      "title": "Functions & Classes",
+      "description": "Modern object-oriented programming and functional structures.",
+      "hero_title": "Logic & Structuring",
+      "hero_desc": "Hüma supports both functional and object-oriented programming paradigms. In this section, you'll learn how to make your code modular and how to build complex data structures.",
+      "functions": {
+        "title": "Functions",
+        "desc": "Functions are the fundamental building blocks of Hüma. You can easily manage data flow with 'alsın' and 'döndür' structures."
+      },
+      "classes": {
+        "title": "Classes (Object-Oriented)",
+        "desc": "Classes in Hüma are powerful structures that hold data and behavior together. You can access object properties with the 'bu' (self) keyword."
+      },
+      "methods": {
+        "title": "Methods & 'bu' Call",
+        "desc": "Inside a method belonging to an object, the object itself is accessed with the 'bu' keyword. This is the cornerstone of object-oriented programming."
+      }
+    },
+    "lists_errors": {
+      "title": "Lists & Errors",
+      "description": "Advanced data structures and safe error handling techniques.",
+      "hero_title": "Data & Safety",
+      "hero_desc": "Hüma offers advanced tools for managing your application's data flow and handling unexpected situations. Handle data sets with lists and prevent crashes with the 'hata' structure.",
+      "lists": {
+        "title": "Working with Lists",
+        "desc": "Hüma lists are dynamic and come with various helper functions. Manage your data easily with functions like 'ekle', 'çıkar', and 'boyut'."
+      },
+      "error_handling": {
+        "title": "Error Handling",
+        "desc": "Provides a safe exit strategy for bottlenecks in your programs. You can exit a process in a controlled way or inform upper layers with the 'hata' keyword."
+      }
+    },
+    "stdlib": {
+      "title": "Standard Library",
+      "description": "Hüma's built-in API reference and helper modules.",
+      "hero_title": "Standard Library Guide",
+      "hero_desc": "Hüma comes with a rich set of built-in libraries to speed up your development process. Everything from mathematics to the file system is optimized.",
+      "import_info": "Use the '@kullan' directive to include a module in your project:",
+      "modules": {
+        "matematik": "Modern mathematical functions and constants.",
+        "renkler": "ANSI color outputs for current terminals.",
+        "zaman": "Time measurement and delay tools.",
+        "liste": "Advanced list operations (map, filter).",
+        "dosya": "File read, write, and existence checks.",
+        "sistem": "Environment variables and shell interaction."
+      }
+    },
+    "compiler": {
+      "title": "Compiler Internals",
+      "description": "Deep-dive into the Hüma compiler pipeline: lexer, suffix system, AST, and interpreter.",
+      "hero_title": "Compiler Architecture",
+      "hero_desc": "Hüma is a high-performance interpreter powered by Rust. Your source code is first tokenized, then transformed into a syntax tree, and finally executed by traversing the tree.",
+      "pipeline": {
+        "title": "The Pipeline",
+        "desc": "Hüma source code passes through four main stages: Source Text, Lexer (Tokenizer), Parser, and Interpreter.",
+        "steps": {
+          "source": "Source Text",
+          "lexer": "Lexer",
+          "parser": "Parser",
+          "interpreter": "Interpreter"
+        }
+      },
+      "lexer": {
+        "title": "Lexer & Suffix System",
+        "desc": "The Hüma lexer strips Turkish grammatical suffixes (i'yi, yı, nı etc.) at compile time to determine the root word. This process has zero runtime cost."
+      },
+      "ast": {
+        "title": "Abstract Syntax Tree (AST)",
+        "desc": "The parser transforms the token stream into a tree of Rust enums. Each node represents a language construct: statements, expressions, and blocks."
+      },
+      "build": {
+        "title": "Build from Source",
+        "desc": "To build the Hüma compiler on your machine, a stable Rust toolchain (rustup) is required."
+      }
+    },
+    "network": {
+      "title": "Network & Web",
+      "description": "HTTP client (ag_istekleri) and high-performance web server (huma_sunucu).",
+      "hero_title": "Network & Web Development",
+      "hero_desc": "Hüma can communicate with the web world as both a client and a server. In this section, you'll learn how to consume APIs with ag_istekleri and build your own services with huma_sunucu.",
+      "requests": {
+        "title": "Network Requests (Client)",
+        "desc": "The ag_istekleri library supports modern HTTP protocols (GET, POST, PUT, DELETE). v1.1.0 introduces Headers support, enabling authenticated (Bearer/Token) API communication."
+      },
+      "server": {
+        "title": "Hüma Server (v1.4.0)",
+        "desc": "huma_sunucu is a low-latency, high-performance backend framework. Dynamic route parameters, CORS management, and static file serving come built-in."
+      }
+    },
+    "gui": {
+      "title": "Graphical User Interface (GUI)",
+      "description": "egui-based native interface creation tools.",
+      "hero_title": "Graphical User Interface Library",
+      "hero_desc": "Hüma provides a native GUI layer based on Rust's egui library for developing modern desktop applications. With this library, you can create windows, add buttons, text boxes, and complex layouts.",
       "quick_start": {
         "title": "Quick Start",
-        "desc": "Verify your installation by checking the version. The Hüma compiler should respond instantly, reflecting our commitment to zero-latency developer tools."
-      },
-      "first_program": {
-        "title": "First Program",
-        "desc": "Hüma syntax is designed to be expressive yet rigid. Below is a classic conditional block demonstrating our core keywords: olsun (let), ise (if), and yoksa (else).",
-        "suffix_title": "Suffix System",
-        "suffix_desc": "Hüma uses Turkish grammatical suffixes with an apostrophe (') as a separator. The lexer automatically strips suffixes like 'yı, 'i, and 'nı — they are grammatical decoration, not code."
-      },
-      "next_steps": {
-        "title": "Next Steps",
-        "syntax": { "title": "Basic Syntax", "desc": "Variables, conditionals, and loops" },
-        "functions": { "title": "Functions & Classes", "desc": "Define reusable logic and objects" },
-        "lists": { "title": "Lists & Errors", "desc": "Collections and error handling" },
-        "stdlib": { "title": "Standard Library", "desc": "Built-in modules reference" }
-      },
-      "toc": {
-        "title": "On this page",
-        "installation": "Installation",
-        "quick_start": "Quick Start",
-        "first_program": "First Program",
-        "next_steps": "Next Steps"
-      },
-      "resources": {
-        "title": "Helpful Resources",
-        "discord": "Discord Community",
-        "issue": "Report an issue"
+        "desc": "Define your main window with the 'pencere_oluştur' function and build the interface with a drawing callback function."
+      }
+    },
+    "package_manager": {
+      "title": "Package Manager",
+      "description": "Manage, update, and download Hüma libraries from the community.",
+      "hero_title": "Package Management System",
+      "hero_desc": "Hüma Package Manager simplifies library management for your projects. You can manage your dependencies securely with version locking using 'huma.json' and 'huma.lock' files.",
+      "platform": {
+        "title": "Official Sharing Platform",
+        "desc": "Browse hundreds of ready-to-use libraries and share your own solutions with the community."
+      }
+    },
+    "guides": {
+      "my_first_package": {
+        "title": "My First Package",
+        "description": "A step-by-step guide to creating a Hüma library and publishing it via GitHub.",
+        "hero_title": "Create Your Own Package",
+        "hero_desc": "Contribute to the Hüma community by creating and sharing your own libraries. This guide will show you how to build a package from scratch."
+      }
+    },
+    "ide": {
+      "title": "Hüma IDE",
+      "description": "Official Hüma desktop editor and development environment.",
+      "hero_title": "Hüma IDE & Editor",
+      "hero_desc": "Hüma comes with its own lightweight desktop editor to provide a first-class developer experience. This modern structure based on Tauri and React targets performance and ease of use.",
+      "architecture": {
+        "title": "Architectural Structure",
+        "desc": "The IDE provides a secure and fast desktop experience by combining a modern web stack (Vite+React) with the power of Rust (Tauri)."
       }
     },
     "changelog": {
       "title": "Changelog",
       "description": "Official update history of the Hüma language and toolchain.",
+      "hero_title": "What's New?",
+      "hero_desc": "Hüma is constantly evolving. In every version, you can track new language features, performance improvements, and community-driven bug fixes here.",
       "v0_5_0": {
         "version": "v0.5.0 (Modern Network Dawn)",
         "date": "April 2, 2026",
@@ -241,49 +249,47 @@
           "npm-style package scripts support with 'baslat'/'start' preference.",
           "Optimized syntax and drawing loops for GUI modules."
         ]
+      }
+    },
+    "getting_started": {
+      "title": "Getting Started",
+      "description": "Install Hüma on your system and write your first high-performance program in minutes.",
+      "hero_title": "Quick Start with Hüma",
+      "hero_desc": "Welcome to the Hüma ecosystem — a high-performance language designed for precision and kinetic speed. This guide will help you optimize your environment and write your first professional Hüma program.",
+      "installation": {
+        "title": "Installation",
+        "desc": "The Hüma toolchain natively supports Windows, Linux, and macOS (x64/ARM64) architectures. Our installation script automatically detects your system's hardware.",
+        "arch_title": "Broad Architecture Support",
+        "arch_desc": "Hüma runs with zero latency on Apple Silicon (M1/M2/M3) and modern x86_64 processors. The compiler core is built using safe, high-performance Rust."
       },
-      "v0_3_1": {
-        "version": "v0.3.1",
-        "date": "March 30, 2026",
-        "changes": [
-          "Full internationalization (i18n) support with locale routing",
-          "Dynamic language switcher for English and Turkish",
-          "Integrated documentation site with custom syntax theme",
-          "Refactored playground into a high-performance static gallery",
-          "Unified CLI enhancements for cross-platform releases"
-        ]
+      "quick_start": {
+        "title": "System Verification",
+        "desc": "Verify your installation by checking the current version. The Hüma CLI is designed for rapid response and low-latency developer feedback."
       },
-      "v0_3_0": {
-        "version": "v0.3.0",
-        "date": "March 20, 2026",
-        "changes": [
-          "Restructured project into modular workspace crates",
-          "Implemented industrial-grade Virtual Machine and Bytecode infrastructure",
-          "Migrated IDE to a native Tauri/React desktop application",
-          "Added system-level CLI integration for development tools",
-          "Automated release builds via GitHub Actions CI/CD"
-        ]
+      "first_program": {
+        "title": "Your First Program",
+        "desc": "Hüma syntax bridges the gap between human thought and machine execution. Assign variables with 'olsun' and define conditions with 'ise'.",
+        "suffix_title": "The Power of Suffixes",
+        "suffix_desc": "Write code using natural Turkish suffixes like 'isim'i yazdır'. Our compiler automatically strips these (after the apostrophe), converting them into pure binary performance."
       },
-      "v0_2_0": {
-        "version": "v0.2.0",
-        "date": "February 2026",
-        "changes": [
-          "Complete overhaul of language grammar and native Turkish keywords",
-          "Zero-dependency portable binary with embedded IDE",
-          "NLP core library (nlp.hb) for native text processing",
-          "Enhanced error reporting with line/column diagnostics",
-          "Implemented complex data structures and OOP support"
-        ]
+      "next_steps": {
+        "title": "Roadmap",
+        "syntax": { "title": "Basic Syntax", "desc": "Variables, Operators, and the Suffix System" },
+        "functions": { "title": "Logic & Objects", "desc": "Functions and Object-Oriented Programming" },
+        "lists": { "title": "Data & Errors", "desc": "Advanced Data Structures and Error Handling" },
+        "stdlib": { "title": "Standard Library", "desc": "Built-in Professional Module Reference" }
       },
-      "v0_1_0": {
-        "version": "v0.1.0",
-        "date": "January 2026",
-        "changes": [
-          "Initial stable release of the Rust-based language engine",
-          "Standard library modules for I/O, system, and mathematics",
-          "Implementation of the first-stage Bytecode compiler",
-          "Interactive REPL for rapid development and testing"
-        ]
+      "toc": {
+        "title": "ON THIS PAGE",
+        "installation": "Installation Process",
+        "quick_start": "Verification",
+        "first_program": "First Program",
+        "next_steps": "Next Steps"
+      },
+      "resources": {
+        "title": "COMMUNITY & SUPPORT",
+        "discord": "Developer Community",
+        "issue": "Report Bug/Feature"
       }
     }
   }

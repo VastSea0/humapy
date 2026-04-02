@@ -1,5 +1,29 @@
 import Link from "next/link";
 import { getDictionary } from "@/dictionaries/dictionaries";
+import CodeBlock from "@/components/CodeBlock";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Hüma Sunucu (HTTP Server)",
+  description:
+    "Build high-performance web servers with Hüma's modern, minimalist backend framework.",
+};
+
+const serverCode = `yükle "huma_sunucu";
+
+s = Sunucu() olsun
+s.kur(3000)
+
+s.getir("/", fonksiyon olsun istek, yanit alsın {
+    yanit.html("<h1>Merhaba Hüma!</h1>");
+})
+
+s.baslat()`;
+
+const dynamicCode = `s.getir("/kullanici/:id", fonksiyon olsun istek, yanit alsın {
+    kid = değer_al(istek.parametreler, "id")
+    yanit.metin("Kullanıcı ID: " + kid);
+})`;
 
 export default async function HumaSunucuPage({
   params,
@@ -8,126 +32,116 @@ export default async function HumaSunucuPage({
 }) {
   const { locale } = await params;
   const dict = await getDictionary(locale as "en" | "tr");
+  const n = dict.Docs.network;
+
+  const getPath = (path: string) => `/${locale}${path}`;
 
   return (
     <>
       <main className="flex-1 px-8 md:px-16 py-12 max-w-4xl">
         <nav className="flex gap-2 text-[10px] uppercase tracking-widest text-on-surface-variant/60 mb-4">
-          <Link href={`/${locale}/docs`} className="hover:text-primary transition-colors">
+          <Link href={getPath("/docs")} className="hover:text-primary transition-colors">
             {dict.Nav.docs}
           </Link>
           <span>/</span>
           <span className="text-on-surface-variant">{dict.Sidebar.ecosystem}</span>
           <span>/</span>
-          <span className="text-primary">huma_sunucu</span>
+          <span className="text-primary">{n.server.title}</span>
         </nav>
 
         <h1 className="text-5xl font-extrabold text-on-surface tracking-tighter mb-6">
-          {locale === "tr" ? "Hüma Sunucu (v1.4.0)" : "Hüma Server (v1.4.0)"}
+          {n.server.title}
         </h1>
-        
         <p className="text-lg text-on-surface-variant leading-relaxed mb-8">
-          {locale === "tr" 
-            ? "huma_sunucu, Hüma dilinde yüksek performanslı, modern ve güvenli web sunucuları geliştirmeniz için tasarlanmış bir modüldür. Dinamik rotalama, CORS güvenliği ve statik dosya sunma gibi tüm modern backend özelliklerini destekler."
-            : "huma_sunucu is a module designed for developing high-performance, modern, and secure web servers in the Hüma language. It supports all modern backend features like dynamic routing, CORS security, and static file serving."}
+          {n.server.desc}
         </p>
 
-        <div className="bg-surface-container-high p-6 rounded-lg border border-outline-variant/10 mb-8">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">
-              {locale === "tr" ? "KURULUM" : "INSTALLATION"}
+        <div className="bg-primary/5 border border-primary/10 p-6 rounded-xl mb-12 flex items-center justify-between shadow-sm">
+          <div>
+            <h3 className="text-[10px] font-bold text-primary uppercase tracking-[0.2em] mb-2 cursor-default">
+              {locale === "tr" ? "PAKET KURULUMU" : "PACKAGE INSTALLATION"}
             </h3>
-            <span className="text-[10px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full uppercase tracking-tighter">v1.4.0 STABLE</span>
+            <code className="text-on-surface font-mono text-sm font-bold bg-surface-container-high px-3 py-1.5 rounded border border-outline-variant/10">
+              huma paket kur huma_sunucu
+            </code>
           </div>
-          <code className="text-tertiary font-mono text-sm">
-            huma paket kur huma_sunucu
-          </code>
+          <span className="hidden sm:block text-[10px] font-bold bg-primary text-on-primary px-3 py-1 rounded-full uppercase tracking-widest shadow-sm">
+            v1.4.0 STABLE
+          </span>
         </div>
 
-        <section className="space-y-12">
-          {/* Hızlı Başlangıç */}
-          <div>
-            <h2 className="text-2xl font-bold text-on-surface mb-4">
-              {locale === "tr" ? "Hızlı Başlangıç" : "Quick Start"}
-            </h2>
-            <div className="bg-surface-container-lowest rounded-lg border border-outline-variant/10 overflow-hidden mb-8">
-              <pre className="p-6 font-mono text-sm text-tertiary overflow-x-auto">
-{`yükle "huma_sunucu";
-
-s = Sunucu() olsun
-s.kur(3000)
-
-s.getir("/", fonksiyon olsun istek, yanit alsın {
-    yanit.html("<h1>Merhaba Hüma!</h1>")
-})
-
-s.baslat()`}
-              </pre>
-            </div>
-          </div>
-
-          {/* CORS */}
-          <div>
-            <h2 className="text-2xl font-bold text-on-surface mb-4">CORS Güvenliği</h2>
-            <p className="text-on-surface-variant mb-4">
-              {locale === "tr"
-                ? "Frontend uygulamalarınızın (React, Vue vb.) sunucunuza erişebilmesi için CORS ayarlarını tek satırda yapabilirsiniz."
-                : "You can configure CORS settings in a single line so that your frontend applications (React, Vue, etc.) can access your server."}
-            </p>
-            <div className="bg-surface-container-lowest rounded-lg border border-outline-variant/10 p-4 font-mono text-sm text-tertiary">
-              s.cors_ayarla(&quot;*&quot;) // Tüm kökenlere izin ver
-            </div>
-          </div>
-
-          {/* Dinamik Rotalama */}
-          <div>
-            <h2 className="text-2xl font-bold text-on-surface mb-4">
-              {locale === "tr" ? "Dinamik Rotalama (Path Params)" : "Dynamic Routing (Path Params)"}
-            </h2>
-            <p className="text-on-surface-variant mb-4">
-              {locale === "tr"
-                ? "URL içerisinden parametre almak için ':' ön ekini kullanın."
-                : "Use the ':' prefix to retrieve parameters from the URL."}
-            </p>
-            <div className="bg-surface-container-lowest rounded-lg border border-outline-variant/10 overflow-hidden">
-              <pre className="p-6 font-mono text-sm text-tertiary overflow-x-auto">
-{`s.getir("/kullanici/:id", fonksiyon olsun istek, yanit alsın {
-    kid = değer_al(istek.parametreler, "id")
-    yanit.metin("Kullanıcı ID: " + kid)
-})`}
-              </pre>
-            </div>
-          </div>
-
-          {/* Statik Dosyalar */}
-          <div>
-            <h2 className="text-2xl font-bold text-on-surface mb-4">
-              {locale === "tr" ? "Statik Dosya Sunma" : "Static File Serving"}
-            </h2>
-            <p className="text-on-surface-variant mb-4">
-              {locale === "tr"
-                ? "Görseller, CSS ve JavaScript dosyalarınızı otomatik MIME tespiti ile sunun."
-                : "Serve your images, CSS, and JavaScript files with automatic MIME detection."}
-            </p>
-            <div className="bg-surface-container-lowest rounded-lg border border-outline-variant/10 p-4 font-mono text-sm text-tertiary">
-              s.statik(&quot;/assets&quot;, &quot;./public&quot;)
-            </div>
-          </div>
+        {/* Quick Start */}
+        <section className="mb-16">
+          <h2 className="text-2xl font-bold text-on-surface mb-6 flex items-center gap-3">
+             <span className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-sm font-mono text-primary">
+              01
+            </span>
+            {locale === "tr" ? "Hızlı Başlangıç" : "Quick Start"}
+          </h2>
+          <p className="text-on-surface-variant leading-relaxed mb-8">
+            {locale === "tr"
+              ? "Sunucunuzu 'Sunucu()' nesnesi ile örneklendirin. 'kur' metodu ile portu belirleyin ve 'getir' metodu ile rotalarınızı tanımlayın."
+              : "Instantiate your server with the 'Sunucu()' object. Set the port with 'kur' and define your routes with 'getir'."}
+          </p>
+          <CodeBlock code={serverCode} filename="sunucu.hb" />
         </section>
 
-        <div className="flex justify-between mt-16 pt-8 border-t border-outline-variant/10">
+        {/* Dynamic Routing */}
+        <section className="mb-16">
+          <h2 className="text-2xl font-bold text-on-surface mb-6 flex items-center gap-3">
+             <span className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-sm font-mono text-primary">
+              02
+            </span>
+            {locale === "tr" ? "Dinamik Rotalama" : "Dynamic Routing"}
+          </h2>
+          <p className="text-on-surface-variant leading-relaxed mb-8">
+            {locale === "tr"
+              ? "URL içerisinden parametre almak için ':' ön ekini kullanın. 'istek.parametreler' nesnesi üzerinden bu parametrelere erişebilirsiniz."
+              : "Use the ':' prefix to capture parameters from the URL. You can access these via the 'istek.parametreler' object."}
+          </p>
+          <CodeBlock code={dynamicCode} filename="rota_param.hb" />
+        </section>
+
+        {/* Features */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+          <div className="bg-surface-container-low p-6 rounded-2xl border border-outline-variant/10 hover:border-primary/20 transition-all group">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">security</span>
+              <h4 className="font-bold uppercase tracking-widest text-[10px] text-on-surface">CORS {locale === "tr" ? "GÜVENLİĞİ" : "SECURITY"}</h4>
+            </div>
+            <p className="text-[13px] text-on-surface-variant leading-relaxed">
+              {locale === "tr" 
+                ? "Frontend uygulamalarınız için güvenli köken paylaşımını 's.cors_ayarla(\"*\")' ile tek satırda yapın."
+                : "Set up secure origin sharing for your frontend apps in a single line with 's.cors_ayarla(\"*\")'."}
+            </p>
+          </div>
+          <div className="bg-surface-container-low p-6 rounded-2xl border border-outline-variant/10 hover:border-primary/20 transition-all group">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">folder_shared</span>
+              <h4 className="font-bold uppercase tracking-widest text-[10px] text-on-surface">{locale === "tr" ? "STATİK DOSYALAR" : "STATIC FILES"}</h4>
+            </div>
+            <p className="text-[13px] text-on-surface-variant leading-relaxed">
+              {locale === "tr" 
+                ? "Görseller, CSS ve JS dosyalarını 's.statik()' metodu ile otomatik MIME tespiti yaparak sunun."
+                : "Serve images, CSS, and JS files with automatic MIME detection using the 's.statik()' method."}
+            </p>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <div className="flex justify-between mt-24 pt-8 border-t border-outline-variant/10">
           <Link
-            href={`/${locale}/docs/ag_istekleri`}
-            className="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors"
+            href={getPath("/docs/ag_istekleri")}
+            className="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors font-bold uppercase tracking-widest text-[10px]"
           >
             <span className="material-symbols-outlined text-base">arrow_back</span>
-            {dict.Sidebar.items.ag_istekleri}
+            {n.requests.title}
           </Link>
           <Link
-            href={`/${locale}/docs/package-manager`}
-            className="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors"
+            href={getPath("/docs/package-manager")}
+            className="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors font-bold uppercase tracking-widest text-[10px]"
           >
-            {dict.Sidebar.items.package_manager}
+            {dict.Docs.package_manager.title}
             <span className="material-symbols-outlined text-base">arrow_forward</span>
           </Link>
         </div>

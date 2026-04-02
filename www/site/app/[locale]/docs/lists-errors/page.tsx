@@ -1,6 +1,7 @@
 import Link from "next/link";
 import CodeBlock from "@/components/CodeBlock";
 import type { Metadata } from "next";
+import { getDictionary } from "@/dictionaries/dictionaries";
 
 export const metadata: Metadata = {
   title: "Lists & Error Handling",
@@ -15,7 +16,8 @@ sayılar = [1, 2, 3] olsun
 sayılar'a [5]'i ekle;
 
 // Elemana erişim (indeks ile)
-sayılar'dan [0]'ı çıkar; // İndekse göre siler
+// Removing element at index 0
+sayılar'dan [0]'ı çıkar;
 
 // Listeyi yazdır
 sayılar'ı yazdır;`;
@@ -24,7 +26,7 @@ const errorCode = `// Hata Yönetimi (dene / hata var ise)
 dene {
     sonuç = 10 / 0
 } hata var ise {
-    "Sıfıra bölünme hatası!"'nı yazdır
+    "Sıfıra bölünme hatası!"'nı yazdır;
 }`;
 
 const combinedCode = `// Listeler ve Hata Yönetimi Birlikte
@@ -34,37 +36,41 @@ dene {
     // İndeks sınır dışı olabilir
     sayılar'dan [10]'u çıkar;
 } hata var ise {
-    "İndeks sınır dışında!"'nı yazdır
+    "İndeks sınır dışında!"'nı yazdır;
 }
 
 sayılar'a [99]'u ekle;
 sayılar'ı yazdır;`;
 
-export default function ListsErrorsPage() {
+export default async function ListsErrorsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const dict = await getDictionary(locale as "en" | "tr");
+  const l = dict.Docs.lists_errors;
+
+  const getPath = (path: string) => `/${locale}${path}`;
+
   return (
     <>
       <main className="flex-1 px-8 md:px-16 py-12 max-w-4xl">
         <nav className="flex gap-2 text-[10px] uppercase tracking-widest text-on-surface-variant/60 mb-4">
-          <Link href="/docs" className="hover:text-primary transition-colors">
-            Docs
+          <Link href={getPath("/docs")} className="hover:text-primary transition-colors">
+            {dict.Nav.docs}
           </Link>
           <span>/</span>
-          <span className="text-on-surface-variant">The Language</span>
+          <span className="text-on-surface-variant">{dict.Sidebar.language}</span>
           <span>/</span>
-          <span className="text-primary">Lists & Error Handling</span>
+          <span className="text-primary">{l.title}</span>
         </nav>
 
         <h1 className="text-5xl font-extrabold text-on-surface tracking-tighter mb-6">
-          Lists & Error Handling
+          {l.hero_title}
         </h1>
         <p className="text-lg text-on-surface-variant leading-relaxed mb-12">
-          Hüma provides built-in list literals and a{" "}
-          <code className="text-tertiary font-mono">dene</code> /{" "}
-          <code className="text-tertiary font-mono">hata var ise</code> block
-          for robust error handling. Lists are mutable and support index-based
-          operations via the{" "}
-          <code className="text-tertiary font-mono">ekle</code> and{" "}
-          <code className="text-tertiary font-mono">çıkar</code> built-ins.
+          {l.hero_desc}
         </p>
 
         {/* Lists */}
@@ -73,42 +79,39 @@ export default function ListsErrorsPage() {
             <span className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-sm font-mono text-primary">
               01
             </span>
-            Lists
+            {l.lists.title}
           </h2>
-          <p className="mb-6 text-on-surface-variant">
-            Lists are created with square brackets{" "}
-            <code className="text-tertiary font-mono">[ ]</code>. Elements can
-            be added with{" "}
-            <code className="text-tertiary font-mono">ekle</code> or removed by
-            index with <code className="text-tertiary font-mono">çıkar</code>.
+          <p className="mb-6 text-on-surface-variant leading-relaxed">
+            {l.lists.desc}
           </p>
-          <CodeBlock code={listsCode} filename="listeler.huma" />
+          <CodeBlock code={listsCode} filename="listeler.hb" />
 
-          <div className="overflow-x-auto mt-4">
+          {/* Operation table */}
+          <div className="overflow-x-auto mt-8 bg-surface-container-low rounded-lg border border-outline-variant/10 p-6">
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="border-b border-outline-variant/20">
-                  <th className="text-left py-3 pr-8 text-on-surface-variant/60 font-semibold text-xs uppercase tracking-widest">
+                  <th className="text-left py-3 pr-8 text-on-surface-variant/60 font-bold text-[10px] uppercase tracking-widest">
                     Operation
                   </th>
-                  <th className="text-left py-3 pr-8 text-on-surface-variant/60 font-semibold text-xs uppercase tracking-widest">
+                  <th className="text-left py-3 pr-8 text-on-surface-variant/60 font-bold text-[10px] uppercase tracking-widest">
                     Syntax
                   </th>
-                  <th className="text-left py-3 text-on-surface-variant/60 font-semibold text-xs uppercase tracking-widest">
+                  <th className="text-left py-3 text-on-surface-variant/60 font-bold text-[10px] uppercase tracking-widest">
                     Description
                   </th>
                 </tr>
               </thead>
               <tbody className="font-mono text-xs divide-y divide-outline-variant/10">
                 {[
-                  ["Create", "liste = [1, 2, 3] olsun", "New list literal"],
-                  ["Append", "liste'ye [val]'i ekle;", "Append value"],
-                  ["Remove", "liste'den [idx]'i çıkar;", "Remove by index"],
+                  [locale === "tr" ? "Oluştur" : "Create", "L = [1, 2, 3] olsun", locale === "tr" ? "Yeni liste oluşturur" : "New list literal"],
+                  [locale === "tr" ? "Ekle" : "Append", "L'ye [X]'i ekle;", locale === "tr" ? "Sona eleman ekler" : "Append value"],
+                  [locale === "tr" ? "Çıkar" : "Remove", "L'den [i]'yi çıkar;", locale === "tr" ? "İndise göre siler" : "Remove by index"],
                 ].map(([op, syntax, desc]) => (
                   <tr key={op}>
-                    <td className="py-3 pr-8 text-tertiary font-body">{op}</td>
-                    <td className="py-3 pr-8 text-primary">{syntax}</td>
-                    <td className="py-3 text-on-surface-variant font-body">
+                    <td className="py-4 pr-8 text-tertiary font-bold">{op}</td>
+                    <td className="py-4 pr-8 text-primary font-bold">{syntax}</td>
+                    <td className="py-4 text-on-surface-variant font-body">
                       {desc}
                     </td>
                   </tr>
@@ -124,60 +127,44 @@ export default function ListsErrorsPage() {
             <span className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-sm font-mono text-primary">
               02
             </span>
-            Error Handling
+            {l.errors.title}
           </h2>
-          <p className="mb-6 text-on-surface-variant">
-            Wrap risky operations in a{" "}
-            <code className="text-tertiary font-mono">dene</code>{" "}
-            (&ldquo;try&rdquo;) block. If an error occurs, execution jumps to
-            the{" "}
-            <code className="text-tertiary font-mono">hata var ise</code>{" "}
-            (&ldquo;if there is an error&rdquo;) block.
+          <p className="mb-6 text-on-surface-variant leading-relaxed">
+            {l.errors.desc}
           </p>
-          <CodeBlock code={errorCode} filename="hata.huma" />
+          <CodeBlock code={errorCode} filename="hata_yonetimi.hb" />
 
-          <div className="bg-surface-container-low border-l-4 border-tertiary p-6 rounded-r-lg mt-4">
-            <div className="flex items-center gap-3 mb-2 text-tertiary">
+          <div className="bg-primary/5 border-l-4 border-primary p-6 rounded-r-lg mt-8">
+            <div className="flex items-center gap-3 mb-2 text-primary">
               <span className="material-symbols-outlined text-lg">info</span>
               <span className="text-xs font-bold uppercase tracking-widest">
-                Runtime Errors
+                {locale === "tr" ? "Güvenli Çalışma" : "Safe Execution"}
               </span>
             </div>
             <p className="text-sm text-on-surface-variant leading-relaxed">
-              Hüma catches runtime errors including division by zero, index out
-              of bounds, and type mismatches. All errors that occur inside a{" "}
-              <code className="text-primary font-mono">dene</code> block are
-              safely caught without crashing the interpreter.
+              {locale === "tr" 
+                ? "Sıfıra bölme veya sınır dışı indeks erişimi gibi kritik hatalar 'dene' bloğu içinde yakalanarak programın çökmesini engeller."
+                : "Critical errors like division by zero or index out of bounds are caught within the 'dene' block, preventing program crashes."}
             </p>
           </div>
         </section>
 
-        {/* Combined */}
-        <section className="mb-16" id="combined">
-          <h2 className="text-2xl font-bold text-on-surface mb-6 flex items-center gap-3">
-            <span className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-sm font-mono text-primary">
-              03
-            </span>
-            Combined Example
-          </h2>
-          <CodeBlock code={combinedCode} filename="liste_hata.huma" />
-        </section>
-
+        {/* Navigation */}
         <div className="flex justify-between mt-16 pt-8 border-t border-outline-variant/10">
           <Link
-            href="/docs/functions-classes"
-            className="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors"
+            href={getPath("/docs/functions-classes")}
+            className="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors font-bold uppercase tracking-widest text-[10px]"
           >
             <span className="material-symbols-outlined text-base">
               arrow_back
             </span>
-            Functions & Classes
+            {dict.Docs.functions_classes.title}
           </Link>
           <Link
-            href="/docs/stdlib"
-            className="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors"
+            href={getPath("/docs/stdlib")}
+            className="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors font-bold uppercase tracking-widest text-[10px]"
           >
-            Standard Library
+            {dict.Sidebar.items.stdlib}
             <span className="material-symbols-outlined text-base">
               arrow_forward
             </span>
@@ -185,21 +172,20 @@ export default function ListsErrorsPage() {
         </div>
       </main>
 
-      {/* TOC */}
+      {/* Right TOC */}
       <aside className="hidden xl:block w-64 sticky top-16 h-[calc(100vh-4rem)] py-12 px-8 overflow-y-auto border-l border-outline-variant/10 shrink-0">
-        <h5 className="text-xs font-bold text-on-surface uppercase tracking-[0.2em] mb-6">
-          On this page
+        <h5 className="text-[10px] font-bold text-on-surface uppercase tracking-[0.2em] mb-6 opacity-40">
+          {locale === "tr" ? "BU SAYFADA" : "ON THIS PAGE"}
         </h5>
-        <ul className="space-y-4 text-xs font-medium">
+        <ul className="space-y-4 text-[11px] font-bold uppercase tracking-widest">
           {[
-            { href: "#lists", label: "Lists" },
-            { href: "#errors", label: "Error Handling" },
-            { href: "#combined", label: "Combined Example" },
+            { href: "#lists", label: l.lists.title },
+            { href: "#errors", label: l.errors.title },
           ].map((item) => (
             <li key={item.href}>
               <a
                 href={item.href}
-                className="text-on-surface-variant/60 border-l-2 border-transparent pl-4 hover:text-on-surface hover:border-primary transition-all block"
+                className="text-on-surface-variant/60 hover:text-primary transition-all block"
               >
                 {item.label}
               </a>
