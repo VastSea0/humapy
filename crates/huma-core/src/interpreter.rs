@@ -148,14 +148,24 @@ impl Yorumlayici {
         globals.insert("dahili_sunucu_yanitla".to_string(), Deger::DahiliFonksiyon(|args| {
             if args.len() < 2 { return Deger::Sayi(0.0); }
             let i_id = match &args[0] { Deger::Sayi(n) => *n as u64, _ => return Deger::Sayi(0.0) };
-            let icerik = match &args[1] { Deger::Metin(s) => s.clone(), _ => String::new() };
+            
+            let (data, len) = match &args[1] {
+                Deger::Metin(s) => (s.as_bytes().to_vec(), s.len()),
+                Deger::Bayt(b) => (b.clone(), b.len()),
+                _ => (Vec::new(), 0),
+            };
+
             let durum = match args.get(2) { Some(Deger::Sayi(n)) => *n as u16, _ => 200 };
             let tip = match args.get(3) { Some(Deger::Metin(s)) => s.as_str(), _ => "text/html; charset=utf-8" };
             
             if let Some(istek) = ISTEKLER.lock().unwrap().remove(&i_id) {
-                let mut response = tiny_http::Response::from_string(icerik)
-                    .with_status_code(durum)
-                    .with_header(tiny_http::Header::from_bytes(&b"Content-Type"[..], tip.as_bytes()).unwrap());
+                let mut response = tiny_http::Response::new(
+                    tiny_http::StatusCode(durum),
+                    vec![tiny_http::Header::from_bytes(&b"Content-Type"[..], tip.as_bytes()).unwrap()],
+                    std::io::Cursor::new(data),
+                    Some(len),
+                    None,
+                );
                 
                 // Ek başlıkları ekle (5. argüman)
                 if args.len() >= 5 {
@@ -172,6 +182,13 @@ impl Yorumlayici {
                 return Deger::Sayi(1.0);
             }
             Deger::Sayi(0.0)
+        }));
+
+        globals.insert("dosya_oku_bayt".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Metin(yol)) = args.first() {
+                if let Ok(b) = std::fs::read(yol) { return Deger::Bayt(b); }
+            }
+            Deger::Bos
         }));
         // dahili_istek(metot, url, [gövde])
 

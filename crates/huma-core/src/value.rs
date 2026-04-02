@@ -8,6 +8,7 @@ use std::cell::RefCell;
 pub enum Deger {
     Sayi(f64),
     Metin(String),
+    Bayt(Vec<u8>),
     Liste(Rc<RefCell<Vec<Deger>>>),
     Bos,
     Fonksiyon {
@@ -37,6 +38,7 @@ impl std::fmt::Display for Deger {
                 }
             },
             Deger::Metin(s) => write!(f, "{}", s),
+            Deger::Bayt(b) => write!(f, "<bayt veri: {} bayt>", b.len()),
             Deger::Liste(l) => {
                 let l_borrow = l.borrow();
                 let p: Vec<String> = l_borrow.iter().map(|d| d.to_string()).collect();
