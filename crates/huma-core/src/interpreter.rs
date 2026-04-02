@@ -144,7 +144,7 @@ impl Yorumlayici {
             }
             Deger::Bos
         }));
-        // dahili_sunucu_yanitla(i_id, icerik, durum, tip)
+        // dahili_sunucu_yanitla(i_id, icerik, durum, tip, [basliklar])
         globals.insert("dahili_sunucu_yanitla".to_string(), Deger::DahiliFonksiyon(|args| {
             if args.len() < 2 { return Deger::Sayi(0.0); }
             let i_id = match &args[0] { Deger::Sayi(n) => *n as u64, _ => return Deger::Sayi(0.0) };
@@ -153,9 +153,21 @@ impl Yorumlayici {
             let tip = match args.get(3) { Some(Deger::Metin(s)) => s.as_str(), _ => "text/html; charset=utf-8" };
             
             if let Some(istek) = ISTEKLER.lock().unwrap().remove(&i_id) {
-                let response = tiny_http::Response::from_string(icerik)
+                let mut response = tiny_http::Response::from_string(icerik)
                     .with_status_code(durum)
                     .with_header(tiny_http::Header::from_bytes(&b"Content-Type"[..], tip.as_bytes()).unwrap());
+                
+                // Ek başlıkları ekle (5. argüman)
+                if args.len() >= 5 {
+                    if let Deger::Nesne { alanlar, .. } = &args[4] {
+                        for (k, v) in alanlar.borrow().iter() {
+                            if let Ok(header) = tiny_http::Header::from_bytes(k.as_bytes(), v.to_string().as_bytes()) {
+                                response.add_header(header);
+                            }
+                        }
+                    }
+                }
+
                 let _ = istek.respond(response);
                 return Deger::Sayi(1.0);
             }
@@ -243,6 +255,15 @@ impl Yorumlayici {
                 Some(Deger::Nesne { .. }) => Deger::Metin("Nesne".to_string()),
                 _ => Deger::Metin("Boş".to_string()),
             }
+        }));
+
+        globals.insert("ortam_değişkeni".to_string(), Deger::DahiliFonksiyon(|args| {
+            if let Some(Deger::Metin(anahtar)) = args.first() {
+                if let Ok(val) = std::env::var(anahtar) {
+                    return Deger::Metin(val);
+                }
+            }
+            Deger::Bos
         }));
 
         // ── NLP / Metin İşleme Built-in Fonksiyonları ──────────────────────────
