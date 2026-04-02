@@ -154,6 +154,31 @@ const modules: StdlibModule[] = [
         description:
           "Reads file at yol; returns contents or raises an error on failure",
       },
+      {
+        name: "dosya_oku_bayt(yol)",
+        signature: "dosya_oku_bayt(yol: Yazı) → Bayt",
+        description: "Reads file at yol as binary data (Bayt). Useful for images and other non-text files.",
+      },
+    ],
+  },
+  {
+    id: "sistem",
+    file: "built-in",
+    icon: "settings",
+    title: "Sistem",
+    description: "Core system and environment utilities.",
+    colorAccent: "text-secondary",
+    functions: [
+      {
+        name: "ortam_değişkeni(anahtar)",
+        signature: "ortam_değişkeni(anahtar: Yazı) → Yazı | Boş",
+        description: "Returns the value of the environment variable. Returns Boş if not found.",
+      },
+      {
+        name: "sistem(komut)",
+        signature: "sistem(komut: Yazı) → Yazı",
+        description: "Executes a shell command and returns its output.",
+      },
     ],
   },
 ];

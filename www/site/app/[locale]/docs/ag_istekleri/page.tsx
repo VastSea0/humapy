@@ -29,14 +29,17 @@ export default async function AgIstekleriPage({
         <div className="prose prose-invert max-w-none">
           <p className="text-lg text-on-surface-variant leading-relaxed mb-8">
             {locale === "tr"
-              ? "ag_istekleri kütüphanesi, Hüma uygulamalarınızda modern HTTP protokollerini (GET, POST, PUT, DELETE) kullanmanızı sağlar. ureq motoru üzerine inşa edilen bu kütüphane, yüksek performanslı ve güvenli bir ağ iletişimi sunar."
-              : "The ag_istekleri library allows you to use modern HTTP protocols (GET, POST, PUT, DELETE) in your Hüma applications. Built on the ureq engine, it provides high-performance and secure network communication."}
+              ? "ag_istekleri kütüphanesi, Hüma uygulamalarınızda modern HTTP protokollerini (GET, POST, PUT, DELETE) kullanmanızı sağlar. v1.1.0 sürümü ile birlikte gelen HTTP Başlıkları (Headers) desteği sayesinde Firebase, GitHub ve diğer API servisleriyle tam yetkilendirmeli iletişim kurulabilir."
+              : "The ag_istekleri library allows you to use modern HTTP protocols (GET, POST, PUT, DELETE) in your Hüma applications. With the new HTTP Headers support in v1.1.0, you can now establish fully authenticated communication with Firebase, GitHub, and other API services."}
           </p>
 
           <div className="bg-surface-container-high p-6 rounded-lg border border-outline-variant/10 mb-8">
-            <h3 className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">
-              {locale === "tr" ? "KURULUM" : "INSTALLATION"}
-            </h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">
+                {locale === "tr" ? "KURULUM" : "INSTALLATION"}
+              </h3>
+              <span className="text-[10px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full uppercase tracking-tighter">v1.1.0 STABLE</span>
+            </div>
             <code className="text-tertiary font-mono text-sm">
               huma paket kur ag_istekleri
             </code>
@@ -60,14 +63,20 @@ export default async function AgIstekleriPage({
             <pre className="p-6 font-mono text-sm text-tertiary overflow-x-auto">
 {`yükle "ag_istekleri";
 
-# Fonksiyonel kullanım
-cevap = getir("https://api.github.com") olsun
-"Durum: " + cevap.durum'u yazdır
+# 1. Başlık Nesnesi Hazırla (v1.1.0+)
+h = metinden_nesneye("{}") olsun
+değer_ata(h, "Authorization", "Bearer TOKEN_PRO")
+değer_ata(h, "Content-Type", "application/json")
 
-# Nesne tabanlı kullanım
-istemci = Agİstekleri() olsun
-cevap = istemci.getir("https://api.google.com") olsun
-"Kanal: " + cevap.durum'u yazdır`}
+# 2. İsteği Gönder (URL, Veri, Başlık)
+url = "https://api.github.com/user" olsun
+cevap = getir(url, h)
+
+cevap.durum == 200 ise {
+    cevap.içerik'i yazdır
+} yoksa {
+    "İstek Hatası: " + cevap.hata_mesajı'nı yazdır
+}`}
             </pre>
           </div>
 
@@ -78,22 +87,22 @@ cevap = istemci.getir("https://api.google.com") olsun
           <div className="space-y-4">
             {[
               {
-                fn: "getir(url)",
-                tr: "URL'ye GET isteği gönderir ve yanıtı (durum, içerik) döndürür.",
-                en: "Sends a GET request to the URL and returns the response (status, content).",
+                fn: "getir(url, [başlıklar])",
+                tr: "URL'ye GET isteği gönderir. Opsiyonel olarak bir başlık nesnesi kabul eder.",
+                en: "Sends a GET request to the URL. Optionally accepts a headers object.",
               },
               {
-                fn: "gönder(url, veri)",
+                fn: "gönder(url, veri, [başlıklar])",
                 tr: "URL'ye POST isteği gönderir. Veri string (JSON vb.) tipinde olmalıdır.",
                 en: "Sends a POST request to the URL. Data must be in string (JSON, etc.) type.",
               },
               {
-                fn: "güncelle(url, veri)",
+                fn: "güncelle(url, veri, [başlıklar])",
                 tr: "URL'ye PUT isteği gönderir.",
                 en: "Sends a PUT request to the URL.",
               },
               {
-                fn: "sil(url)",
+                fn: "sil(url, [başlıklar])",
                 tr: "URL'ye DELETE isteği gönderir.",
                 en: "Sends a DELETE request to the URL.",
               },
