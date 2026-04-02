@@ -2,24 +2,51 @@
 
 Tüm önemli değişiklikler bu dosyada takip edilecektir.
 
+## [0.50] - 2026-04-02
+
+### Eklendi
+- **Modern Ağ Desteği**: `ag_istekleri` kütüphanesi ile Rust tabanlı `ureq` motoru kullanılarak HTTP istekleri yapabilme.
+- **Hüma Sunucu Framework**: `huma_sunucu` modülü ile dinamik rota (routing) yönetimi ve yanıt başlıkları desteği.
+- **İkili Veri Desteği**: `Bayt` (Byte) veri tipi ile görsel ve dosya gibi ikili verilerin işlenebilmesi.
+- **Çift Dilli CLI**: Komut satırı arayüzünde hem Türkçe hem İngilizce komut ve takma ad (alias) desteği.
+- **Gelişmiş Paket Yöneticisi**:
+  - `huma.json` üzerinden özel betik (script) çalıştırma desteği.
+  - Paket bütünlüğü doğrulaması (integrity hashing).
+  - Proje başlangıcında otomatik `.gitignore` ve Git başlatma.
+  - Bağımlılık takibi ve toplu kurulum özellikleri.
+
+## [0.4.0] - 2026-03-31
+
+### Eklendi
+- **Yerleşik GUI Desteği**: `eframe` entegrasyonu ile pencere, düğme, giriş alanları ve gelişmiş düzen (layout) yönetimi.
+- **Paket Yöneticisi (Sürüm 1)**: GitHub üzerinden paket yükleme, proje iskeleti oluşturma ve merkezi kayıt listesi.
+- **Anonim Fonksiyonlar**: Lambda ifadeleri ve isimsiz fonksiyon tanımlama desteği.
+- **Kilit Dosyası Sistemi**: `huma.lock` ile sürüm uyumluluğu ve tutarlılık kontrolü.
+
+## [0.3.1] - 2026-03-24
+
+### Eklendi
+- **Çalışma Alanı (Workspace) Yapısı**: Proje `huma-core`, `huma-compiler` ve `huma-cli` olarak modüler sandıklara ayrıldı.
+- **VS Code Eklentisi**: Hüma dili için resmi sözdizimi vurgulama ve dil desteği eklentisi başlatıldı.
+- **Yenilenen Web Arayüzü**: Vite ve React tabanlı modern dökümantasyon sitesi ve IDE.
+- **Uluslararasılaştırma (i18n)**: Dökümantasyon ve site için çoklu dil desteği.
+- **Birleşik CLI**: `--ide` parametresi ile tüm araçların tek bir binary altında toplanması.
+
+## [0.2.0] - 2026-03-20
+
+### Eklendi
+- **Tauri IDE**: Yerleşik dosya erişimi ve kaydetme özelliklerine sahip taşınabilir masaüstü IDE.
+- **NLP Kütüphanesi**: Metin işleme, analiz ve doğal dil işleme araçları (`nlp.hb`).
+- **Sözdizimi İyileştirmeleri**: Değişken atama, kontrol akışı ve fonksiyon tanımlamalarında daha esnek yapı.
+
 ## [0.1.0] - 2026-03-16
 
 ### Eklendi
-
 - **Yeni Rust Temelli Mimari**: Dil tamamen Rust ile yeniden yazıldı.
 - **Bytecode Sanal Makine (VM)**: Yüksek performanslı bytecode yürütme motoru.
-- **Ağaç-Gezinme Yorumlayıcısı**: Hızlı denemeler için alternatif yorumlayıcı.
-- **İkili Dosya Oluşturma (Standalone Binary)**: Hüma kodlarını bağımsız çalıştırılabilir dosyalara derleyebilme özelliği.
-- **Gelişmiş Standart Kütüphane**:
-  - `matematik.hb`: Gelişmiş matematiksel fonksiyonlar.
-  - `dizgi.hb`: Metin işleme araçları.
-  - `liste.hb`: Map, Filter, Reduce fonksiyonları.
-  - `birim_test.hb`: Yerleşik test framework'ü.
-  - `renkler.hb`, `zaman.hb`, `rastgele.hb`, `dosya.hb`, `istatistik.hb`.
+- **İkili Dosya Oluşturma**: Hüma kodlarını bağımsız çalıştırılabilir dosyalara derleyebilme özelliği.
 - **REPL**: Etkileşimli kod deneme ortamı.
 - **Modül Sistemi**: `yükle` komutu ile kütüphane desteği.
-- **Yeni Operatörler**: Mod (%) operatörü desteği.
-- **Tip Zorlama (Coercion)**: Metin ve sayı arasında otomatik dönüşüm desteği.
 
 ---
 
@@ -27,21 +54,48 @@ Tüm önemli değişiklikler bu dosyada takip edilecektir.
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- **Modern Networking**: HTTP request capabilities using the Rust-based `ureq` engine via the `ag_istekleri` library.
+- **Huma Server Framework**: Dynamic routing and response header support via the `huma_sunucu` module.
+- **Binary Data Support**: `Bayt` (Byte) data type for handling images and binary files.
+- **Bilingual CLI**: Full support for both Turkish and English commands and aliases in the CLI.
+- **Advanced Package Manager**:
+  - Custom script execution support via `huma.json`.
+  - Package integrity verification (hashing).
+  - Automated `.gitignore` and Git initialization during project creation.
+  - Dependency tracking and bulk installation features.
+
+## [0.4.0] - 2026-03-31
+
+### Added
+- **Native GUI Support**: Windowing, buttons, input fields, and advanced layout management via `eframe` integration.
+- **Package Manager (v1)**: Package installation from GitHub, project scaffolding, and registry listing.
+- **Anonymous Functions**: Support for lambda expressions and anonymous function definitions.
+- **Lock File System**: Version compatibility and consistency checks via `huma.lock`.
+
+## [0.3.1] - 2026-03-24
+
+### Added
+- **Workspace Architecture**: Project split into modular crates: `huma-core`, `huma-compiler`, and `huma-cli`.
+- **VS Code Extension**: Official syntax highlighting and language support extension for VS Code.
+- **Modern Web Interface**: Documentation site and IDE rebuilt with Vite and React.
+- **Internationalization (i18n)**: Multi-language support for documentation and the website.
+- **Unified CLI**: consolidation of all tools under a single binary with `--ide` support.
+
+## [0.2.0] - 2026-03-20
+
+### Added
+- **Tauri IDE**: Portable desktop IDE with built-in file access and saving capabilities.
+- **NLP Library**: Text processing, analysis, and natural language tools (`nlp.hb`).
+- **Syntax Improvements**: More flexible structures for variable assignment, control flow, and function definitions.
+
 ## [0.1.0] - 2026-03-16
 
 ### Added
-
-- **New Rust-Based Architecture**: Complete rewrite from Python to Rust.
-- **Bytecode Virtual Machine (VM)**: High-performance bytecode execution engine.
-- **Tree-Walking Interpreter**: Alternative interpreter for rapid prototyping.
-- **Standalone Binary Compilation**: Ability to compile Hüma scripts into native executables.
-- **Advanced Standard Library**:
-  - `matematik.hb`: Math functions.
-  - `dizgi.hb`: String manipulation.
-  - `liste.hb`: Functional programming tools (Map, Filter, Reduce).
-  - `birim_test.hb`: Unit testing framework.
-  - `renkler.hb`, `zaman.hb`, `rastgele.hb`, `dosya.hb`, `istatistik.hb`.
-- **REPL**: Interactive shell.
+- **New Rust-Based Architecture**: Complete rewrite to Rust.
+- **Bytecode Virtual Machine (VM)**: High-performance execution engine.
+- **Standalone Binary Compilation**: Ability to compile scripts into native executables.
+- **REPL**: Interactive shell environment.
 - **Module System**: Library support via `yükle` (load) command.
-- **New Operators**: Support for Mod (%) operator.
-- **Type Coercion**: Implicit conversion between strings and numbers.
