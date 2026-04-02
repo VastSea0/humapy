@@ -34,9 +34,10 @@ mod exit_codes {
 #[command(
     name = "huma",
     version,
-    about = "Hüma Programlama Dili — Birleşik Araç Takımı",
-    long_about = "Hüma diline ait tüm araçları tek bir komut altında birleştirir:\n\
-                  derleyici, yorumlayıcı, paket yöneticisi ve güncelleme sistemi."
+    about = "Hüma Programlama Dili — Birleşik Araç Takımı (Bilingual CLI)",
+    long_about = "Hüma diline ait tüm araçları tek bir komut altında birleştirir.\n\
+                  Tüm komutlar hem Türkçe hem İngilizce olarak kullanılabilir.\n\
+                  Örn: 'huma run' veya 'huma çalıştır', 'huma build' veya 'huma derle'."
 )]
 struct Cli {
     #[command(subcommand)]
@@ -54,12 +55,14 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     /// Bir Hüma kaynak dosyasını veya projedeki bir betiği çalıştır
+    #[command(alias = "çalıştır")]
     Run {
         /// .hb dosyası veya huma.json içindeki betik adı
         target: Option<String>,
     },
 
     /// Bir Hüma kaynak dosyasını bytecode'a derle
+    #[command(alias = "derle")]
     Build {
         /// Derlenecek .hb dosyası
         file: String,
@@ -74,12 +77,14 @@ enum Commands {
     },
 
     /// Derlenmiş bytecode (.hbc) dosyasını VM'de çalıştır
+    #[command(alias = "yürüt")]
     Exec {
         /// Çalıştırılacak .hbc dosyası
         file: String,
     },
 
     /// Kaynak dosyadan bağımsız Rust kaynak kodu üret
+    #[command(alias = "üret")]
     Gen {
         /// Girdi .hb dosyası
         file: String,
@@ -90,12 +95,15 @@ enum Commands {
     },
 
     /// Etkileşimli REPL (Okuma-Değerlendirme-Yazdırma Döngüsü)
+    #[command(alias = "kabuk")]
     Repl,
 
     /// Masaüstü IDE (Geliştirme Ortamı) uygulamasını başlat
+    #[command(alias = "arayüz")]
     Ide,
 
     /// Hüma araç takımını GitHub'dan en son sürüme güncelle
+    #[command(alias = "güncelle")]
     Update {
         /// Mevcut sürümü kontrol et ancak güncelleme yapma
         #[arg(long)]
@@ -103,41 +111,51 @@ enum Commands {
     },
 
     /// Paket yöneticisi (kütüphane kurma, silme, güncelleme)
+    #[command(alias = "package")]
     Paket {
         #[command(subcommand)]
         action: PackageAction,
     },
 
     /// Sürüm bilgisini göster
+    #[command(alias = "sürüm")]
     Version,
 }
 
 #[derive(Subcommand)]
 pub enum PackageAction {
     /// Proje bağımlılıklarını kurar veya yeni bir paket ekler
+    #[command(alias = "install", alias = "add")]
     Kur {
         /// Paketin adı (boş bırakılırsa tüm bağımlılıklar kurulur)
         name: Option<String>,
     },
     /// Kurulu bir paketi siler
+    #[command(alias = "sil", alias = "remove", alias = "uninstall")]
     Sil {
         /// Paketin adı
         name: String,
     },
     /// Mevcut tüm paketleri listeler
+    #[command(alias = "list")]
     Liste,
     /// Yeni bir paket projesi şablonu oluşturur (yeni klasörde)
+    #[command(alias = "new", alias = "create")]
     Yeni {
         /// Paketin adı
         name: String,
     },
     /// Mevcut dizini bir Hüma projesi olarak ilklendirir
+    #[command(alias = "init")]
     İlkle,
     /// Projenin yayınlanmaya hazır olup olmadığını kontrol eder
+    #[command(alias = "verify")]
     Doğrula,
     /// Tüm paketleri günceller
+    #[command(alias = "update")]
     Güncelle,
     /// Projedeki bir betiği çalıştırır (npm run gibi)
+    #[command(alias = "çalıştır", alias = "betik")]
     Run {
         /// Betiğin adı
         name: String,
@@ -190,7 +208,12 @@ fn run(cli: Cli) -> i32 {
                 // 2. huma.json'daki "giris" dosyasına bak
                 if let Ok(meta) = package_manager::get_local_metadata() {
                     if let Some(ref betikler) = meta.betikler {
-                        if betikler.contains_key("start") {
+                        if betikler.contains_key("baslat") {
+                            return match package_manager::run_script("baslat") {
+                                Ok(_) => 0,
+                                Err(_) => 1,
+                            };
+                        } else if betikler.contains_key("start") {
                             return match package_manager::run_script("start") {
                                 Ok(_) => 0,
                                 Err(_) => 1,

@@ -77,7 +77,7 @@ pub fn start_repl() -> Result<()> {
     );
     println!(
         "{}",
-        "   Etkileşimli REPL — Çıkmak için 'çıkış' yazın.".dimmed()
+        "   Etkileşimli REPL — Çıkmak için 'çıkış' veya 'exit' yazın.".dimmed()
     );
     println!();
 
