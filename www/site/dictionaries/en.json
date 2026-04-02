@@ -225,6 +225,8 @@
           "Advanced Package Manager (huma paket) and GitHub integration added.",
           "huma.lock lockfile system implemented for reproducible builds.",
           "SemVer compatible version control and package metadata (huma.json) introduced.",
+          "Full Bilingual CLI support (e.g., 'run' or 'çalıştır', 'build' or 'derle').",
+          "npm-style package scripts support with 'baslat'/'start' preference.",
           "Optimized syntax and drawing loops for GUI modules."
         ]
       },

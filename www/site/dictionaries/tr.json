@@ -225,6 +225,8 @@
           "Gelişmiş Paket Yöneticisi (huma paket) ve GitHub entegrasyonu eklendi.",
           "huma.lock kilit dosyası sistemi ile tekrarlanabilir derlemeler sağlandı.",
           "SemVer uyumlu sürüm kontrolü ve paket meta verileri (huma.json) sistemi kuruldu.",
+          "Tamamen iki dilli (Bilingual) CLI desteği eklendi (örn: 'run' veya 'çalıştır').",
+          "npm tarzı paket betikleri (scripts) ve 'baslat'/'start' desteği eklendi.",
           "GUI çizim döngülerindeki sözdizimi hataları optimize edildi."
         ]
       },

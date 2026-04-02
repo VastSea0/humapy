@@ -152,11 +152,49 @@ export default function SyntaxPage() {
           </div>
         </section>
 
+        {/* Bilingual CLI */}
+        <section className="mb-16" id="cli">
+          <h2 className="text-2xl font-bold text-on-surface mb-6 flex items-center gap-3">
+            <span className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-sm font-mono text-primary">
+              02
+            </span>
+            Bilingual CLI
+          </h2>
+          <p className="mb-6 text-on-surface-variant">
+            Hüma commands are bilingual. You can use either the English or Turkish version for every operation.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="border-b border-outline-variant/20">
+                  <th className="text-left py-3 pr-8 text-on-surface-variant/60 font-semibold text-xs uppercase tracking-widest">English</th>
+                  <th className="text-left py-3 pr-8 text-on-surface-variant/60 font-semibold text-xs uppercase tracking-widest">Turkish</th>
+                  <th className="text-left py-3 text-on-surface-variant/60 font-semibold text-xs uppercase tracking-widest">Action</th>
+                </tr>
+              </thead>
+              <tbody className="font-mono text-xs divide-y divide-outline-variant/10">
+                {[
+                  ["run", "çalıştır", "Execute a script or file"],
+                  ["build", "derle", "Compile to bytecode"],
+                  ["exec", "yürüt", "Run compiled bytecode"],
+                  ["package", "paket", "Manage dependencies"],
+                ].map(([en, tr, action]) => (
+                  <tr key={en}>
+                    <td className="py-3 pr-8 text-primary">huma {en}</td>
+                    <td className="py-3 pr-8 text-tertiary">huma {tr}</td>
+                    <td className="py-3 text-on-surface-variant font-body">{action}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
         {/* Conditionals */}
         <section className="mb-16" id="conditionals">
           <h2 className="text-2xl font-bold text-on-surface mb-6 flex items-center gap-3">
             <span className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-sm font-mono text-primary">
-              02
+              03
             </span>
             Conditionals
           </h2>
@@ -173,7 +211,7 @@ export default function SyntaxPage() {
         <section className="mb-16" id="loops">
           <h2 className="text-2xl font-bold text-on-surface mb-6 flex items-center gap-3">
             <span className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-sm font-mono text-primary">
-              03
+              04
             </span>
             Loops
           </h2>
@@ -206,7 +244,7 @@ export default function SyntaxPage() {
         <section className="mb-16" id="full-example">
           <h2 className="text-2xl font-bold text-on-surface mb-6 flex items-center gap-3">
             <span className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-sm font-mono text-primary">
-              04
+              05
             </span>
             Putting It Together
           </h2>
@@ -248,6 +286,7 @@ export default function SyntaxPage() {
         <ul className="space-y-4 text-xs font-medium">
           {[
             { href: "#variables", label: "Variables" },
+            { href: "#cli", label: "Bilingual CLI" },
             { href: "#conditionals", label: "Conditionals" },
             { href: "#loops", label: "Loops" },
             { href: "#full-example", label: "Full Example" },

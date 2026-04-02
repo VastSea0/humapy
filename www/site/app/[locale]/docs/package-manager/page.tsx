@@ -56,6 +56,24 @@ export default async function PackageManagerPage({
               <div className="bg-surface-container-lowest rounded-lg border border-outline-variant/10 p-4 font-mono text-sm text-tertiary">
                 huma paket kur github.com/kullanici/repo
               </div>
+              <p className="text-xs text-on-surface-variant mt-2 italic">
+                {locale === "tr" ? "Not: Hiç argüman verilmezse huma.json'daki tüm bağımlılıklar kurulur." : "Note: If no arguments are provided, all dependencies in huma.json are installed."}
+              </p>
+            </div>
+          </div>
+
+          {/* İlkleme */}
+          <div className="scroll-mt-24" id="ilkle">
+            <h2 className="text-2xl font-bold text-on-surface mb-4">
+               {locale === "tr" ? "Proje İlklendirme" : "Initializing a Project"}
+            </h2>
+            <p className="text-on-surface-variant mb-4">
+               {locale === "tr"
+                  ? "Mevcut dizini bir Hüma projesi olarak başlatır (npm init gibi):"
+                  : "Starts the current directory as a Hüma project (like npm init):"}
+            </p>
+            <div className="bg-surface-container-lowest rounded-lg border border-outline-variant/10 p-4 font-mono text-sm text-tertiary">
+              huma paket ilkle
             </div>
           </div>
 
@@ -101,6 +119,28 @@ export default async function PackageManagerPage({
             </p>
             <div className="bg-surface-container-lowest rounded-lg border border-outline-variant/10 p-4 font-mono text-sm text-tertiary">
               huma paket güncelle
+            </div>
+          </div>
+
+          {/* Betikler */}
+          <div className="scroll-mt-24" id="betikler">
+            <h2 className="text-2xl font-bold text-on-surface mb-4">
+               {locale === "tr" ? "Paket Betikleri (Scripts)" : "Package Scripts"}
+            </h2>
+            <p className="text-on-surface-variant mb-4">
+               {locale === "tr"
+                  ? "huma.json içinde tanımlanan özel komutları çalıştırmak için kullanılır:"
+                  : "Used to run custom commands defined in huma.json:"}
+            </p>
+            <div className="space-y-2">
+              <div className="bg-surface-container-lowest rounded-lg border border-outline-variant/10 p-4 font-mono text-sm text-tertiary">
+                huma paket çalıştır baslat
+              </div>
+              <p className="text-xs text-on-surface-variant mt-2">
+                {locale === "tr" 
+                  ? "Kısa yol: 'huma çalıştır' komutu doğrudan 'baslat' betiğini yürütür." 
+                  : "Shortcut: 'huma run' command directly executes the 'baslat' script."}
+              </p>
             </div>
           </div>
 
@@ -247,6 +287,16 @@ export default async function PackageManagerPage({
           <li>
             <a href="#guncelle" className="text-on-surface-variant/60 hover:text-on-surface transition-all">
                {locale === "tr" ? "Güncelleme" : "Update"}
+            </a>
+          </li>
+          <li>
+            <a href="#ilkle" className="text-on-surface-variant/60 hover:text-on-surface transition-all">
+               {locale === "tr" ? "İlklendirme" : "Initialization"}
+            </a>
+          </li>
+          <li>
+            <a href="#betikler" className="text-on-surface-variant/60 hover:text-on-surface transition-all">
+               {locale === "tr" ? "Betikler" : "Scripts"}
             </a>
           </li>
           <li>

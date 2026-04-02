@@ -11,6 +11,7 @@ Hüma, modern yazılım geliştirme prensiplerini Türkçe doğal dil yapısıyl
 - **Hibrit Çalışma Modu:** İsterseniz doğrudan yorumlayın, isterseniz bytecode'a derleyip sanal makinede (VM) koşturun.
 - **Bağımsız İkili Dosyalar (Standalone):** Kodlarınızı derleyip herhangi bir bağımlılık olmadan çalışabilen native binary'lere dönüştürebilirsiniz.
 - **Zengin Sistem Kütüphaneleri:** Matematik, terminal renklendirme, zaman yönetimi, liste araçları ve birim test çerçevesi hazırdır.
+- **İki Dilli CLI (Bilingual CLI):** Tüm komutları hem Türkçe hem de İngilizce olarak kullanabilirsiniz (Örn: `run` veya `çalıştır`, `build` veya `derle`).
 - **Modern IDE Desteği:** Kod yazmanız için hem Native (GTK) hem de Web tabanlı modern editörler sunulur.
 
 ---
@@ -41,21 +42,38 @@ huma repl
 
 ### 2. Dosya Çalıştırma (Yorumlayıcı)
 
-Bir `.hb` dosyasını çalıştırmak için:
+Bir `.hb` dosyasını çalıştırmak için (`run` veya `çalıştır`):
 
 ```bash
+huma çalıştır program.hb
+# veya
 huma run program.hb
 ```
 
 ### 3. Bytecode Modu (Performans)
 
-Kodunuzu önce bytecode'a derleyip sonra Sanal Makine üzerinde koşturabilirsiniz:
+Kodunuzu önce bytecode'a derleyip (`build`/`derle`) sonra Sanal Makine üzerinde yürütebilirsiniz (`exec`/`yürüt`):
 
 ```bash
 # Derle
-huma build program.hb -o cikti.hbc
+huma derle program.hb -o cikti.hbc
 # Yürüt
-huma exec cikti.hbc
+huma yürüt cikti.hbc
+```
+
+### 4. Paket Yöneticisi ve Betikler
+
+Hüma, modern bir paket yöneticisine sahiptir (`paket` veya `package`):
+
+```bash
+# Projeyi ilklendir
+huma paket ilkle
+# Bağımlılıkları kur
+huma paket kur
+# Yeni bağımlılık ekle
+huma paket kur ag_istekleri
+# Projedeki bir betiği çalıştır (npm run gibi)
+huma çalıştır baslat
 ```
 
 ---

@@ -13,6 +13,7 @@ Hüma is a high-performance, safe, and intuitive programming language that combi
 - **Hybrid Execution:** Choose between direct interpretation for development and bytecode execution for higher performance.
 - **Standalone Compilation:** Compile your code into native binary executables with zero external dependencies.
 - **Rich Standard Library:** Built-in support for mathematics, terminal coloring, time management, advanced list manipulation, and unit testing.
+- **Bilingual CLI (Turkish & English):** All commands work in both languages (e.g., `run` or `çalıştır`, `build` or `derle`, `package` or `paket`).
 - **Modern IDE Support:** Full-featured IDEs available in both Native (GTK) and Web/Tauri flavors.
 
 ---
@@ -43,24 +44,38 @@ huma repl
 
 ### 2. Run a Script (Interpreter)
 
-Run a `.hb` file using the tree-walking interpreter:
+Run a `.hb` file using the tree-walking interpreter (`run` or `çalıştır`):
 
 ```bash
-# General usage
 huma run script.hb
-# Example
-huma run examples/fibonacci.hb
+# or in Turkish
+huma çalıştır script.hb
 ```
 
 ### 3. Bytecode Mode (Performance)
 
-Compile to bytecode and execute via the VM:
+Compile to bytecode (`build`/`derle`) and execute via the VM (`exec`/`yürüt`):
 
 ```bash
 # Compile to bytecode (.hbc)
 huma build script.hb -o output.hbc
 # Execute bytecode
 huma exec output.hbc
+```
+
+### 4. Package Manager & Scripts
+
+Hüma features a powerful package manager (`package` or `paket`):
+
+```bash
+# Initialize a project
+huma package init
+# Install all dependencies
+huma package install
+# Add a specific dependency
+huma package add ag_istekleri
+# Run a project script (like npm run)
+huma run baslat
 ```
 
 ---
