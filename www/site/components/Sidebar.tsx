@@ -60,6 +60,11 @@ export default function Sidebar({ dict, locale }: { dict: any; locale: string })
           icon: "globe_uk",
         },
         {
+          href: getPath("/docs/huma_sunucu"),
+          label: dict.Sidebar.items.huma_sunucu,
+          icon: "dns",
+        },
+        {
           href: getPath("/docs/package-manager"),
           label: dict.Sidebar.items.package_manager,
           icon: "package_2",
