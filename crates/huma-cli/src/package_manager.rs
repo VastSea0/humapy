@@ -2,7 +2,7 @@ use std::fs;
 use std::path::Path;
 use anyhow::{Result, anyhow};
 use colored::Colorize;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize, Deserializer};
 use semver::{Version, VersionReq};
 use std::collections::HashMap;
 use chrono;
@@ -33,10 +33,35 @@ pub struct PaketKilit {
     pub guncelleme_zamani: String,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Debug, Clone)]
 pub struct KilitBilgisi {
     pub surum: String,
     pub hash: String,
+}
+
+impl<'de> Deserialize<'de> for KilitBilgisi {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        use serde::de::{self, MapAccess, Visitor};
+        use std::fmt;
+
+        #[derive(Deserialize)]
+        #[serde(untagged)]
+        enum TempKilit {
+            String(String),
+            Map { surum: String, hash: String },
+        }
+
+        match TempKilit::deserialize(deserializer)? {
+            TempKilit::String(s) => Ok(KilitBilgisi {
+                surum: s,
+                hash: "".to_string(),
+            }),
+            TempKilit::Map { surum, hash } => Ok(KilitBilgisi { surum, hash }),
+        }
+    }
 }
 
 const PACKAGE_DIR: &str = "huma_modulleri";
@@ -47,6 +72,10 @@ const CURRENT_HUMA_VER: &str = env!("CARGO_PKG_VERSION");
 
 /// Kurulu tüm paketleri ve sürümlerini kilit dosyasından listeler
 pub fn list_packages() -> Result<()> {
+    if !Path::new(PROJECT_FILE).exists() {
+        return Err(anyhow!("Bu dizinde bir Hüma projesi (huma.json) bulunamadı."));
+    }
+
     if !Path::new(LOCK_FILE).exists() {
         println!("{} Hiç paket kurulu değil.", "Bilgi:".bright_yellow());
         return Ok(());
@@ -57,7 +86,11 @@ pub fn list_packages() -> Result<()> {
 
     println!("{} Kurulu Hüma Paketleri (Kilitlenmiş Sürümler):", "Hüma:".bright_cyan());
     for (ad, bilgi) in &lock.paketler {
-        println!("  {} -> {} [{}]", ad.bright_green(), bilgi.surum.bright_white(), &bilgi.hash[..8].bright_black());
+        if !bilgi.hash.is_empty() {
+            println!("  {} -> {} [{}]", ad.bright_green(), bilgi.surum.bright_white(), &bilgi.hash[..8].bright_black());
+        } else {
+            println!("  {} -> {}", ad.bright_green(), bilgi.surum.bright_white());
+        }
     }
     
     Ok(())

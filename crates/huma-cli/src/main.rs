@@ -120,6 +120,28 @@ enum Commands {
     /// Sürüm bilgisini göster
     #[command(alias = "sürüm")]
     Version,
+
+    /// Proje bağımlılıklarını kurar (Kısa yol)
+    #[command(alias = "install", alias = "add")]
+    Kur {
+        /// Paketin adı
+        name: Option<String>,
+    },
+
+    /// Yeni bir paket projesi şablonu oluşturur (Kısa yol)
+    #[command(alias = "new")]
+    Yeni {
+        /// Paketin adı
+        name: String,
+    },
+
+    /// Kurulu paketleri listeler (Kısa yol)
+    #[command(alias = "liste", alias = "list")]
+    Listele,
+
+    /// Mevcut dizini ilklendirir (Kısa yol)
+    #[command(alias = "init")]
+    İlkle,
 }
 
 #[derive(Subcommand)]
@@ -250,6 +272,11 @@ fn run(cli: Cli) -> i32 {
             PackageAction::Doğrula => package_manager::verify_package(),
             PackageAction::Run { name } => package_manager::run_script(&name),
         },
+
+        Some(Commands::Kur { name }) => package_manager::install_package(name.as_deref()),
+        Some(Commands::Yeni { name }) => package_manager::create_package(&name),
+        Some(Commands::Listele) => package_manager::list_packages(),
+        Some(Commands::İlkle) => package_manager::init_project(),
 
         Some(Commands::Version) => {
             println!(
