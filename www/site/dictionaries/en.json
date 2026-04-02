@@ -1,6 +1,6 @@
 {
   "Hero": {
-    "badge": "v0.4.0-stable release (kinetic archive)",
+    "badge": "v0.5.0-stable release (modern network dawn)",
     "headline": "Code as You Think.",
     "subheadline": "In Your Native Language.",
     "description": "Hüma is a high-performance programming language featuring native Turkish syntax. Built with a Rust-backed core, it combines the expressiveness of natural language with the raw speed of a systems compiler.",
@@ -40,7 +40,7 @@
   "Footer": {
     "copy": "© 2026 Hüma Language Egehan KAHRAMAN",
     "license": "LICENSE: MIT",
-    "build": "BUILD: STABLE-26.03",
+    "build": "BUILD: STABLE-02.04",
     "github": "GitHub",
     "discord": "Discord",
     "releases": "Releases",
@@ -54,7 +54,7 @@
     "github": "GitHub"
   },
   "Playground": {
-    "badge": "v0.3.1-stable kinetic gallery",
+    "badge": "v0.5.0",
     "headline": "Pure Efficiency.",
     "subheadline": "Native Semantics.",
     "description": "Discover the Hüma language. Programming is now much more accessible and powerful with its syntax close to daily spoken language.",
@@ -215,6 +215,18 @@
     "changelog": {
       "title": "Changelog",
       "description": "Official update history of the Hüma language and toolchain.",
+      "v0_5_0": {
+        "version": "v0.5.0 (Modern Network Dawn)",
+        "date": "April 2, 2026",
+        "changes": [
+          "Modern Networking: added high-performance HTTP client via ag_istekleri library.",
+          "Huma Server (HTTP): built-in web server framework with dynamic route management.",
+          "Bilingual CLI: all commands are now usable in both Turkish and English.",
+          "Byte Data Type: built-in support for processing images, audio and other binary files.",
+          "Package Manager 2.0: script support, integrity checks and automated git integration.",
+          "Server Response Headers: object-based header support for customizing HTTP responses."
+        ]
+      },
       "v0_4_0": {
         "version": "v0.4.0 (Visual and Modular Dawn)",
         "date": "March 31, 2026",
@@ -231,7 +243,7 @@
         ]
       },
       "v0_3_1": {
-        "version": "v0.3.1 (Latest)",
+        "version": "v0.3.1",
         "date": "March 30, 2026",
         "changes": [
           "Full internationalization (i18n) support with locale routing",

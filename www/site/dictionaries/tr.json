@@ -1,6 +1,6 @@
 {
   "Hero": {
-    "badge": "v0.4.0-kararlı sürüm (kinetik arşiv)",
+    "badge": "v0.5.0-kararlı sürüm (modern ağ şafağı)",
     "headline": "Aklındaki Gibi Kodla.",
     "subheadline": "Kendi Ana Dilinde.",
     "description": "Hüma, yerel Türkçe sözdizimine sahip, yüksek performanslı bir programlama dilidir. Rust tabanlı çekirdeğiyle, doğal bir dilin ifade gücünü sistem derleyicisinin hızıyla birleştirir.",
@@ -40,7 +40,7 @@
   "Footer": {
     "copy": "© 2026 Hüma Dili Egehan KAHRAMAN",
     "license": "LİSANS: MIT",
-    "build": "DERLEME: STABLE-26.03",
+    "build": "DERLEME: STABLE-02.04",
     "github": "GitHub",
     "discord": "Discord",
     "releases": "Sürümler",
@@ -54,7 +54,7 @@
     "github": "GitHub"
   },
   "Playground": {
-    "badge": "v0.4.0",
+    "badge": "v0.5.0",
     "headline": "Saf Verimlilik.",
     "subheadline": "Yerel Semantik.",
     "description": "Hüma dilini keşfedin. Günlük konuşma diline yakın sözdizimi ile programlama artık çok daha erişilebilir ve güçlü.",
@@ -215,6 +215,18 @@
     "changelog": {
       "title": "Sürüm Notları",
       "description": "Hüma dili ve araç zinciri resmi güncelleme geçmişi.",
+      "v0_5_0": {
+        "version": "v0.5.0 (Modern Ağ Şafağı)",
+        "date": "2 Nisan 2026",
+        "changes": [
+          "Modern Ağ Desteği: ag_istekleri kütüphanesi ile yüksek performanslı HTTP istemcisi eklendi.",
+          "Hüma Sunucu (HTTP): Yerleşik web sunucusu framework'ü ile dinamik route yönetimi geldi.",
+          "Çift Dilli CLI: Artık tüm komutlar hem Türkçe hem İngilizce olarak kullanılabilir.",
+          "Bayt Veri Tipi: Resim, ses ve diğer ikili dosyaları işlemek için yerleşik destek eklendi.",
+          "Paket Yöneticisi 2.0: Script desteği, bütünlük kontrolü ve otomatik git entegrasyonu.",
+          "Sunucu Yanıt Başlıkları: HTTP yanıtlarını özelleştirmek için nesne tabanlı header desteği."
+        ]
+      },
       "v0_4_0": {
         "version": "v0.4.0 (Görsel ve Modüler Şafak)",
         "date": "31 Mart 2026",
@@ -231,7 +243,7 @@
         ]
       },
       "v0_3_1": {
-        "version": "v0.3.1 (En Yeni Sürüm)",
+        "version": "v0.3.1",
         "date": "30 Mart 2026",
         "changes": [
           "Yerel yönlendirme ile tam uluslararasılaştırma (i18n) desteği eklendi.",

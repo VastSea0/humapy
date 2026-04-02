@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 const installCode = `curl -fsSL https://raw.githubusercontent.com/VastSea0/huma-lang/main/install.sh | sh`;
 
 const versionCode = `$ huma --version
-Hüma Language Compiler v0.4.0 (build 4a92c)`;
+Hüma Language Compiler v0.5.0 (build 5e12d)`;
 
 const firstProgramCode = `// Değişken tanımlayıp koşullu mantık
 puan = 85 olsun
