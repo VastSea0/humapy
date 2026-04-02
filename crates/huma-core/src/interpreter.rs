@@ -167,11 +167,24 @@ impl Yorumlayici {
             if args.len() < 2 { return Deger::Bos; }
             let metot = match &args[0] { Deger::Metin(s) => s.to_uppercase(), _ => "GET".to_string() };
             let url = match &args[1] { Deger::Metin(s) => s, _ => return Deger::Bos };
-            let govdeli = args.len() >= 3;
+            let govdeli = args.len() >= 3 && !matches!(args[2], Deger::Bos);
             let govde = if govdeli { match &args[2] { Deger::Metin(s) => s.clone(), _ => String::new() } } else { String::new() };
             
-            let req = ureq::request(&metot, url);
-            let response = if govdeli && (metot == "POST" || metot == "PUT" || metot == "PATCH") {
+            let mut req = ureq::request(&metot, url);
+            
+            // Başlıkları ekle (4. argüman)
+            if args.len() >= 4 {
+                if let Deger::Nesne { alanlar, .. } = &args[3] {
+                    for (k, v) in alanlar.borrow().iter() {
+                        req = req.set(k, &v.to_string());
+                    }
+                }
+            }
+            
+            // Eğer gövde varsa ve Content-Type belirtilmemişse varsayılan olarak JSON denebilir
+            // Ama şimdilik kullanıcıya bırakmak daha esnek.
+
+            let response = if govdeli && (metot == "POST" || metot == "PUT" || metot == "PATCH" || metot == "DELETE") {
                 req.send_string(&govde)
             } else {
                 req.call()
