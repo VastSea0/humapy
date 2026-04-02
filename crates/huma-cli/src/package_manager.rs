@@ -1,6 +1,6 @@
 use std::fs;
 use std::path::Path;
-use anyhow::{Result, anyhow, Context};
+use anyhow::{Result, anyhow};
 use colored::Colorize;
 use serde::{Deserialize, Serialize};
 use semver::{Version, VersionReq};
@@ -20,6 +20,8 @@ pub struct PaketMetadata {
     pub huma_surum: Option<String>,
     /// Projenin bağımlılıkları (paket adı -> sürüm kısıtlaması)
     pub bagimliliklar: Option<HashMap<String, String>>,
+    /// Çalıştırılabilir betikler (betik adı -> komut)
+    pub betikler: Option<HashMap<String, String>>,
 }
 
 
@@ -70,6 +72,10 @@ pub fn create_package(name: &str) -> Result<()> {
 
     fs::create_dir_all(dir)?;
     
+    let mut betikler = HashMap::new();
+    betikler.insert("baslat".to_string(), format!("huma run {}.hb", name));
+    betikler.insert("test".to_string(), "huma run tests/test.hb".to_string());
+
     let meta = PaketMetadata {
         ad: name.to_string(),
         surum: "0.1.0".to_string(),
@@ -78,6 +84,7 @@ pub fn create_package(name: &str) -> Result<()> {
         giris: format!("{}.hb", name),
         huma_surum: Some(format!(">={}", CURRENT_HUMA_VER)),
         bagimliliklar: Some(HashMap::new()),
+        betikler: Some(betikler),
     };
 
     fs::write(dir.join("huma.json"), serde_json::to_string_pretty(&meta)?)?;
@@ -112,16 +119,38 @@ pub fn create_package(name: &str) -> Result<()> {
 
 
 /// Bir paketi kurar ve kilit dosyasına ekler
-pub fn install_package(input: &str) -> Result<()> {
-    // Yerel Proje Kontrolü
+pub fn install_package(input: Option<&str>) -> Result<()> {
+    // 1. Proje dosyası kontrolü
     if !Path::new(PROJECT_FILE).exists() {
-        return Err(anyhow!(
-            "{} Bu dizinde bir Hüma projesi (huma.json) bulunamadı.\n{} Paketleri kurmak için önce bir proje başlatmalısınız: {}", 
-            "Hata:".bright_red(),
-            "İpucu:".bright_yellow(),
-            format!("huma paket yeni <proje_adi>").bold()
-        ));
+        return Err(anyhow!("Bu dizinde huma.json bulunamadı. Önce 'huma paket ilkle' çalıştırın."));
     }
+
+    let input = match input {
+        Some(i) => i,
+        None => {
+            // Hiç argüman yoksa: huma.json'daki tüm bağımlılıkları kur
+            let meta = get_local_metadata()?;
+            if let Some(deps) = meta.bagimliliklar {
+                if deps.is_empty() {
+                    println!("{} Kurulacak bağımlılık yok.", "Bilgi:".bright_yellow());
+                    return Ok(());
+                }
+                println!("{} {} bağımlılık kuruluyor...", "Hüma:".bright_cyan(), deps.len());
+                for (ad, _surum) in deps {
+                    // Sembolik kurma (Şu an GitHub veya dahili paketleri destekliyoruz)
+                    if ad == "nlp_temel" || ad == "ag_istekleri" || ad == "huma_sunucu" {
+                        install_package(Some(&ad))?;
+                    } else {
+                        println!("{} {} paketi henüz topluluk kütüphanesinde değil, atlanıyor.", "Uyarı:".bright_yellow(), ad);
+                    }
+                }
+                return Ok(());
+            } else {
+                println!("{} Bağımlılık listesi boş.", "Bilgi:".bright_yellow());
+                return Ok(());
+            }
+        }
+    };
 
     if input.starts_with("github.com/") {
         return install_from_github(input);
@@ -138,16 +167,21 @@ pub fn install_package(input: &str) -> Result<()> {
                 giris: format!("{}.hb", input),
                 huma_surum: Some(">=0.3.0".to_string()),
                 bagimliliklar: None,
+                betikler: None, // Added field
             };
 
             let content = match input {
-                "huma_sunucu" => fs::read_to_string("/home/egehan/development/humapy/huma_modulleri/huma_sunucu/huma_sunucu.hb")?,
+                "huma_sunucu" => {
+                    // Path may change depending on execution context, but using absolute for internal simulation
+                    fs::read_to_string("/home/egehan/development/humapy/huma_modulleri/huma_sunucu/huma_sunucu.hb")
+                        .unwrap_or_else(|_| "// huma_sunucu içeriği".to_string())
+                },
                 _ => "// Simülasyon içeriği".to_string(),
             };
 
             save_package(meta, &content)?;
         },
-        _ => return Err(anyhow!("Paket bulunamadı. Lütfen GitHub linki kullanın.")),
+        _ => return Err(anyhow!("Paket bulunamadı. Lütfen GitHub linki kullanın (örn: github.com/user/repo).")),
     }
     Ok(())
 }
@@ -295,4 +329,86 @@ pub fn update_packages() -> Result<()> {
     // Gerçek bir senaryoda tüm URL'ler LOCK dosyasında saklanır ve tek tek re-download edilir.
     println!("{} Tüm paketler kilitli sürümlerinde güncel.", "Giriş:".bright_green());
     Ok(())
+}
+
+/// Mevcut dizinde bir Hüma projesi ilklendirir
+pub fn init_project() -> Result<()> {
+    if Path::new(PROJECT_FILE).exists() {
+        return Err(anyhow!("Bu dizinde zaten bir huma.json dosyası mevcut."));
+    }
+
+    let default_name = std::env::current_dir()?
+        .file_name()
+        .and_then(|n| n.to_str())
+        .unwrap_or("huma_projesi")
+        .to_string();
+
+    let mut betikler = HashMap::new();
+    betikler.insert("baslat".to_string(), format!("huma run {}.hb", default_name));
+    betikler.insert("test".to_string(), "huma run tests/test.hb".to_string());
+
+    let meta = PaketMetadata {
+        ad: default_name.clone(),
+        surum: "0.1.0".to_string(),
+        aciklama: "Yeni bir Hüma projesi.".to_string(),
+        yazar: "Geliştirici".to_string(),
+        giris: format!("{}.hb", default_name),
+        huma_surum: Some(format!(">={}", CURRENT_HUMA_VER)),
+        bagimliliklar: Some(HashMap::new()),
+        betikler: Some(betikler),
+    };
+
+    fs::write(PROJECT_FILE, serde_json::to_string_pretty(&meta)?)?;
+    
+    let hb_file = format!("{}.hb", default_name);
+    if !Path::new(&hb_file).exists() {
+        fs::write(&hb_file, format!("// {} ana giriş dosyaba\n\"Hüma projesi aktif.\"'ı yazdır", default_name))?;
+    }
+
+    // Git ilklendirmesi dene
+    let _ = std::process::Command::new("git")
+        .arg("init")
+        .output();
+
+    println!("{} Proje '{}' olarak ilklendirildi.", "Başarılı!".bright_green(), default_name.bold());
+    Ok(())
+}
+
+/// Mevcut dizindeki huma.json dosyasını okur
+pub fn get_local_metadata() -> Result<PaketMetadata> {
+    if !Path::new(PROJECT_FILE).exists() {
+        return Err(anyhow!("Bu dizinde bir Hüma projesi (huma.json) bulunamadı."));
+    }
+    let s = fs::read_to_string(PROJECT_FILE)?;
+    let meta: PaketMetadata = serde_json::from_str(&s)?;
+    Ok(meta)
+}
+
+/// Belirtilen betiği çalıştırır
+pub fn run_script(name: &str) -> Result<()> {
+    let meta = get_local_metadata()?;
+    if let Some(betikler) = meta.betikler {
+        if let Some(komut) = betikler.get(name) {
+            println!("{} {} betiği çalıştırılıyor: {}", "Hüma:".bright_cyan(), name.bold(), komut.bright_black());
+            
+            let status = if cfg!(target_os = "windows") {
+                std::process::Command::new("cmd")
+                    .args(["/C", komut])
+                    .status()?
+            } else {
+                std::process::Command::new("sh")
+                    .args(["-c", komut])
+                    .status()?
+            };
+
+            if !status.success() {
+                return Err(anyhow!("Betik '{}' hata ile sonlandı.", name));
+            }
+            Ok(())
+        } else {
+            Err(anyhow!("'{}' adlı bir betik huma.json içinde bulunamadı.", name))
+        }
+    } else {
+        Err(anyhow!("Bu projede hiç betik tanımlanmamış."))
+    }
 }

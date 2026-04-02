@@ -53,10 +53,10 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Bir Hüma kaynak dosyasını yorumlayıcıda çalıştır
+    /// Bir Hüma kaynak dosyasını veya projedeki bir betiği çalıştır
     Run {
-        /// Çalıştırılacak .hb dosyası
-        file: String,
+        /// .hb dosyası veya huma.json içindeki betik adı
+        target: Option<String>,
     },
 
     /// Bir Hüma kaynak dosyasını bytecode'a derle
@@ -114,10 +114,10 @@ enum Commands {
 
 #[derive(Subcommand)]
 pub enum PackageAction {
-    /// Yeni bir topluluk paketi kurar
+    /// Proje bağımlılıklarını kurar veya yeni bir paket ekler
     Kur {
-        /// Paketin adı
-        name: String,
+        /// Paketin adı (boş bırakılırsa tüm bağımlılıklar kurulur)
+        name: Option<String>,
     },
     /// Kurulu bir paketi siler
     Sil {
@@ -126,15 +126,22 @@ pub enum PackageAction {
     },
     /// Mevcut tüm paketleri listeler
     Liste,
-    /// Yeni bir paket projesi şablonu oluşturur
+    /// Yeni bir paket projesi şablonu oluşturur (yeni klasörde)
     Yeni {
         /// Paketin adı
         name: String,
     },
+    /// Mevcut dizini bir Hüma projesi olarak ilklendirir
+    İlkle,
     /// Projenin yayınlanmaya hazır olup olmadığını kontrol eder
     Doğrula,
     /// Tüm paketleri günceller
     Güncelle,
+    /// Projedeki bir betiği çalıştırır (npm run gibi)
+    Run {
+        /// Betiğin adı
+        name: String,
+    },
 }
 
 
@@ -159,7 +166,45 @@ fn main() {
 
 fn run(cli: Cli) -> i32 {
     let result = match cli.command {
-        Some(Commands::Run { file }) => commands::run_file(&file),
+        Some(Commands::Run { target }) => {
+            if let Some(t) = target {
+                // Eğer bir .hb dosyası ise direkt çalıştır
+                if t.ends_with(".hb") && std::path::Path::new(&t).exists() {
+                    commands::run_file(&t)
+                } else {
+                    // Script olup olmadığını kontrol et
+                    match package_manager::run_script(&t) {
+                        Ok(_) => Ok(()),
+                        Err(_e) => {
+                            // Eğer script değilse ve dosya olarak da yoksa hata ver
+                            if !std::path::Path::new(&t).exists() {
+                                return 1; // Hata kodu
+                            }
+                            commands::run_file(&t)
+                        }
+                    }
+                }
+            } else {
+                // Hiçbir şey verilmemişse:
+                // 1. "start" betiği var mı bak
+                // 2. huma.json'daki "giris" dosyasına bak
+                if let Ok(meta) = package_manager::get_local_metadata() {
+                    if let Some(ref betikler) = meta.betikler {
+                        if betikler.contains_key("start") {
+                            return match package_manager::run_script("start") {
+                                Ok(_) => 0,
+                                Err(_) => 1,
+                            };
+                        }
+                    }
+                    // Giriş dosyasını dene
+                    commands::run_file(&meta.giris)
+                } else {
+                    println!("{} Ne bir .hb dosyası belirtildi ne de bir huma.json projesi bulundu.", "Hata:".bright_red());
+                    Ok(())
+                }
+            }
+        },
         Some(Commands::Build { file, output, json }) => commands::build_file(&file, &output, json),
         Some(Commands::Exec { file }) => commands::exec_bytecode(&file),
         Some(Commands::Gen { file, output }) => commands::generate_standalone(&file, &output),
@@ -173,12 +218,14 @@ fn run(cli: Cli) -> i32 {
             }
         }
         Some(Commands::Paket { action }) => match action {
-            PackageAction::Kur { name } => package_manager::install_package(&name),
+            PackageAction::Kur { name } => package_manager::install_package(name.as_deref()),
             PackageAction::Sil { name } => package_manager::remove_package(&name),
             PackageAction::Güncelle => package_manager::update_packages(),
             PackageAction::Yeni { name } => package_manager::create_package(&name),
+            PackageAction::İlkle => package_manager::init_project(),
             PackageAction::Liste => package_manager::list_packages(),
             PackageAction::Doğrula => package_manager::verify_package(),
+            PackageAction::Run { name } => package_manager::run_script(&name),
         },
 
         Some(Commands::Version) => {
@@ -194,7 +241,17 @@ fn run(cli: Cli) -> i32 {
         // No subcommand — check if a bare file was passed
         None => {
             if let Some(file) = cli.file {
-                commands::run_file(&file)
+                // Bare file passed
+                if file.ends_with(".hb") && std::path::Path::new(&file).exists() {
+                    commands::run_file(&file)
+                } else {
+                    // Try script first if it's a bare word
+                    if package_manager::run_script(&file).is_ok() {
+                        Ok(())
+                    } else {
+                        commands::run_file(&file)
+                    }
+                }
             } else {
                 // Default: start the REPL
                 commands::start_repl()
