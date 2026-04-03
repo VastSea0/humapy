@@ -86,7 +86,7 @@ export default async function DocsPage({
           </div>
         </section>
 
-        {/* 02 Quick Start */}
+        {/* 02 Quick Start & REPL */}
         <section className="mb-16" id="quick-start">
           <h2 className="text-2xl font-bold text-on-surface mb-6 flex items-center gap-3">
             <span className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-sm font-mono text-primary">
@@ -97,35 +97,60 @@ export default async function DocsPage({
           <p className="mb-6 text-on-surface-variant">
             {d.quick_start.desc}
           </p>
-          <CodeBlock 
-            code={`$ huma --${locale === "tr" ? "versiyon" : "version"}\nHüma v0.5.0 (${locale === "tr" ? "Modern Ağ Şafağı" : "Modern Network Dawn"})`} 
-            variant="terminal" 
-          />
+          <div className="space-y-4">
+            <CodeBlock 
+              code={`$ huma --${locale === "tr" ? "versiyon" : "version"}\nHüma v0.5.0 (${locale === "tr" ? "Modern Ağ Şafağı" : "Modern Network Dawn"})`} 
+              variant="terminal" 
+            />
+            <CodeBlock 
+              code={`$ huma repl\n\nhüma ❯ "merhaba world"'u yazdır\nmerhaba world\nhüma ❯ çıkış`} 
+              variant="terminal" 
+            />
+          </div>
         </section>
 
-        {/* 03 First Program */}
-        <section className="mb-16" id="first-program">
+        {/* 03 First Project */}
+        <section className="mb-16" id="first-project">
           <h2 className="text-2xl font-bold text-on-surface mb-6 flex items-center gap-3">
             <span className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-sm font-mono text-primary">
               03
             </span>
-            {d.first_program.title}
+            {d.first_project.title}
           </h2>
           <p className="mb-6 text-on-surface-variant">
-            {d.first_program.desc}
+            {d.first_project.desc}
           </p>
-          <CodeBlock code={firstProgramCode} filename="merhaba.hb" />
+          
+          <div className="space-y-6">
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-widest text-primary mb-3">1. {locale === "tr" ? "Projeyi Oluştur" : "Create Project"}</h4>
+              <CodeBlock code={`$ huma paket yeni merhaba_projesi\n\n[Başarılı!] 'merhaba_projesi' projesi oluşturuldu.`} variant="terminal" />
+            </div>
+
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-widest text-primary mb-3">2. {locale === "tr" ? "Kodu Düzenle" : "Edit Code"}</h4>
+              <CodeBlock 
+                filename="merhaba_projesi/merhaba_projesi.hb"
+                code={`// Değişken tanımlayıp koşullu mantık\npuan = 85 olsun\n\npuan > 50 ise {\n    "Başarılı!"'yı yazdır;\n} yoksa {\n    "Tekrar dene."'i yazdır;\n}`} 
+              />
+            </div>
+
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-widest text-primary mb-3">3. {locale === "tr" ? "Çalıştır" : "Run Project"}</h4>
+              <CodeBlock code={`$ cd merhaba_projesi\n$ huma paket run baslat\n\n[Hüma] baslat betiği çalıştırılıyor...\nBaşarılı!`} variant="terminal" />
+            </div>
+          </div>
 
           {/* Suffix Callout */}
-          <div className="bg-tertiary/5 border-l-4 border-tertiary p-6 rounded-r-lg">
+          <div className="bg-tertiary/5 border-l-4 border-tertiary p-6 rounded-r-lg mt-8">
             <div className="flex items-center gap-3 mb-2 text-tertiary">
-              <span className="material-symbols-outlined text-lg">auto_fix</span>
+              <span className="material-symbols-outlined text-lg">package_2</span>
               <span className="text-xs font-bold uppercase tracking-widest">
-                {d.first_program.suffix_title}
+                {d.first_project.suffix_title}
               </span>
             </div>
             <p className="text-sm text-on-surface-variant leading-relaxed">
-              {d.first_program.suffix_desc}
+              {d.first_project.suffix_desc}
             </p>
           </div>
         </section>
@@ -196,7 +221,7 @@ export default async function DocsPage({
           {[
             { href: "#installation", label: d.toc.installation },
             { href: "#quick-start", label: d.toc.quick_start },
-            { href: "#first-program", label: d.toc.first_program },
+            { href: "#first-project", label: d.toc.first_project },
             { href: "#next-steps", label: d.toc.next_steps },
           ].map((item) => (
             <li key={item.href}>

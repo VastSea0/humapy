@@ -316,14 +316,14 @@
         "arch_desc": "Hüma runs with zero latency on Apple Silicon (M1/M2/M3) and modern x86_64 processors. The compiler core is built using safe, high-performance Rust."
       },
       "quick_start": {
-        "title": "System Verification",
-        "desc": "Verify your installation by checking the current version. The Hüma CLI is designed for rapid response and low-latency developer feedback."
+        "title": "Verification & REPL",
+        "desc": "Verify your installation and start experimenting immediately in the interactive shell (REPL)."
       },
-      "first_program": {
-        "title": "Your First Program",
-        "desc": "Hüma syntax bridges the gap between human thought and machine execution. Assign variables with 'olsun' and define conditions with 'ise'.",
-        "suffix_title": "The Power of Suffixes",
-        "suffix_desc": "Write code using natural Turkish suffixes like 'isim'i yazdır'. Our compiler automatically strips these (after the apostrophe), converting them into pure binary performance."
+      "first_project": {
+        "title": "Your First Project",
+        "desc": "Hüma's package manager creates a professional project structure with just one command. This sets up your manifest, boilerplate, and dependency management.",
+        "suffix_title": "Project Architecture",
+        "suffix_desc": "The 'huma paket yeni' command automatically generates a 'huma.json' file and a main entry point, preparing your project for scale from day one."
       },
       "next_steps": {
         "title": "Roadmap",
@@ -335,8 +335,8 @@
       "toc": {
         "title": "ON THIS PAGE",
         "installation": "Installation Process",
-        "quick_start": "Verification",
-        "first_program": "First Program",
+        "quick_start": "Verification & REPL",
+        "first_project": "First Project",
         "next_steps": "Next Steps"
       },
       "resources": {

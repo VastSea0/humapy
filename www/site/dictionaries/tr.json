@@ -316,14 +316,14 @@
         "arch_desc": "Hüma, Apple Silicon (M1/M2/M3) ve modern x86_64 işlemcilerde sıfır gecikmeyle çalışır. Derleyici çekirdeği Rust ile inşa edilmiştir."
       },
       "quick_start": {
-        "title": "Sistem Doğrulaması",
-        "desc": "Kurulumun başarıyla tamamlandığını doğrulamak için sürüm kontrolü yapın. Hüma CLI, anlık yanıt veren düşük gecikmeli bir yapıya sahiptir."
+        "title": "Doğrulama ve REPL",
+        "desc": "Kurulumu kontrol edin ve etkileşimli kabuk (REPL) ile hemen denemelere başlayın."
       },
-      "first_program": {
-        "title": "İlk Programınız",
-        "desc": "Hüma sözdizimi, mantıksal kurguyu doğal dile yaklaştırır. 'olsun' ile değişken atayabilir, 'ise' ile koşullarınızı belirleyebilirsiniz.",
-        "suffix_title": "Ek Sistemi Gücü",
-        "suffix_desc": "Kodunuzu 'isim'i yazdır' gibi doğal Türkçe eklerle yazın. Derleyicimiz bu ekleri (apostrof sonrası) otomatik temizleyerek saf performansa dönüştürür."
+      "first_project": {
+        "title": "İlk Projeniz",
+        "desc": "Hüma paket yöneticisi, tek bir komutla profesyonel bir proje yapısı oluşturur. Bu işlem; manifest dosyanızı, örnek kodunuzu ve bağımlılık yönetimini ayarlar.",
+        "suffix_title": "Proje Mimarisi",
+        "suffix_desc": "'huma paket yeni' komutu otomatik olarak 'huma.json' dosyası ve ana giriş noktası oluşturarak projenizi ilk günden ölçeklenebilir kılar."
       },
       "next_steps": {
         "title": "Yol Haritası",
@@ -335,8 +335,8 @@
       "toc": {
         "title": "BU SAYFADA",
         "installation": "Kurulum Süreci",
-        "quick_start": "Doğrulama",
-        "first_program": "İlk Program",
+        "quick_start": "Doğrulama ve REPL",
+        "first_project": "İlk Projeniz",
         "next_steps": "Sonraki Adımlar"
       },
       "resources": {
