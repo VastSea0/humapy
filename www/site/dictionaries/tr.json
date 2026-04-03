@@ -3,35 +3,76 @@
     "home": "Ana Sayfa",
     "docs": "Dokümantasyon",
     "playground": "Oyun Alanı",
+    "community": "Topluluk",
     "github": "GitHub",
     "download": "İndir"
   },
   "Hero": {
-    "title": "Geleceğin Yazılım Dünyasını Hüma ile İnşa Edin",
-    "subtitle": "Rust tabanlı, yüksek performanslı ve Türkçe doğal dil yapısına uygun modern programlama dili.",
-    "getStarted": "Hemen Başlayın",
-    "viewGithub": "GitHub'da İncele"
+    "badge": "v0.5.0 KARARLI",
+    "headline": "Doğal Kod,",
+    "subheadline": "Yerel Performans.",
+    "description": "Hüma, Türkçe doğal dil yapısına sahip, yüksek performanslı bir programlama dilidir. Rust tabanlı çekirdeği ile doğal dilin ifade gücünü sistem derleyicisinin hızıyla birleştirir.",
+    "cta_get_started": "Hemen Başlayın",
+    "cta_docs": "Dokümanları Oku"
+  },
+  "IDE": {
+    "filename": "index.hb",
+    "success_message": "Başarılı!",
+    "terminal_output": "Terminal Çıktısı"
+  },
+  "Features": {
+    "headline": "Gelişmiş Özellikler",
+    "natural_syntax": {
+      "title": "Doğal Sözdizimi",
+      "description": "Okunabilirliği artıran ve doğal hissettiren Türkçe eklerle kod yazın."
+    },
+    "hybrid_execution": {
+      "title": "Hibrit Çalıştırma",
+      "description": "Geliştirme hızı için yorumlama ile üretim gücü için derlemeyi harmanlayın."
+    },
+    "standalone_compilation": {
+      "title": "Bağımsız İkili",
+      "description": "Kodunuzu her sistem için tek, statik olarak bağlanmış bir ikili dosyaya derleyin."
+    },
+    "standard_library": {
+      "title": "Standart Kütüphane",
+      "description": "HTTP, GUI ve sistem yönetimi için yerleşik modüller."
+    }
+  },
+  "CTA": {
+    "headline": "Hemen İnşa Etmeye Başlayın",
+    "description": "Hüma ile yeni nesil yazılımlar geliştiren topluluğa katılın.",
+    "copy_install_command": "Kurulum Komutunu Kopyala",
+    "available_platforms": "Windows, macOS ve Linux'ta kullanılabilir"
   },
   "Footer": {
-    "rights": "© 2026 Hüma Programlama Dili. Tüm hakları saklıdır.",
-    "builtWith": "Rust ve Sevgi ile inşa edildi."
+    "copy": "© 2026 Hüma Vakfı",
+    "license": "MIT Lisansı",
+    "build": "Sürüm v0.5.0-kararlı",
+    "github": "GitHub",
+    "discord": "Discord",
+    "releases": "Sürümler",
+    "issues": "Sorunlar",
+    "license_link": "Lisans"
   },
   "Sidebar": {
-    "getting_started": "Başlangıç",
-    "the_language": "Dil Rehberi",
+    "title": "Dokümantasyon",
+    "core": "Temeller",
+    "language": "Dil Rehberi",
     "ecosystem": "Ekosistem",
     "guides": "Kılavuzlar",
     "items": {
+      "getting_started": "Hızlı Başlangıç",
       "introduction": "Giriş ve Felsefe",
-      "quick_start": "Hızlı Başlangıç",
       "syntax": "Temel Sözdizimi",
-      "functions_classes": "Fonksiyonlar ve Sınıflar",
-      "lists_errors": "Listeler ve Hatalar",
+      "functions": "Fonksiyonlar ve Sınıflar",
+      "lists": "Listeler ve Hatalar",
       "stdlib": "Standart Kütüphane",
       "compiler": "Derleyici İç Yapısı",
+      "ide": "Hüma IDE",
+      "gui": "GUI Kütüphanesi",
       "ag_istekleri": "Ağ İstekleri (HTTP)",
       "huma_sunucu": "Hüma Sunucu (HTTP)",
-      "gui": "Görsel Arayüz (GUI)",
       "package_manager": "Paket Yöneticisi",
       "my_first_package": "İlk Paketim",
       "changelog": "Sürüm Notları"
@@ -60,10 +101,12 @@
       },
       "why_huma": {
         "title": "Neden Hüma?",
-        "safety": "Rust Üzerine İnşa Edilmiş Güvenlik",
-        "performance": "Düşük Bellek ve Yüksek İşlem Hızı",
-        "native": "Yerel Suffix (Ek) Desteği",
-        "modern": "Dahili Paket Yöneticisi ve Web Desteği"
+        "points": [
+          "Rust tabanlı güvenlik mimarisi",
+          "Düşük bellek kullanımı ve yüksek hız",
+          "Yerel ek sistemi desteği (Türkçe kökenli)",
+          "Dahili paket yöneticisi ve web desteği"
+        ]
       }
     },
     "syntax": {
@@ -195,6 +238,12 @@
       "description": "Hüma kütüphanelerini yönetin, güncelleyin ve topluluktan indirin.",
       "hero_title": "Paket Yönetim Sistemi",
       "hero_desc": "Hüma Paket Yöneticisi, projeleriniz için kütüphane yönetimini kolaylaştırır. 'huma.json' ve 'huma.lock' dosyaları ile bağımlılıklarınızı güvenli ve sürümü kilitli bir şekilde yönetebilirsiniz.",
+      "manifest_title": "Manifest Dosyası (huma.json)",
+      "manifest_desc": "Her Hüma paketi, kök dizininde bir 'huma.json' dosyası bulundurmalıdır. Bu dosya paketin adını, sürümünü ve bağımlılıklarını tanımlar.",
+      "dependencies_title": "Bağımlılık Yönetimi",
+      "dependencies_desc": "Hüma, hem GitHub üzerinden hem de yerel dizinlerden bağımlılık yüklemeyi destekler. huma.lock dosyası, projenizin her kurulumda aynı bağımlılık sürümlerini kullanmasını sağlar.",
+      "publishing_title": "Paket Yayınlama",
+      "publishing_desc": "Kendi paketinizi yayınlamak için kodu GitHub'a yüklemeniz ve geçerli bir SemVer etiketi (v1.0.0 gibi) eklemeniz yeterlidir.",
       "platform": {
         "title": "Resmi Paylaşım Platformu",
         "desc": "Yüzlerce hazır kütüphaneye göz atın ve kendi çözümünüzü toplulukla paylaşın."
@@ -291,6 +340,25 @@
         "discord": "Geliştirici Topluluğu",
         "issue": "Hata/Özellik Bildir"
       }
+    }
+  },
+  "Playground": {
+    "badge": "Oyun Alanı",
+    "headline": "Hüma ile Tanışın,",
+    "subheadline": "Tarayıcıda Keşfedin.",
+    "description": "Hüma'nın gücünü ve sadeliğini deneyimlemek için hazır örneklerimizi inceleyin. Hiçbir kurulum gerektirmeden kodun nasıl çalıştığını görün.",
+    "console_output": "Konsol Çıktısı",
+    "cta_title": "Daha Fazlasını Deneyin",
+    "cta_desc": "Yerel makinenizde tam performanslı Hüma geliştirmeye başlamak için dokümantasyonu takip edin.",
+    "cta_docs": "Dokümanlara Git",
+    "cta_github": "GitHub'da Yıldızla",
+    "examples": {
+      "hello": { "label": "Merhaba Dünya", "description": "Değişken tanımlama ve temel çıktı işlemleri." },
+      "conditions": { "label": "Koşullu Mantık", "description": "Karar yapıları (ise-yoksa) ve karşılaştırmalar." },
+      "loops": { "label": "Döngüler", "description": "Tekrarlayan işlemler (olduğu sürece) ve sayaçlar." },
+      "functions": { "label": "Fonksiyonlar", "description": "Parametre alabilen ve değer döndüren modüler yapılar." },
+      "classes": { "label": "Sınıflar (OOP)", "description": "Nesne yönelimli programlama ve sınıf metotları." },
+      "lists": { "label": "Liste İşlemleri", "description": "Dinamik listeler ve eleman yönetimi." }
     }
   }
 }

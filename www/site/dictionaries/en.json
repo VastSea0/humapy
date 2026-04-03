@@ -3,35 +3,76 @@
     "home": "Home",
     "docs": "Documentation",
     "playground": "Playground",
+    "community": "Community",
     "github": "GitHub",
     "download": "Download"
   },
   "Hero": {
-    "title": "Build the Future of Software with Hüma",
-    "subtitle": "A modern, high-performance programming language powered by Rust and optimized for natural language clarity.",
-    "getStarted": "Get Started",
-    "viewGithub": "View on GitHub"
+    "badge": "v0.5.0 STABLE",
+    "headline": "Natural Code,",
+    "subheadline": "Native Performance.",
+    "description": "Hüma is a high-performance programming language featuring native Turkish syntax. Built with a Rust-backed core, it combines the expressiveness of natural language with the raw speed of a systems compiler.",
+    "cta_get_started": "Get Started",
+    "cta_docs": "Read Docs"
+  },
+  "IDE": {
+    "filename": "index.hb",
+    "success_message": "Success!",
+    "terminal_output": "Terminal Output"
+  },
+  "Features": {
+    "headline": "Advanced Features",
+    "natural_syntax": {
+      "title": "Natural Syntax",
+      "description": "Code using Turkish suffixes that feel natural and improve readability."
+    },
+    "hybrid_execution": {
+      "title": "Hybrid Execution",
+      "description": "Mix interpretation for development speed and compilation for production power."
+    },
+    "standalone_compilation": {
+      "title": "Standalone Binary",
+      "description": "Compile your code to a single, statically linked binary for any system."
+    },
+    "standard_library": {
+      "title": "Standard Library",
+      "description": "Built-in modules for HTTP, GUI, and system management."
+    }
+  },
+  "CTA": {
+    "headline": "Start Building Now",
+    "description": "Join the community of developers building the next generation of software with Hüma.",
+    "copy_install_command": "Copy Install Command",
+    "available_platforms": "Available on Windows, macOS, and Linux"
   },
   "Footer": {
-    "rights": "© 2026 Hüma Programming Language. All rights reserved.",
-    "builtWith": "Built with Rust and Love."
+    "copy": "© 2026 Hüma Foundation",
+    "license": "MIT License",
+    "build": "Build v0.5.0-stable",
+    "github": "GitHub",
+    "discord": "Discord",
+    "releases": "Releases",
+    "issues": "Issues",
+    "license_link": "License"
   },
   "Sidebar": {
-    "getting_started": "Getting Started",
-    "the_language": "Language Guide",
+    "title": "Documentation",
+    "core": "The Basics",
+    "language": "Language Guide",
     "ecosystem": "Ecosystem",
     "guides": "Guides",
     "items": {
+      "getting_started": "Getting Started",
       "introduction": "Intro & Philosophy",
-      "quick_start": "Quick Start",
       "syntax": "Basic Syntax",
-      "functions_classes": "Functions & Classes",
-      "lists_errors": "Lists & Errors",
+      "functions": "Functions & Classes",
+      "lists": "Lists & Errors",
       "stdlib": "Standard Library",
       "compiler": "Compiler Internals",
-      "ag_istekleri": "Network Requests (HTTP)",
-      "huma_sunucu": "Hüma Server (HTTP)",
-      "gui": "Graphical User Interface (GUI)",
+      "ide": "Hüma IDE",
+      "gui": "GUI Library",
+      "ag_istekleri": "Network (HTTP)",
+      "huma_sunucu": "Server (HTTP)",
       "package_manager": "Package Manager",
       "my_first_package": "My First Package",
       "changelog": "Changelog"
@@ -60,10 +101,12 @@
       },
       "why_huma": {
         "title": "Why Hüma?",
-        "safety": "Safety Built on Top of Rust",
-        "performance": "Low Memory & High Execution Speed",
-        "native": "Native Suffix Support",
-        "modern": "Built-in Package Manager & Web Support"
+        "points": [
+          "Safety Built on Top of Rust",
+          "Low Memory & High Execution Speed",
+          "Native Suffix Support",
+          "Built-in Package Manager & Web Support"
+        ]
       }
     },
     "syntax": {
@@ -195,6 +238,12 @@
       "description": "Manage, update, and download Hüma libraries from the community.",
       "hero_title": "Package Management System",
       "hero_desc": "Hüma Package Manager simplifies library management for your projects. You can manage your dependencies securely with version locking using 'huma.json' and 'huma.lock' files.",
+      "manifest_title": "Manifest File (huma.json)",
+      "manifest_desc": "Every Hüma package must contain a 'huma.json' file in its root directory. This file defines the package name, version, and dependencies.",
+      "dependencies_title": "Dependency Management",
+      "dependencies_desc": "Hüma supports installing dependencies from both GitHub and local directories. The huma.lock file ensures that your project uses the same dependency versions in every installation.",
+      "publishing_title": "Publishing Packages",
+      "publishing_desc": "To publish your own package, simply upload the code to GitHub and add a valid SemVer tag (like v1.0.0).",
       "platform": {
         "title": "Official Sharing Platform",
         "desc": "Browse hundreds of ready-to-use libraries and share your own solutions with the community."
@@ -291,6 +340,25 @@
         "discord": "Developer Community",
         "issue": "Report Bug/Feature"
       }
+    }
+  },
+  "Playground": {
+    "badge": "Playground",
+    "headline": "Meet Hüma,",
+    "subheadline": "Explore in your Browser.",
+    "description": "Experience the power and simplicity of Hüma through our ready-to-use examples. See how the code works without any installation required.",
+    "console_output": "Console Output",
+    "cta_title": "Try More",
+    "cta_desc": "Follow the documentation to start high-performance Hüma development on your local machine.",
+    "cta_docs": "Go to Docs",
+    "cta_github": "Star on GitHub",
+    "examples": {
+      "hello": { "label": "Hello World", "description": "Variable definition and basic output operations." },
+      "conditions": { "label": "Conditional Logic", "description": "Decision structures (ise-yoksa) and comparisons." },
+      "loops": { "label": "Loops", "description": "Repeating operations (olduğu sürece) and counters." },
+      "functions": { "label": "Functions", "description": "Modular structures that can take parameters and return values." },
+      "classes": { "label": "Classes (OOP)", "description": "Object-oriented programming and class methods." },
+      "lists": { "label": "List Operations", "description": "Dynamic lists and element management." }
     }
   }
 }

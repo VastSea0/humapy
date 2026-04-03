@@ -68,7 +68,7 @@ export default async function DocsPage({
             {d.installation.desc}
           </p>
           <CodeBlock 
-            code={`$ curl -fsSL https://huma-dili.org/install.sh | bash\n\n[Hüma] ${locale === "tr" ? "Sistem algılanıyor..." : "Detecting system..."} Linux x86_64\n[Hüma] v0.5.0 ${locale === "tr" ? "indiriliyor..." : "downloading..."} [##########] 100%\n[Hüma] ${locale === "tr" ? "Kurulum tamamlandı." : "Installation complete."}\n[Hüma] ${locale === "tr" ? "Yol (PATH) güncellendi." : "PATH updated."}`} 
+            code={`curl -fsSL https://raw.githubusercontent.com/VastSea0/huma-lang/main/install.sh \n\n[Hüma] ${locale === "tr" ? "Sistem algılanıyor..." : "Detecting system..."} Linux x86_64\n[Hüma] v0.5.0 ${locale === "tr" ? "indiriliyor..." : "downloading..."} [##########] 100%\n[Hüma] ${locale === "tr" ? "Kurulum tamamlandı." : "Installation complete."}\n[Hüma] ${locale === "tr" ? "Yol (PATH) güncellendi." : "PATH updated."}`} 
             variant="terminal" 
           />
 
