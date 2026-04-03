@@ -62,23 +62,48 @@ export default async function PackageManagerPage({
           {p.hero_desc}
         </p>
 
-        {/* Commands */}
-        <section className="mb-16">
-          <h2 className="text-2xl font-bold text-on-surface mb-6 flex items-center gap-3">
+        {/* Command Reference */}
+        <section className="mb-24">
+          <h2 className="text-2xl font-bold text-on-surface mb-8 flex items-center gap-3">
              <span className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-sm font-mono text-primary">
               01
             </span>
-            {locale === "tr" ? "Komut Referansı" : "Command Reference"}
+            {locale === "tr" ? "Komut Başvurusu" : "Command Reference"}
           </h2>
-          <div className="space-y-4">
-            {commands.map((c) => (
-              <div key={c.cmd} className="bg-surface-container-lowest rounded-lg border border-outline-variant/10 overflow-hidden hover:border-primary/20 transition-colors group">
-                <div className="bg-surface-container-low px-5 py-3 border-b border-outline-variant/5">
-                  <code className="font-mono text-sm text-primary-fixed group-hover:text-primary transition-colors font-bold">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              {
+                cmd: "huma paket ilkle / init",
+                desc: locale === "tr" ? "Mevcut dizini bir Hüma projesi olarak başlatır." : "Initializes the current directory as a Hüma project.",
+              },
+              {
+                cmd: "huma paket yeni / new <ad>",
+                desc: locale === "tr" ? "Yeni bir klasör açıp proje şablonu oluşturur." : "Creates a new folder and project template.",
+              },
+              {
+                cmd: "huma paket kur / install [ad]",
+                desc: locale === "tr" ? "Tüm bağımlılıkları veya belirtilen paketi kurar." : "Installs all dependencies or a specific package.",
+              },
+              {
+                cmd: "huma paket liste / list",
+                desc: locale === "tr" ? "Kilitli sürümleriyle yüklü paketleri listeler." : "Lists installed packages with locked versions.",
+              },
+              {
+                cmd: "huma paket sil / remove <ad>",
+                desc: locale === "tr" ? "Belirtilen paketi ve dosyalarını projeden kaldırır." : "Removes a specific package and its files.",
+              },
+              {
+                cmd: "huma paket run <betik>",
+                desc: locale === "tr" ? "huma.json içinde tanımlı bir otomasyon betiğini çalıştırır." : "Executes an automation script defined in huma.json.",
+              }
+            ].map((c) => (
+              <div key={c.cmd} className="bg-surface-container-low/50 rounded-xl border border-outline-variant/10 overflow-hidden hover:border-primary/20 transition-all group">
+                <div className="px-5 py-4 border-b border-outline-variant/5">
+                  <code className="font-mono text-[11px] text-primary font-bold group-hover:scale-105 transition-transform inline-block lowercase">
                     {c.cmd}
                   </code>
                 </div>
-                <div className="px-5 py-4 text-sm text-on-surface-variant leading-relaxed">
+                <div className="px-5 py-4 text-xs text-on-surface-variant leading-relaxed">
                   {c.desc}
                 </div>
               </div>
@@ -86,11 +111,120 @@ export default async function PackageManagerPage({
           </div>
         </section>
 
+        {/* Manifest (huma.json) */}
+        <section className="mb-24">
+          <h2 className="text-2xl font-bold text-on-surface mb-8 flex items-center gap-3">
+            <span className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-sm font-mono text-primary">
+              02
+            </span>
+            {p.manifest_title}
+          </h2>
+          <p className="text-on-surface-variant mb-8 leading-relaxed">
+            {p.manifest_desc}
+          </p>
+          <CodeBlock 
+            filename="huma.json"
+            code={`{
+  "ad": "merhaba_dunya",
+  "surum": "1.0.0",
+  "giris": "ana.hb",
+  "huma_surum": ">=0.5.0",
+  "bagimliliklar": {
+    "sunucu": "VastSea0/huma-sunucu@v1.2.0"
+  },
+  "betikler": {
+    "baslat": "huma run ana.hb",
+    "test": "huma run tests/test.hb"
+  }
+}`} 
+          />
+        </section>
+
+        {/* Scripts & Automation */}
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-24">
+          <div className="bg-surface-container-low p-8 rounded-2xl border border-outline-variant/10">
+            <h3 className="text-xl font-bold text-on-surface mb-4">
+              {p.scripts_title}
+            </h3>
+            <p className="text-sm text-on-surface-variant leading-relaxed mb-6">
+              {p.scripts_desc}
+            </p>
+            <CodeBlock code={`$ huma paket run baslat`} variant="terminal" />
+          </div>
+          
+          <div className="bg-surface-container-low p-8 rounded-2xl border border-outline-variant/10">
+            <h3 className="text-xl font-bold text-on-surface mb-4">
+              {p.verify_title}
+            </h3>
+            <p className="text-sm text-on-surface-variant leading-relaxed mb-6">
+              {p.verify_desc}
+            </p>
+            <CodeBlock code={`$ huma paket doğrula`} variant="terminal" />
+          </div>
+        </section>
+
+        {/* Lock System */}
+        <section className="mb-24">
+          <h2 className="text-2xl font-bold text-on-surface mb-8 flex items-center gap-3">
+            <span className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-sm font-mono text-primary">
+              03
+            </span>
+            {p.dependencies_title}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-surface-container-low p-8 rounded-2xl border border-outline-variant/10">
+              <h4 className="font-mono text-[10px] font-bold text-primary uppercase tracking-widest mb-4">huma.lock</h4>
+              <p className="text-sm text-on-surface-variant leading-relaxed">
+                {locale === "tr" 
+                  ? "Bağımlılıkların tam ve özgün sürümlerini (SHA-256 hash dahil) kilitler. Bu sayede projeniz her makinede aynı ikili bütünlükle çalışır."
+                  : "Locks exact versions and SHA-256 hashes of dependencies. Ensures bit-perfect reproducibility across all developer machines."}
+              </p>
+            </div>
+            <div className="bg-surface-container-low p-8 rounded-2xl border border-outline-variant/10">
+              <h4 className="font-mono text-[10px] font-bold text-primary uppercase tracking-widest mb-4">SemVer</h4>
+              <p className="text-sm text-on-surface-variant leading-relaxed">
+                {locale === "tr" 
+                  ? "Hüma, anlamsal sürümleme kurallarına (major.minor.patch) tam uyumludur. Sürüm çakışmalarını derleme öncesi tespit eder."
+                  : "Fully compliant with Semantic Versioning (major.minor.patch). Detects version conflicts before the build process starts."}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Publishing */}
+        <section className="mb-24">
+          <h2 className="text-2xl font-bold text-on-surface mb-8 flex items-center gap-3">
+            <span className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-sm font-mono text-primary">
+              04
+            </span>
+            {p.publishing_title}
+          </h2>
+          <p className="text-on-surface-variant mb-8 leading-relaxed">
+            {p.publishing_desc}
+          </p>
+          <div className="bg-surface-container-lowest p-8 border border-outline-variant/10 rounded-2xl">
+            <ul className="space-y-4 text-sm text-on-surface-variant">
+              <li className="flex gap-4">
+                 <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">1</span>
+                 {locale === "tr" ? "Kodunuzu GitHub reposuna yükleyin (huma.json projeniz olmalı)." : "Upload your code to GitHub (ensure huma.json is present)."}
+              </li>
+              <li className="flex gap-4">
+                 <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">2</span>
+                 {locale === "tr" ? "Geçerli bir sürüm numarası belirleyin (x.y.z)." : "Specify a valid version number (x.y.z)."}
+              </li>
+              <li className="flex gap-4">
+                 <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">3</span>
+                 {locale === "tr" ? "GitHub Release oluşturup v1.0.0 gibi bir etiket ekleyin." : "Create a GitHub Release with a tag like v1.0.0."}
+              </li>
+            </ul>
+          </div>
+        </section>
+
         {/* Platform Callout */}
-        <section className="mb-20">
+        <section className="mb-24">
           <div className="bg-primary/5 border border-primary/20 rounded-3xl p-10 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
-            <div className="relative z-10">
+            <div className="relative z-10 text-center md:text-left">
               <h3 className="text-2xl font-extrabold text-on-surface mb-3 tracking-tight">
                 {p.platform.title}
               </h3>
@@ -99,41 +233,12 @@ export default async function PackageManagerPage({
               </p>
             </div>
             <Link 
-              href="http://localhost:3000" 
+              href="https://huma-lang.org/packages" 
               target="_blank"
-              className="relative z-10 bg-primary text-on-primary px-8 py-4 rounded-xl font-bold text-sm hover:scale-105 transition-all shadow-lg shadow-primary/20 shrink-0"
+              className="relative z-10 bg-primary text-on-primary px-10 py-5 rounded-xl font-bold text-sm hover:scale-105 transition-all shadow-xl shadow-primary/25 shrink-0"
             >
               {locale === "tr" ? "Kütüphaneleri Keşfet" : "Explore Libraries"}
             </Link>
-          </div>
-        </section>
-
-        {/* VCS / SemVer */}
-        <section className="mb-16">
-           <h2 className="text-2xl font-bold text-on-surface mb-8 flex items-center gap-3">
-             <span className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-sm font-mono text-primary">
-              02
-            </span>
-            {locale === "tr" ? "Sürüm ve Kilit Sistemi" : "Version & Lock System"}
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-surface-container-low p-6 rounded-2xl border border-outline-variant/10">
-              <h4 className="font-mono text-[10px] font-bold text-primary uppercase tracking-widest mb-3">huma.lock</h4>
-              <p className="text-sm text-on-surface-variant leading-relaxed">
-                {locale === "tr" 
-                  ? "Bağımlılıkların tam sürümlerini kilitler. Ekip genelinde her makinede aynı kodun çalışmasını garanti eder."
-                  : "Locks exact versions of dependencies. Guarantees consistent execution across all developer machines."}
-              </p>
-            </div>
-            <div className="bg-surface-container-low p-6 rounded-2xl border border-outline-variant/10">
-              <h4 className="font-mono text-[10px] font-bold text-primary uppercase tracking-widest mb-3">SemVer</h4>
-              <p className="text-sm text-on-surface-variant leading-relaxed">
-                {locale === "tr" 
-                  ? "Anlamsal sürümleme (major.minor.patch) ile geriye dönük uyumluluk otomatik olarak denetlenir."
-                  : "Semantic versioning (major.minor.patch) for automated backward compatibility checks."}
-              </p>
-            </div>
           </div>
         </section>
 

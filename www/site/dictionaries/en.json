@@ -244,6 +244,10 @@
       "dependencies_desc": "Hüma supports installing dependencies from both GitHub and local directories. The huma.lock file ensures that your project uses the same dependency versions in every installation.",
       "publishing_title": "Publishing Packages",
       "publishing_desc": "To publish your own package, simply upload the code to GitHub and add a valid SemVer tag (like v1.0.0).",
+      "scripts_title": "Project Scripts",
+      "scripts_desc": "You can define custom automation scripts in 'huma.json' just like in npm. Run them using 'huma paket run <name>'.",
+      "verify_title": "Package Verification",
+      "verify_desc": "Automatically verify if your package metadata and versioning are compliant before sharing.",
       "platform": {
         "title": "Official Sharing Platform",
         "desc": "Browse hundreds of ready-to-use libraries and share your own solutions with the community."

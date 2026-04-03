@@ -244,6 +244,10 @@
       "dependencies_desc": "Hüma, hem GitHub üzerinden hem de yerel dizinlerden bağımlılık yüklemeyi destekler. huma.lock dosyası, projenizin her kurulumda aynı bağımlılık sürümlerini kullanmasını sağlar.",
       "publishing_title": "Paket Yayınlama",
       "publishing_desc": "Kendi paketinizi yayınlamak için kodu GitHub'a yüklemeniz ve geçerli bir SemVer etiketi (v1.0.0 gibi) eklemeniz yeterlidir.",
+      "scripts_title": "Proje Betikleri (Scripts)",
+      "scripts_desc": "huma.json içinde otomasyon betikleri (npm tarzı) tanımlayabilir ve 'huma paket run <ad>' ile çalıştırabilirsiniz.",
+      "verify_title": "Paket Doğrulama",
+      "verify_desc": "Paylaşım öncesi paket meta verilerinin ve sürüm uyumluluğunun geçerliliğini otomatik kontrol edin.",
       "platform": {
         "title": "Resmi Paylaşım Platformu",
         "desc": "Yüzlerce hazır kütüphaneye göz atın ve kendi çözümünüzü toplulukla paylaşın."
